@@ -1,7 +1,7 @@
 <template>
 <div>
   <body>
-    <p>1:{{time}}</p>
+    <!-- <p>1:{{time}}</p>
     <div>
       <b-checkbox
         v-model="isMoscow"
@@ -15,7 +15,8 @@
       <p>from store: {{isSetTimeToMoscow}}</p>
     </div>
     <RaidBosses></RaidBosses>
-  </body>
+  </body> -->
+  123
 </div>
 </template>
 
