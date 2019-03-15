@@ -1,7 +1,7 @@
 <template>
 <div>
   <body>
-    <!-- <p>1:{{time}}</p>
+    <p>1:{{time}}</p>
     <div>
       <b-checkbox
         v-model="isMoscow"
@@ -15,8 +15,7 @@
       <p>from store: {{isSetTimeToMoscow}}</p>
     </div>
     <RaidBosses></RaidBosses>
-  </body> -->
-  123
+  </body>
 </div>
 </template>
 
@@ -27,9 +26,9 @@ export default {
   components: {
     RaidBosses: RaidBosses
   },
-  // async fetch({ store, params }) {
-  //   await store.dispatch("raidboss/fetch");
-  // },
+  async fetch({ store, params }) {
+    await store.dispatch("raidboss/fetch");
+  },
 
   data() {
     return {
