@@ -30,7 +30,7 @@ module.exports = {
    **Axios module config
    */
   axios: {
-    baseURL: process.env.BASE_URL || '/api/',
+    baseURL: process.env.BASE_URL || 'https://l2scheduletoheroku.herokuapp.com/api/',
     retry: { retries: 5 },
     debug: false,
   },
