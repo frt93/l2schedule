@@ -30,7 +30,7 @@ module.exports = {
    **Axios module config
    */
   axios: {
-    baseURL: process.env.BASE_URL || 'l2schedule.netlify.com/api/',
+    baseURL: process.env.BASE_URL || 'http://localhost:3333/api/',
     retry: { retries: 5 },
     debug: false,
   },

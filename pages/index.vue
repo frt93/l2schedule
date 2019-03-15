@@ -27,9 +27,9 @@ export default {
   components: {
     RaidBosses: RaidBosses
   },
-  async fetch({ store, params }) {
-    await store.dispatch("raidboss/fetch");
-  },
+  // async fetch({ store, params }) {
+  //   await store.dispatch("raidboss/fetch");
+  // },
 
   data() {
     return {
