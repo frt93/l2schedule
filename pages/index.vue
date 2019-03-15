@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import RaidBossesList from "~/components/RaidBoss/RaidBossesList.vue";
+import RaidBossesList from "~/components/RaidBoss/RaidBossesList";
 import { mapGetters, mapActions } from "vuex";
 export default {
   components: {

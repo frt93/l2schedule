@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import RaidBoss from "./RaidBoss.vue";
+import RaidBoss from "./RaidBoss";
 import { mapGetters } from "vuex";
 export default {
   components: {
