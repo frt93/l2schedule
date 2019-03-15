@@ -2,18 +2,18 @@
   <section class="section">
     <div class="container">
       <div class="columns tile is-ancestor">
-        <bossCard v-for="(boss, index) in raidBosses" :key="index" :boss="boss"></bossCard>
+        <RaidBoss v-for="(boss, index) in raidBosses" :key="index" :boss="boss"></RaidBoss>
       </div>
     </div>
   </section>
 </template>
 
 <script>
-import bossCard from "./RaidBoss.vue";
+import RaidBoss from "./RaidBoss.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
-    bossCard
+    RaidBoss
   },
   computed: {
     ...mapGetters({ raidBosses: "raidboss/getAllRaidBosses" })

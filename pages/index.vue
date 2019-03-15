@@ -13,16 +13,16 @@
       <p>from data:{{isMoscow}}</p>
       <p>from store: {{isSetTimeToMoscow}}</p>
     </div>
-    <RaidBosses></RaidBosses>
+    <RaidBossesList></RaidBossesList>
   </div>
 </template>
 
 <script>
-import RaidBosses from "~/components/RaidBoss/RaidBossList.vue";
+import RaidBossesList from "~/components/RaidBoss/RaidBossesList.vue";
 import { mapGetters, mapActions } from "vuex";
 export default {
   components: {
-    RaidBosses: RaidBosses
+    RaidBossesList
   },
   async fetch({ store, params }) {
     await store.dispatch("raidboss/fetch");

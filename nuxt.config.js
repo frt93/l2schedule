@@ -24,7 +24,7 @@ module.exports = {
   plugins: [
     '~/plugins/datetime.js',
     { src: '~/plugins/datepicker', ssr: false },
-    // { src: '~/plugins/vuex-persistedstate.js', ssr: false },
+    { src: '~/plugins/vuex-persistedstate.js', ssr: false },
   ],
   /*
    **Axios module config

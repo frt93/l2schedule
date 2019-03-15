@@ -8,14 +8,8 @@ export const mutations = {
   SET_RAIDBOSS_LIST(state, data) {
     state.allRaidBosses = data;
   },
-  FIND_RAIDBOSS(state, boss) {
-    console.log(boss);
-    const removeBoss = state.allRaidBosses.filter(rb => {
-      return rb.name !== newboss.name;
-    });
-    state.allRaidBosses = removeBoss.push(boss);
-    console.log('После исправления');
-    console.log(state.allRaidBosses);
+  editRaidBoss(state, payload) {
+    state.allRaidBosses = payload;
   },
 };
 
@@ -25,8 +19,14 @@ export const actions = {
     commit('SET_RAIDBOSS_LIST', data);
   },
 
-  findBoss({ commit }, payload) {
-    commit('FIND_RAIDBOSS', payload);
+  editRaidBoss({ commit, state }, boss) {
+    const allRaidBosses = state.allRaidBosses;
+
+    let newRaidBossesList = allRaidBosses.filter(rb => {
+      return rb.fullname !== boss.fullname;
+    });
+    newRaidBossesList.push(boss);
+    commit('editRaidBoss', newRaidBossesList);
   },
 };
 

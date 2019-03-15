@@ -38,21 +38,21 @@
         <button class="button is-info" type="button" @click="edit=true">Изменить</button>
       </footer>
     </div>
-    <editBoss
+    <editRaidBoss
       v-if="edit==true"
       :boss="boss"
       @back="edit=false"
       @copy="$emit('copy',boss.fullname, 'Имя рб скопировано')"
-    ></editBoss>
+    ></editRaidBoss>
   </div>
 </template>
 
 <script>
-import editBoss from "./edit";
+import editRaidBoss from "./editRaidBoss";
 import { mapGetters } from "vuex";
 export default {
   components: {
-    editBoss
+    editRaidBoss
   },
   data() {
     return {
@@ -68,7 +68,7 @@ export default {
   },
   computed: {
     ...mapGetters({ isSetTimeToMoscow: "datetime/isSetTimeToMoscow" }),
-    defGMT() {
+    determineGMT() {
       return this.$defineGMT(this.boss.tod, this.isSetTimeToMoscow).format(
         "D.MM.YYYY в HH:mm:ss"
       );
@@ -76,8 +76,8 @@ export default {
     composeTodMessage() {
       let response;
       this.isSetTimeToMoscow
-        ? (response = `${this.defGMT} по МСК (GMT +3)`)
-        : (response = `${this.defGMT}`);
+        ? (response = `${this.determineGMT} по МСК (GMT +3)`)
+        : (response = `${this.determineGMT}`);
       return response;
     },
     composeRespawnRangeMessage() {
