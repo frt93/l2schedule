@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import editRaidBoss from "./editRaidBoss";
+import editRaidBoss from "./editRaidBoss.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
