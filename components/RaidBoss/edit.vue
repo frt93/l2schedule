@@ -44,12 +44,10 @@ export default {
         .add(boss.max_respawn, "minutes")
         .utc()
         .format();
-
       if (!boss.isSA) {
         boss.sa = [];
         boss.enchantConditions = "";
       }
-
       this.$axios
         .post(`/rb/${boss.fullname}/save`, boss)
         .then(async res => {
