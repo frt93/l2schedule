@@ -5,7 +5,7 @@
         <div class="modal-card-title">
           <span
             class="rb-fullname"
-            @click="$emit('copy',boss.fullname, 'Имя рб скопировано')"
+            @click="$emit('copy', `Имя РБ ${boss.fullname} скопировано`)"
           >{{boss.fullname}}</span>
         </div>
       </header>
@@ -13,7 +13,9 @@
         <b-field label="Аккаунт палилки" v-if="boss.account">
           <div>
             <b-tooltip label="Нажми, чтобы скопировать" position="is-right" type="is-dark" animated>
-              <a @click="copy(boss.account, 'Имя рб скопировано')">@{{boss.account}}</a>
+              <a
+                @click="$emit('copy', `Логин аккаунта ${boss.account} с палилкой скопирован`)"
+              >@{{boss.account}}</a>
             </b-tooltip>
           </div>
         </b-field>
@@ -89,9 +91,6 @@ export default {
     }
   },
   methods: {
-    uuu(name, text) {
-      console.log(name + "  - " + text);
-    },
     success(label) {
       this.$toast.open({
         message: `${label}`,

@@ -10,7 +10,9 @@
           animated
           multilined
         >
-          <a @click="copy(boss.account); $event.stopPropagation()">@{{boss.account}}</a>
+          <a
+            @click="copy(`Логин аккаунта ${boss.account} с палилкой скопирован`); $event.stopPropagation()"
+          >@{{boss.account}}</a>
         </b-tooltip>
       </div>
       <b-tooltip
@@ -59,7 +61,6 @@ export default {
   },
   methods: {
     async copy(text) {
-      console.log(text);
       try {
         await this.$copyText(text);
         this.success(text);
