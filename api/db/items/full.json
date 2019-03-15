@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Blessed Scroll: Enchant Weapon (Grade S)",
+    "shortname": "BEWS",
+    "image": "/items/full/bews.png"
+  },
+  {
+    "name": "Blessed Scroll: Enchant Armor (Grade S)",
+    "shortname": "BEAS",
+    "image": "/items/full/beas.png"
+  },
+  {
+    "name": "Arcana Mace",
+    "shortname": "AM",
+    "image": "/items/full/Arcana-Mace.png"
+  },
+  {
+    "name": "Angel Slayer",
+    "shortname": "AS",
+    "image": "/items/full/Angel-Slayer.png"
+  },
+  {
+    "name": "Basalt Battlehammer",
+    "shortname": "Basalt",
+    "image": "/items/full/Basalt-Battlehammer.png"
+  },
+  {
+    "name": "Demon Splinter",
+    "shortname": "DS",
+    "image": "/items/full/Demon-Splinter.png"
+  },
+  {
+    "name": "Draconic Bow",
+    "shortname": "DB",
+    "image": "/items/full/Draconic-Bow.png"
+  },
+  {
+    "name": "Dragon Hunter Axe",
+    "shortname": "DHA",
+    "image": "/items/full/Dragon-Hunter-Axe.png"
+  },
+  {
+    "name": "Forgotten Blade",
+    "shortname": "FB",
+    "image": "/items/full/Forgotten-Blade.png"
+  },
+  {
+    "name": "Heaven's Divider",
+    "shortname": "HD",
+    "image": "/items/full/Heavens-Divider.png"
+  },
+  {
+    "name": "Imperial Staff",
+    "shortname": "IS",
+    "image": "/items/full/Imperial-Staff.png"
+  },
+  {
+    "name": "Tallum Blade*Dark Legion's Edge",
+    "shortname": "S-duals",
+    "image": "/items/full/S-duals.png"
+  },
+  {
+    "name": "Sealed Major Arcana Robe",
+    "shortname": "MA robe",
+    "image": "/items/full/sealed-ma-robe.png"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Soul Crystal с 10 по 12 уровни",
+    "shortname": "SA 10->12",
+    "image": "/items/full/Soul-Crystal.png"
+  },
+  {
+    "name": "Soul Crystal с 12 на 13 уровни",
+    "shortname": "SA 12->13",
+    "image": "/items/full/Soul-Crystal.png"
+  }
+]
