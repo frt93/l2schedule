@@ -70,7 +70,7 @@ export default {
     },
     success(text) {
       this.$toast.open({
-        message: `Аккаунт палилки ${text} скопирован`,
+        message: text,
         type: "is-success",
         duration: 3000
       });
