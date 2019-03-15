@@ -1,6 +1,5 @@
 <template>
-<div>
-  <body>
+  <div>
     <p>1:{{time}}</p>
     <div>
       <b-checkbox
@@ -15,8 +14,7 @@
       <p>from store: {{isSetTimeToMoscow}}</p>
     </div>
     <RaidBosses></RaidBosses>
-  </body>
-</div>
+  </div>
 </template>
 
 <script>
