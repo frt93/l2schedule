@@ -3,10 +3,7 @@
     <header class="modal-card-head">
       <div class="modal-card-title">
         <span>Изменить информацию о</span>
-        <span
-          class="rb-fullname"
-          @click="$emit('copy', boss.fullname, 'Имя рб скопировано')"
-        >{{boss.fullname}}</span>
+        <span class="rb-fullname" @click="$emit('copy')">{{boss.fullname}}</span>
       </div>
     </header>
     <RBform :boss="boss" :page="'edit'" @back="$emit('back')" @saveBoss="saveBoss"></RBform>

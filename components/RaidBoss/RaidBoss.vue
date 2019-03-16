@@ -2,40 +2,44 @@
   <div class="tile is-parent">
     <article class="tile is-child box" @click="isComponentModalActive = true">
       <p class="title">{{boss.shortname}}</p>
-      <div class="subtitle account" v-if="boss.account">
+      <no-ssr>
+        <div class="subtitle account" v-if="boss.account">
+          <b-tooltip
+            label="Аккаунт с палилкой. Нажми, чтобы скопировать"
+            position="is-bottom"
+            type="is-dark"
+            animated
+            multilined
+          >
+            <a
+              @click="copy(`Логин аккаунта ${boss.account} с палилкой скопирован`); $event.stopPropagation()"
+            >@{{boss.account}}</a>
+          </b-tooltip>
+        </div>
+      </no-ssr>
+      <no-ssr>
         <b-tooltip
-          label="Аккаунт с палилкой. Нажми, чтобы скопировать"
+          v-for="item in boss.items"
+          :key="item.name"
+          :label="item.name"
           position="is-bottom"
           type="is-dark"
           animated
-          multilined
         >
-          <a
-            @click="copy(`Логин аккаунта ${boss.account} с палилкой скопирован`); $event.stopPropagation()"
-          >@{{boss.account}}</a>
+          <a class="drop-tags">#{{item.shortname}}&#032;&#032;</a>
         </b-tooltip>
-      </div>
-      <b-tooltip
-        v-for="item in boss.items"
-        :key="item.name"
-        :label="item.name"
-        position="is-bottom"
-        type="is-dark"
-        animated
-      >
-        <a class="drop-tags">#{{item.shortname}}&#032;&#032;</a>
-      </b-tooltip>
-      <b-tooltip
-        v-for="sa in boss.sa"
-        :key="sa.name"
-        :label="`С этого рб качается ${sa.name}. ${boss.enchantConditions}`"
-        position="is-bottom"
-        type="is-dark"
-        multilined
-        animated
-      >
-        <a v-if="boss.isSA" class="drop-tags">#{{sa.shortname}}&#032;&#032;</a>
-      </b-tooltip>
+        <b-tooltip
+          v-for="sa in boss.sa"
+          :key="sa.name"
+          :label="`С этого рб качается ${sa.name}. ${boss.enchantConditions}`"
+          position="is-bottom"
+          type="is-dark"
+          multilined
+          animated
+        >
+          <a v-if="boss.isSA" class="drop-tags">#{{sa.shortname}}&#032;&#032;</a>
+        </b-tooltip>
+      </no-ssr>
     </article>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
       <modal :boss="boss" @copy="copy"></modal>

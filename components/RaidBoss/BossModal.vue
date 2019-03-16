@@ -44,7 +44,7 @@
       v-if="edit==true"
       :boss="boss"
       @back="edit=false"
-      @copy="$emit('copy',boss.fullname, 'Имя рб скопировано')"
+      @copy="$emit('copy', `Имя РБ ${boss.fullname} скопировано`)"
     ></editBoss>
   </div>
 </template>

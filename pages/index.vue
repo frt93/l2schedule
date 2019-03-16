@@ -33,7 +33,7 @@ export default {
       time: this.$moment(new Date())
         .utc()
         .format("MMMM DD YYYY, H:mm:ss"),
-      time2: this.parseGmt,
+      time2: "",
       isMoscow: ""
     };
   },

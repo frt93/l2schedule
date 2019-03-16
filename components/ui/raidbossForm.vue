@@ -12,13 +12,23 @@
       </b-field>
       <b-field label="Время смерти (ПО ВАШЕМУ ЧАСОВОМУ ПОЯСУ!)" v-if="page === 'edit'">
         <no-ssr>
-          <date-picker
-            v-model="tod"
-            lang="ru"
-            type="datetime"
-            format="MM-DD-YYYY [в] HH:mm"
-            confirm
-          ></date-picker>
+          <b-tooltip
+            class="datepicker-tooltip"
+            :label="datepickerTooltipLabel"
+            position="is-bottom"
+            type="is-dark"
+            multilined
+            animated
+            size="is-large"
+          >
+            <date-picker
+              v-model="tod"
+              lang="ru"
+              type="datetime"
+              format="DD.MM.YYYY [в] HH:mm"
+              confirm
+            ></date-picker>
+          </b-tooltip>
         </no-ssr>
       </b-field>
       <b-field label="Минимальное время респа">
@@ -162,6 +172,11 @@ const SA = require("~/api/db/items/sa.json");
 export default {
   data() {
     return {
+      tooltipTime: {
+        ifMinuteAgo: this.ifMinuteAgo(),
+        ifMsk: this.ifMsk(),
+        rightTime: this.rightTime()
+      },
       filteredItems: this.boss.items,
       filteredPieces: this.boss.pieces,
       filteredSa: this.boss.sa,
@@ -229,10 +244,45 @@ export default {
             .indexOf(text.toLowerCase()) >= 0
         );
       });
+    },
+    //Функции, которые "оживляют" время в тултипе для datetimepicker'a
+    ifMinuteAgo() {
+      this.timer1 = setInterval(() => {
+        this.tooltipTime.ifMinuteAgo = this.$defineGMT(
+          this.$moment().subtract(1, "minute"),
+          false
+        ).format("D.MM.YYYY в HH:mm:ss");
+        console.log("IntervalID");
+      }, 1000);
+    },
+    ifMsk() {
+      this.timer2 = setInterval(() => {
+        this.tooltipTime.ifMsk = this.$defineGMT(
+          this.$moment().subtract(77, "minute"),
+          true
+        ).format("D.MM.YYYY в HH:mm:ss");
+        console.log("IntervalID");
+      }, 1000);
+    },
+    rightTime() {
+      this.timer3 = setInterval(() => {
+        this.tooltipTime.rightTime = this.$defineGMT(
+          this.$moment().subtract(77, "minute"),
+          false
+        ).format("D.MM.YYYY в HH:mm:ss");
+        console.log("IntervalID");
+      }, 1000);
     }
   },
 
   computed: {
+    datepickerTooltipLabel() {
+      return `Указывай время согласно своему часовому поясу. \n Например: если рб убили минуту назад - укажи ${
+        this.tooltipTime.ifMinuteAgo
+      }. Если рб убили ${this.tooltipTime.ifMsk} по МСК, то укажи ${
+        this.tooltipTime.rightTime
+      }. Надеюсь, ты не долбаеб и все просек`;
+    },
     isEncahntSA() {
       return this.isSA == true ? "Да, качаются" : "Нет";
     },
@@ -260,6 +310,12 @@ export default {
         enchantConditions: this.enchantConditions
       };
     }
+  },
+
+  beforeDestroy() {
+    clearInterval(this.timer1);
+    clearInterval(this.timer2);
+    clearInterval(this.timer3);
   }
 };
 </script>
@@ -275,5 +331,9 @@ form.raidboss {
 
 .form-stats input {
   margin-bottom: 10px;
+}
+
+.datepicker-tooltip {
+  width: 100%;
 }
 </style>
