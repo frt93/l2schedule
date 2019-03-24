@@ -1,33 +1,35 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const multer = require('multer');
-const form = multer();
+// const multer = require('multer');
+// const form = multer();
 // Create express instnace
 const app = express();
 
-app.use(async (req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
-  next();
-});
+// app.use(async (req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+//   res.setHeader(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+//   );
+//   next();
+// });
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(form.array());
+// app.use(form.array());
 
 // Require API routes
-const users = require('./routes/users');
+// const users = require('./routes/users');
 const raidbosses = require('./routes/raidbosses');
+const items = require('./routes/items');
 //
 
 // Import API Routes
-app.use(users);
+// app.use(users);
 app.use(raidbosses);
+app.use(items);
 
 // Export the server middleware
 module.exports = {

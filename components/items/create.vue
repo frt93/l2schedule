@@ -2,37 +2,41 @@
   <div class="modal-card">
     <header class="modal-card-head">
       <div class="modal-card-title">
-        <span>Изменить информацию о</span>
-        <span class="rb-fullname" @click="$emit('copy')">{{boss.fullname}}</span>
+        <span>Добавить новый предмет</span>
       </div>
     </header>
-    <edit :boss="boss" :action="'edit'" @back="$emit('back')" @update="update"></edit>
+    <create :item="item" :action="'create'" @create="create"></create>
   </div>
 </template>
-
 <script>
-import edit from "./form";
+import create from "./form";
 export default {
-  name: "editRaidBoss",
+  name: "createItem",
   components: {
-    edit
+    create
   },
   data() {
-    return {};
-  },
-  props: {
-    boss: {
-      type: Object,
-      required: true
-    }
+    return {
+      item: {
+        id: null,
+        fullname: "",
+        shortname: "",
+        image: null,
+        grade: "",
+        type: "", //full or piece
+        kind: "" // weapon, armor, jewerly etc.
+      }
+    };
   },
   methods: {
-    update(boss) {
+    create(item) {
+      item.id = `${this.$moment().unix()}`;
+
       this.$axios
-        .post(`/rb/${boss.id}/update`, boss)
-        .then(async res => {
-          await this.$store.dispatch("raidbosses/update", boss);
-          this.$emit("updated", boss);
+        .post("/item/create", item)
+        .then(res => {
+          this.$emit("created", item);
+          this.$store.commit("items/add", item);
           this.$snackbar.open({
             message: res.data,
             duration: 7000,

@@ -2,18 +2,18 @@
   <div class="modal-card">
     <header class="modal-card-head">
       <div class="modal-card-title">
-        <span>Изменить информацию о</span>
-        <span class="rb-fullname" @click="$emit('copy')">{{boss.fullname}}</span>
+        <span>Изменить информацию о предмете</span>
+        <span class="item-fullname" @click="$emit('copy')">{{item.fullname}}</span>
       </div>
     </header>
-    <edit :boss="boss" :action="'edit'" @back="$emit('back')" @update="update"></edit>
+    <edit :item="item" :action="'update'" @update="update"></edit>
   </div>
 </template>
 
 <script>
 import edit from "./form";
 export default {
-  name: "editRaidBoss",
+  name: "editItem",
   components: {
     edit
   },
@@ -21,18 +21,18 @@ export default {
     return {};
   },
   props: {
-    boss: {
+    item: {
       type: Object,
       required: true
     }
   },
   methods: {
-    update(boss) {
+    update(item) {
       this.$axios
-        .post(`/rb/${boss.id}/update`, boss)
+        .post(`/item/${item.id}/update`, item)
         .then(async res => {
-          await this.$store.dispatch("raidbosses/update", boss);
-          this.$emit("updated", boss);
+          await this.$store.dispatch("items/update", item);
+          this.$emit("updated", item);
           this.$snackbar.open({
             message: res.data,
             duration: 7000,

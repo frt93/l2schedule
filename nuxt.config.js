@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
   /*
    ** Headers of the page
@@ -23,8 +25,9 @@ module.exports = {
   modules: ['@nuxtjs/axios', '@nuxtjs/dotenv', 'nuxt-buefy', 'nuxt-clipboard2', '@nuxtjs/moment'],
   plugins: [
     '~/plugins/datetime.js',
+    '~/plugins/filters.js',
     { src: '~/plugins/datepicker', ssr: false },
-    { src: '~/plugins/vuex-persistedstate.js', ssr: false },
+    // { src: '~/plugins/vuex-persistedstate.js', ssr: false },
   ],
   /*
    **Axios module config

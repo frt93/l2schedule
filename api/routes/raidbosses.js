@@ -1,90 +1,129 @@
 const { Router } = require('express');
 const router = Router();
-const fs = require('fs');
 
-router.get('/rb/getall', (req, res, next) => {
-  const data = getAllRB();
-  res.json(data);
-});
+const low = require('lowdb');
+const FileAsync = require('lowdb/adapters/FileAsync');
+const bosses = new FileAsync('db/bosses.json');
+const { addRaidBossesItems } = require('./raidbosses_items');
 
-router.post('/rb/add', (req, res, next) => {
-  addRB(req.body, res);
-});
-
-router.get('/rb/:name', (req, res, next) => {
-  const name = req.params.name;
-
-  const bosses = getAllRB();
-  const boss = bosses.filter(boss => {
-    return boss.fullname === name;
-  });
-  res.json(boss);
-});
-
-router.post('/rb/:name/save', (req, res, next) => {
-  const name = req.params.name;
-
-  //Получаем массив со всеми РБ
-  const bosses = getAllRB();
-
-  //Сначала получаем объект с рб, которого хотим изменить
-  let boss = bosses.filter(boss => {
-    return boss.fullname === name;
+low(bosses).then(db => {
+  router.get('/rb/all', (req, res) => {
+    try {
+      const raidbosses = getAllRaidBosses(db);
+      res.send(raidbosses);
+    } catch (e) {
+      res.status(500).send(e);
+    }
   });
 
-  //Затем удаляем его и получаем массив с оставшимися рб
-  const keepedBosses = deleteRB(name);
+  router.get('/rb/:id', (req, res) => {
+    const id = req.params.id;
+    getRaidBossById(db, id, res);
+  });
 
-  //Изменяем
-  const editedBoss = req.body;
+  router.post('/rb/:id/update', (req, res) => {
+    const id = req.params.id;
+    const updatedRaidBoss = req.body;
+    //Составляем массив с РБ без учета исправляемого
+    const withoutUpdatedRaidBoss = getAllRaidBosses(db).filter(boss => {
+      return boss.id !== id;
+    });
+    //Проверяем, чтобы РБ, который подвергся изменению не был переименован в уже существующего РБ
+    checkFullnameDuplicate(withoutUpdatedRaidBoss, updatedRaidBoss.fullname);
+    //Обновляем
+    updateRaidBoss(db, id, updatedRaidBoss, res);
+  });
 
-  //Добавляем к массиву keepedBosses измененный экземпляр нашего рб
-  keepedBosses.push(editedBoss);
-  //И сохраняем его
-  saveRB(keepedBosses, editedBoss, res);
+  router.post('/rb/create', (req, res) => {
+    const newRaidBoss = req.body;
+    createRaidBoss(db, newRaidBoss, res);
+  });
+
+  router.post('/rb/:id/remove', (req, res) => {
+    const id = req.params.id;
+    removeRaidBoss(db, id, res);
+  });
 });
 
-const getAllRB = () => {
+// Получаем всех рейдовых боссов
+const getAllRaidBosses = db => {
+  return db.get('raidbosses').value();
+};
+
+// Получаем конкретного рейдового босса по id
+const getRaidBossById = (db, id, res) => {
   try {
-    const dataBuffer = fs.readFileSync('api/db/rb.json');
-    const dataString = dataBuffer.toString();
-    const data = JSON.parse(dataString);
-    return data;
+    const rb = db
+      .get('raidbosses')
+      .find({ id: id })
+      .value();
+    res.send(rb);
   } catch (e) {
-    return e;
+    res.status(500).send(e);
   }
 };
 
-const addRB = async (newboss, res) => {
-  const bosses = getAllRB();
+// Изменяем информацию о конкретном рейдовом боссе по его id
+const updateRaidBoss = (db, id, newdata, res) => {
+  return db
+    .get('raidbosses')
+    .chain()
+    .find({ id: id })
+    .assign(newdata)
+    .write()
+    .then(boss => res.send(`Информация о ${boss.fullname} успешно изменена`))
+    .catch(e => res.status(500).send(e));
+};
 
-  const duplicate = bosses.filter(boss => {
-    return boss.name === newboss.name;
+// Создаем нового рейдового босса
+const createRaidBoss = (db, newRaidBoss, res) => {
+  const id = newRaidBoss.id;
+  const fullname = newRaidBoss.fullname;
+  const existingRaidBosses = getAllRaidBosses(db);
+  //Исключаем создание РБ с уже существующим ID и полным именем
+  checkIdDuplicate(existingRaidBosses, id);
+  checkFullnameDuplicate(existingRaidBosses, fullname);
+
+  db.get('raidbosses')
+    .push(newRaidBoss)
+    .write()
+    .then(boss => {
+      addRaidBossesItems(newRaidBoss);
+      res.send(`Рейдовый босс ${newRaidBoss.fullname} успешно создан и добавлен в базу данных`);
+    })
+    .catch(e => res.status(500).send(e));
+};
+
+// Удаляем рейдового босса
+const removeRaidBoss = (db, id, res) => {
+  const raidBossToDelete = db.get('raidbosses').find({ id: id });
+  //Проверяем существование РБ с заданным идентификатором в БД
+  if (!raidBossToDelete.value())
+    throw Error(`РБ с заданным идентификатором не найден в базе данных`);
+  //Если РБ существует - удаляем
+  db.get('raidbosses')
+    .remove({ id: id })
+    .write()
+    .then(rb => {
+      res.send(`РБ ${rb[0].fullname} успешно удален`);
+    })
+    .catch(e => res.status(500).send(e));
+};
+
+// Проверяем существование рейдового босса с указанным ID в переданном массиве
+const checkIdDuplicate = (array, id) => {
+  const idDuplicate = array.filter(i => {
+    return i.id === id;
   });
-
-  if (duplicate.length === 0) {
-    bosses.push(newboss);
-    return saveRB(bosses, newboss, res);
-  } else {
-    res.status(500).send('Рб с таким именем уже существует');
-  }
+  if (idDuplicate.length) throw Error('РБ с заданным идентификатором уже существует');
 };
 
-const saveRB = (bosses, newboss, res) => {
-  const dataJSON = JSON.stringify(bosses);
-  try {
-    fs.writeFileSync('api/db/rb.json', dataJSON);
-    res.json(newboss);
-  } catch (e) {
-    return res.status(500).send(e);
-  }
-};
-
-const deleteRB = name => {
-  const bosses = getAllRB();
-  const BossToKeep = bosses.filter(boss => {
-    return boss.fullname !== name;
+// Проверяем существование рейдового босса с указанным fullname в переданном массиве
+const checkFullnameDuplicate = (array, fullname) => {
+  const fullnameDuplicate = array.filter(i => {
+    return i.fullname === fullname;
   });
-  return BossToKeep;
+  if (fullnameDuplicate.length) throw Error(`РБ с именем '${fullname}' уже существует`);
 };
+
 module.exports = router;

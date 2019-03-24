@@ -1,0 +1,329 @@
+{
+  "raidbosses": [
+    {
+      "fullname": "Varkas Chief Horus",
+      "shortname": "Horus",
+      "type": "regular",
+      "id": "1553373599",
+      "respawn_end": "1553508000",
+      "respawn_start": "1553472000",
+      "tod": "1553428800",
+      "drop": [
+        {
+          "id": "1553024009",
+          "fullname": "Arcana Mace",
+          "shortname": "AM",
+          "image": "/items/full/Arcana-Mace.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "blunt"
+        },
+        {
+          "id": "1553251597",
+          "fullname": "Arcana Mace Head",
+          "image": "/items/pieces/head.png",
+          "type": "pieces"
+        },
+        {
+          "id": "1553024011",
+          "fullname": "Basalt Battlehammer",
+          "shortname": "Basalt",
+          "image": "/items/full/Basalt-Battlehammer.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "blunt"
+        },
+        {
+          "id": "1553427269",
+          "fullname": "Basalt Battlehammer Head",
+          "type": "pieces",
+          "image": "/items/pieces/head.png"
+        },
+        {
+          "id": "1553024007",
+          "fullname": "Blessed Scroll: Enchant Weapon (Grade S)",
+          "shortname": "BEWS",
+          "image": "/items/consumables/bews.png",
+          "type": "сonsumables",
+          "grade": "S"
+        },
+        {
+          "id": "1553024014",
+          "fullname": "Dragon Hunter Axe",
+          "shortname": "DHA",
+          "image": "/items/full/Dragon-Hunter-Axe.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "blunt"
+        },
+        {
+          "id": "1553427014",
+          "fullname": "Dragon Hunter Axe Blade",
+          "type": "pieces",
+          "image": "/items/pieces/blade.png"
+        },
+        {
+          "id": "1553024017",
+          "fullname": "Imperial Staff",
+          "shortname": "IS",
+          "image": "/items/full/Imperial-Staff.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "blunt"
+        },
+        {
+          "id": "1553251556",
+          "fullname": "Imperial Staff Head",
+          "image": "/items/pieces/Imperial-Staff-Head.png",
+          "type": "pieces"
+        },
+        {
+          "id": "1553251512",
+          "fullname": "Scroll: Enchant Armor (Grade S)",
+          "image": "/items/consumables/eas.png",
+          "type": "сonsumables",
+          "grade": "S"
+        },
+        {
+          "id": "1553251515",
+          "fullname": "Scroll: Enchant Weapon (Grade S)",
+          "image": "/items/consumables/ews.png",
+          "type": "сonsumables",
+          "grade": "S"
+        },
+        {
+          "id": "1553426719",
+          "fullname": "Sealed Draconic Leather Helmet",
+          "type": "armor",
+          "shortname": "Drac Helmet",
+          "image": "/items/full/sealed-circlet.png",
+          "grade": "S",
+          "armorType": "helmet"
+        },
+        {
+          "id": "1553427542",
+          "fullname": "Sealed Draconic Leather Helmet Pattern",
+          "type": "pieces",
+          "image": "/items/pieces/brown-pouch.png"
+        },
+        {
+          "id": "1553426806",
+          "fullname": "Sealed Imperial Crusader Helmet",
+          "type": "armor",
+          "shortname": "IC Helmet",
+          "image": "/items/full/sealed-helmet.png",
+          "grade": "S",
+          "armorType": "helmet"
+        },
+        {
+          "id": "1553427499",
+          "fullname": "Sealed Imperial Crusader Helmet Pattern",
+          "type": "pieces",
+          "image": "/items/pieces/brown-pouch.png"
+        },
+        {
+          "id": "1553426899",
+          "fullname": "Sealed Imperial Crusader Shield",
+          "type": "armor",
+          "shortname": "IC Shield",
+          "image": "/items/full/shield-imperial-crusader-shield.png",
+          "grade": "S",
+          "armorType": "shield"
+        },
+        {
+          "id": "1553427411",
+          "fullname": "Sealed Imperial Crusader Shield Part",
+          "type": "pieces",
+          "image": "/items/pieces/chest.png"
+        },
+        {
+          "id": "1553426217",
+          "fullname": "Sealed Major Arcana Circlet",
+          "type": "armor",
+          "shortname": "MA Circlet",
+          "image": "/items/full/sealed-circlet.png",
+          "grade": "S",
+          "armorType": "helmet"
+        },
+        {
+          "id": "1553427580",
+          "fullname": "Sealed Major Arcana Circlet Pattern",
+          "type": "pieces",
+          "image": "/items/pieces/brown-pouch.png"
+        },
+        {
+          "id": "1553251053",
+          "fullname": "Soul Crystal с 12 на 13 уровни",
+          "shortname": "SA 12->13",
+          "type": "sa",
+          "image": "/items/full/Soul-Crystal.png"
+        }
+      ],
+      "min_respawn": "720",
+      "max_respawn": "1320",
+      "lvl": "87",
+      "hp": "1072875",
+      "p_atk": "17006",
+      "p_def": "5200",
+      "m_atk": "24162",
+      "m_def": "2112",
+      "soulCrystalEnchantConditions": "10% персональный шанс для каждого члена добивающей группы:",
+      "account": "qqqq"
+    },
+    {
+      "fullname": "3",
+      "shortname": "3",
+      "type": "regular",
+      "id": "1553373746",
+      "respawn_end": null,
+      "respawn_start": null,
+      "tod": null,
+      "drop": [
+        {
+          "id": "1553024019",
+          "fullname": "Sealed Major Arcana Robe",
+          "shortname": "MA robe",
+          "image": "/items/full/sealed-ma-robe.png",
+          "type": "armor",
+          "grade": "S",
+          "armorType": "fullbody"
+        },
+        {
+          "id": "15530240018",
+          "fullname": "Tallum Blade*Dark Legion's Edge",
+          "shortname": "S-duals",
+          "image": "/items/full/S-duals.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "dual"
+        }
+      ]
+    },
+    {
+      "fullname": "fsd",
+      "shortname": "fsd",
+      "type": "regular",
+      "id": "1553449497",
+      "respawn_end": null,
+      "respawn_start": null,
+      "tod": null,
+      "drop": [
+        {
+          "id": "1553024009",
+          "fullname": "Arcana Mace",
+          "shortname": "AM",
+          "image": "/items/full/Arcana-Mace.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "blunt"
+        },
+        {
+          "id": "1553024007",
+          "fullname": "Blessed Scroll: Enchant Weapon (Grade S)",
+          "shortname": "BEWS",
+          "image": "/items/consumables/bews.png",
+          "type": "сonsumables",
+          "grade": "S"
+        }
+      ]
+    },
+    {
+      "fullname": "gfd",
+      "shortname": "gdf",
+      "type": "regular",
+      "id": "1553449513",
+      "respawn_end": null,
+      "respawn_start": null,
+      "tod": null,
+      "drop": [
+        {
+          "id": "1553024009",
+          "fullname": "Arcana Mace",
+          "shortname": "AM",
+          "image": "/items/full/Arcana-Mace.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "blunt"
+        }
+      ]
+    },
+    {
+      "fullname": "gfdgf",
+      "shortname": "gdf",
+      "type": "regular",
+      "id": "1553449530",
+      "respawn_end": null,
+      "respawn_start": null,
+      "tod": null,
+      "drop": [
+        {
+          "id": "1553024009",
+          "fullname": "Arcana Mace",
+          "shortname": "AM",
+          "image": "/items/full/Arcana-Mace.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "blunt"
+        }
+      ]
+    },
+    {
+      "fullname": "treb",
+      "type": "regular",
+      "id": "1553449541",
+      "respawn_end": null,
+      "respawn_start": null,
+      "tod": null,
+      "drop": [
+        {
+          "id": "1553024012",
+          "fullname": "Demon Splinter",
+          "shortname": "DS",
+          "image": "/items/full/Demon-Splinter.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "fist"
+        }
+      ]
+    },
+    {
+      "fullname": "выаыв",
+      "shortname": "аывавы",
+      "type": "regular",
+      "id": "1553457523",
+      "respawn_end": null,
+      "respawn_start": null,
+      "tod": null,
+      "drop": [
+        {
+          "id": "1553024009",
+          "fullname": "Arcana Mace",
+          "shortname": "AM",
+          "image": "/items/full/Arcana-Mace.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "blunt"
+        }
+      ]
+    },
+    {
+      "fullname": "fdfsd",
+      "type": "regular",
+      "id": "1553457529",
+      "respawn_end": null,
+      "respawn_start": null,
+      "tod": null,
+      "drop": [
+        {
+          "id": "1553024010",
+          "fullname": "Angel Slayer",
+          "shortname": "AS",
+          "image": "/items/full/Angel-Slayer.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "dagger"
+        }
+      ]
+    }
+  ]
+}

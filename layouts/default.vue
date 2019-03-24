@@ -32,6 +32,9 @@
 .modal-card-title {
   width: 100%;
 }
+
+.mdi-my:before {
+}
 </style>
 
 

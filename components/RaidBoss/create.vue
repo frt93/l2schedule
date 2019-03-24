@@ -2,37 +2,34 @@
   <div class="modal-card">
     <header class="modal-card-head">
       <div class="modal-card-title">
-        <span>Изменить информацию о</span>
-        <span class="rb-fullname" @click="$emit('copy')">{{boss.fullname}}</span>
+        <span>Добавить нового РБ</span>
       </div>
     </header>
-    <edit :boss="boss" :action="'edit'" @back="$emit('back')" @update="update"></edit>
+    <create :boss="boss" :action="'create'" @create="create"></create>
   </div>
 </template>
 
 <script>
-import edit from "./form";
+import create from "./form";
 export default {
-  name: "editRaidBoss",
-  components: {
-    edit
-  },
+  name: "createRaidBoss",
+  components: { create },
   data() {
-    return {};
-  },
-  props: {
-    boss: {
-      type: Object,
-      required: true
-    }
+    return {
+      boss: {
+        id: null,
+        drop: [],
+        type: "regular"
+      }
+    };
   },
   methods: {
-    update(boss) {
+    create(boss) {
       this.$axios
-        .post(`/rb/${boss.id}/update`, boss)
-        .then(async res => {
-          await this.$store.dispatch("raidbosses/update", boss);
-          this.$emit("updated", boss);
+        .post("/rb/create", boss)
+        .then(res => {
+          this.$emit("created", boss);
+          this.$store.commit("raidbosses/add", boss);
           this.$snackbar.open({
             message: res.data,
             duration: 7000,
@@ -49,6 +46,14 @@ export default {
           });
         });
     }
+  },
+
+  computed: {
+    isEncahntSA() {
+      return this.isSA == true ? "Да, качаются" : "Нет";
+    }
   }
 };
 </script>
+
+
