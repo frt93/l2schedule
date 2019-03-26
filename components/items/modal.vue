@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="card">
     <viewItem
       v-if="action === 'view'"
       :item="item"

@@ -1,73 +1,69 @@
 <template>
-  <section class="modal-card-body modal-form">
-    <form class="items" method="POST">
-      <b-field label="Полное наименование предмета">
-        <b-input placeholder="Полное наименование предмета" v-model="fullname" required></b-input>
-      </b-field>
-      <b-field label="Сокращенное наименование предмета">
-        <b-input placeholder="Сокращенное наименование предмета" v-model="shortname" required></b-input>
-      </b-field>
-      <b-field label="Изображение предмета">
-        <b-input placeholder="Вставьте ссылку" v-model="image"></b-input>
-      </b-field>
-      <span @click="image='/items/pieces/'">Кусок,</span>
-      <span @click="image='/items/full/'">Целый</span>
-      <b-field label="Тип предмета">
-        <div class="block">
-          <b-radio v-model="type" native-value="weapon">Оружие</b-radio>
-          <b-radio v-model="type" native-value="armor">Броня</b-radio>
-          <b-radio v-model="type" native-value="jewelry">Бижутерия</b-radio>
-          <b-radio v-model="type" native-value="pieces">Куски</b-radio>
-          <b-radio v-model="type" native-value="сonsumables">Расходники</b-radio>
-          <b-radio v-model="type" native-value="sa">SA</b-radio>
-        </div>
-      </b-field>
+  <form class="items" method="POST">
+    <b-field label="Полное наименование предмета">
+      <b-input placeholder="Полное наименование предмета" v-model="fullname" required></b-input>
+    </b-field>
+    <b-field label="Сокращенное наименование предмета">
+      <b-input placeholder="Сокращенное наименование предмета" v-model="shortname" required></b-input>
+    </b-field>
+    <b-field label="Изображение предмета">
+      <b-input placeholder="Вставьте ссылку" v-model="image"></b-input>
+    </b-field>
+    <span @click="image='/items/pieces/'">Кусок,</span>
+    <span @click="image='/items/full/'">Целый</span>
+    <b-field label="Тип предмета">
+      <div class="block">
+        <b-radio v-model="type" native-value="weapon">Оружие</b-radio>
+        <b-radio v-model="type" native-value="armor">Броня</b-radio>
+        <b-radio v-model="type" native-value="jewelry">Бижутерия</b-radio>
+        <b-radio v-model="type" native-value="pieces">Куски</b-radio>
+        <b-radio v-model="type" native-value="сonsumables">Расходники</b-radio>
+        <b-radio v-model="type" native-value="sa">SA</b-radio>
+      </div>
+    </b-field>
 
-      <b-field label="Ранг предмета" v-if="type && type !=='pieces' && type !=='sa'">
-        <b-select placeholder="Выберите ранг" v-model="grade">
-          <option v-for="grade in grades" :key="grade.value" :value="grade.value">{{grade.name}}</option>
-        </b-select>
-      </b-field>
+    <b-field label="Ранг предмета" v-if="type && type !=='pieces' && type !=='sa'">
+      <b-select placeholder="Выберите ранг" v-model="grade">
+        <option v-for="grade in grades" :key="grade.value" :value="grade.value">{{grade.name}}</option>
+      </b-select>
+    </b-field>
 
-      <b-field label="Тип оружия" v-if="type && type === 'weapon'">
-        <b-select placeholder="Выберите тип" v-model="weaponType">
-          <option v-for="type in weaponTypes" :key="type.value" :value="type.value">{{type.name}}</option>
-        </b-select>
-      </b-field>
+    <b-field label="Тип оружия" v-if="type && type === 'weapon'">
+      <b-select placeholder="Выберите тип" v-model="weaponType">
+        <option v-for="type in weaponTypes" :key="type.value" :value="type.value">{{type.name}}</option>
+      </b-select>
+    </b-field>
 
-      <b-field label="Тип брони" v-if="type && type === 'armor'">
-        <b-select placeholder="Выберите тип" v-model="armorType">
-          <option v-for="type in armorTypes" :key="type.value" :value="type.value">{{type.name}}</option>
-        </b-select>
-      </b-field>
+    <b-field label="Тип брони" v-if="type && type === 'armor'">
+      <b-select placeholder="Выберите тип" v-model="armorType">
+        <option v-for="type in armorTypes" :key="type.value" :value="type.value">{{type.name}}</option>
+      </b-select>
+    </b-field>
 
-      <b-field label="Тип бижутерии" v-if="type && type === 'jewelry'">
-        <b-select placeholder="Выберите тип" v-model="jewelryType">
-          <option v-for="type in jewelryTypes" :key="type.value" :value="type.value">{{type.name}}</option>
-        </b-select>
-      </b-field>
-    </form>
-    <footer class="modal-card-foot">
-      <button
-        v-if="action === 'update'"
-        class="button is-danger"
-        type="button"
-        @click="$emit('back', $event)"
-      >Назад</button>
-      <button
-        v-if="action ==='update'"
-        class="button is-success"
-        type="button"
-        @click="$emit('update', composeItemData())"
-      >Сохранить</button>
-      <button
-        v-if="action ==='create'"
-        class="button is-success"
-        type="button"
-        @click="$emit('create', composeItemData())"
-      >Создать</button>
-    </footer>
-  </section>
+    <b-field label="Тип бижутерии" v-if="type && type === 'jewelry'">
+      <b-select placeholder="Выберите тип" v-model="jewelryType">
+        <option v-for="type in jewelryTypes" :key="type.value" :value="type.value">{{type.name}}</option>
+      </b-select>
+    </b-field>
+    <button
+      v-if="action === 'update'"
+      class="button is-danger"
+      type="button"
+      @click="$emit('back', $event)"
+    >Назад</button>
+    <button
+      v-if="action ==='update'"
+      class="button is-success"
+      type="button"
+      @click="$emit('update', composeItemData())"
+    >Сохранить</button>
+    <button
+      v-if="action ==='create'"
+      class="button is-success"
+      type="button"
+      @click="$emit('create', composeItemData())"
+    >Создать</button>
+  </form>
 </template>
 
 <script>
@@ -154,17 +150,5 @@ export default {
 <style>
 .modal-form {
   padding: 0;
-}
-
-form.items {
-  padding: 20px;
-}
-
-.form-stats input {
-  margin-bottom: 10px;
-}
-
-.datepicker-tooltip {
-  width: 100%;
 }
 </style>

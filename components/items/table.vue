@@ -17,9 +17,9 @@
       <template slot-scope="props">
         <b-table-column field="fullname" label="Наименование" sortable>
           <template v-if="showDetailIcon">
-            <img :src="props.row.image" alt>
+            <img :src="props.row.image" :alt="props.row.fullname" class="item-image">
             <span
-              class="account"
+              class="item-name"
               @click="$emit('copy',`Наименование ${props.row.fullname} скопировано`, props.row.fullname)"
             >
               <b-tooltip
@@ -83,3 +83,14 @@ export default {
   }
 };
 </script>
+<style>
+.item-image,
+.item-name {
+  float: left;
+}
+.item-name {
+  padding-left: 5px;
+  line-height: 32px;
+  cursor: pointer;
+}
+</style>

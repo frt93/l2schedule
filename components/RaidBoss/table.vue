@@ -21,7 +21,9 @@
 
         <b-table-column field="lvl" label="Уровень" sortable>{{ props.row.lvl }}</b-table-column>
         <b-table-column field="id" label="Аккаунт палилки">
+          <span class="subtitle-child" v-if="!props.row.account">Нет палилки</span>
           <span
+            v-else
             class="account"
             @click="$emit('copy',`Логин аккаунта ${props.row.account} с палилкой скопирован`, props.row.account)"
           >
@@ -112,12 +114,7 @@ export default {
 </script>
 
 <style>
-.rb-fullname,
-.account {
-  cursor: pointer;
-}
-
-span.account {
+table .account {
   border-bottom: 1px dashed #b5b5b5;
 }
 

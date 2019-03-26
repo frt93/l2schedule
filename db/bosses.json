@@ -5,9 +5,9 @@
       "shortname": "Horus",
       "type": "regular",
       "id": "1553373599",
-      "respawn_end": "1553508000",
-      "respawn_start": "1553472000",
-      "tod": "1553428800",
+      "respawn_end": "1553625540",
+      "respawn_start": "1553589540",
+      "tod": "1553546340",
       "drop": [
         {
           "id": "1553024009",
@@ -167,7 +167,7 @@
       "p_def": "5200",
       "m_atk": "24162",
       "m_def": "2112",
-      "soulCrystalEnchantConditions": "10% персональный шанс для каждого члена добивающей группы:",
+      "soulCrystalEnchantConditions": "Персональный шанс в 10% для каждого члена добивающей группы",
       "account": "qqqq"
     },
     {
@@ -175,9 +175,9 @@
       "shortname": "3",
       "type": "regular",
       "id": "1553373746",
-      "respawn_end": null,
-      "respawn_start": null,
-      "tod": null,
+      "respawn_end": "1553569920",
+      "respawn_start": "1553533920",
+      "tod": "1553490720",
       "drop": [
         {
           "id": "1553024019",
@@ -197,16 +197,18 @@
           "grade": "S",
           "weaponType": "dual"
         }
-      ]
+      ],
+      "min_respawn": "720",
+      "max_respawn": "1320"
     },
     {
       "fullname": "fsd",
       "shortname": "fsd",
       "type": "regular",
       "id": "1553449497",
-      "respawn_end": null,
-      "respawn_start": null,
-      "tod": null,
+      "respawn_end": "1553698800",
+      "respawn_start": "1553662800",
+      "tod": "1553619600",
       "drop": [
         {
           "id": "1553024009",
@@ -225,16 +227,18 @@
           "type": "сonsumables",
           "grade": "S"
         }
-      ]
+      ],
+      "min_respawn": "720",
+      "max_respawn": "1320"
     },
     {
       "fullname": "gfd",
       "shortname": "gdf",
       "type": "regular",
       "id": "1553449513",
-      "respawn_end": null,
-      "respawn_start": null,
-      "tod": null,
+      "respawn_end": "1553644800",
+      "respawn_start": "1553608800",
+      "tod": "1553565600",
       "drop": [
         {
           "id": "1553024009",
@@ -245,16 +249,18 @@
           "grade": "S",
           "weaponType": "blunt"
         }
-      ]
+      ],
+      "min_respawn": "720",
+      "max_respawn": "1320"
     },
     {
       "fullname": "gfdgf",
       "shortname": "gdf",
       "type": "regular",
       "id": "1553449530",
-      "respawn_end": null,
-      "respawn_start": null,
-      "tod": null,
+      "respawn_end": "1553702400",
+      "respawn_start": "1553666400",
+      "tod": "1553623200",
       "drop": [
         {
           "id": "1553024009",
@@ -265,15 +271,17 @@
           "grade": "S",
           "weaponType": "blunt"
         }
-      ]
+      ],
+      "min_respawn": "720",
+      "max_respawn": "1320"
     },
     {
       "fullname": "treb",
       "type": "regular",
       "id": "1553449541",
-      "respawn_end": null,
-      "respawn_start": null,
-      "tod": null,
+      "respawn_end": "1546304400",
+      "respawn_start": "1546304400",
+      "tod": "1546304400",
       "drop": [
         {
           "id": "1553024012",
@@ -284,7 +292,8 @@
           "grade": "S",
           "weaponType": "fist"
         }
-      ]
+      ],
+      "shortname": "gfdgfd"
     },
     {
       "fullname": "выаыв",
@@ -307,12 +316,12 @@
       ]
     },
     {
-      "fullname": "fdfsd",
+      "fullname": "wer",
       "type": "regular",
       "id": "1553457529",
-      "respawn_end": null,
-      "respawn_start": null,
-      "tod": null,
+      "respawn_end": "1553641200",
+      "respawn_start": "1553605200",
+      "tod": "1553562000",
       "drop": [
         {
           "id": "1553024010",
@@ -322,6 +331,30 @@
           "type": "weapon",
           "grade": "S",
           "weaponType": "dagger"
+        }
+      ],
+      "min_respawn": "720",
+      "max_respawn": "1320",
+      "shortname": "wer"
+    },
+    {
+      "fullname": "222",
+      "shortname": "222",
+      "type": "regular",
+      "id": "1553607399",
+      "respawn_end": null,
+      "respawn_start": null,
+      "tod": null,
+      "lvl": "23",
+      "drop": [
+        {
+          "id": "1553024012",
+          "fullname": "Demon Splinter",
+          "shortname": "DS",
+          "image": "/items/full/Demon-Splinter.png",
+          "type": "weapon",
+          "grade": "S",
+          "weaponType": "fist"
         }
       ]
     }

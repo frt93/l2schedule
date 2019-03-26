@@ -1,5 +1,6 @@
-export default ({ app }, inject) => {
-  inject('defineGMT', (time, isSetTimeToMoscow) => {
+export default ({ app, store }, inject) => {
+  inject('defineGMT', (time, isMsk) => {
+    const isSetTimeToMoscow = isMsk ? isMsk : store.getters['datetime/isSetTimeToMoscow'];
     if (isSetTimeToMoscow) {
       return app.$moment.unix(time).utcOffset(3);
     } else {
@@ -7,34 +8,36 @@ export default ({ app }, inject) => {
     }
   });
 
-  inject('timeRange', (date1, date2, isMsc) => {
+  inject('todMessage', tod => {
+    const todTime = app.$defineGMT(tod).format('D.MM.YYYY в HH:mm');
+    const isSetTimeToMoscow = store.getters['datetime/isSetTimeToMoscow'];
+    const response = isSetTimeToMoscow ? `${todTime} по МСК (GMT +3)` : `${todTime}`;
+    return response;
+  });
+
+  inject('respawnWindowMessage', (date1, date2) => {
+    const isSetTimeToMoscow = store.getters['datetime/isSetTimeToMoscow'];
     //Проверяем две даты на совпадение дня, месяца и года
     const isSameDMY =
-      app.$defineGMT(date1, isMsc).format('DD.MM.YYYY') ===
-      app.$defineGMT(date2, isMsc).format('DD.MM.YYYY');
+      app.$defineGMT(date1).format('DD.MM.YYYY') === app.$defineGMT(date2).format('DD.MM.YYYY');
 
     //Если выбран московский часовой пояс - сформируем сноску (показывается рядом с временным промежутком) об этом
-    let msc;
-    if (isMsc) {
-      msc = ' по МСК (GMT +3)';
-    } else {
-      msc = '';
-    }
+    const msc = isSetTimeToMoscow ? ' по МСК (GMT +3)' : '';
 
     // Формируем текст ответа. Если дата начала и конца временного промежутка находится в
     // пределах одного дня - ответ будет вида DD.MM.YYYY с HH::mm по HH::mm.
     // В противном случае - с DD.MM.YYYY, HH::mm по DD.MM.YYYY, HH::mm
     let response;
     if (date1 === date2) {
-      response = `${app.$defineGMT(date1, isMsc).format('DD.MM.YYYY ровно в HH:mm') + msc}`;
+      response = `${app.$defineGMT(date1).format('DD.MM.YYYY ровно в HH:mm') + msc}`;
     } else if (!isSameDMY) {
-      response = `с ${app.$defineGMT(date1, isMsc).format('DD.MM.YYYY, HH:mm')} по ${app
-        .$defineGMT(date2, isMsc)
+      response = `с ${app.$defineGMT(date1).format('DD.MM.YYYY, HH:mm')} по ${app
+        .$defineGMT(date2)
         .format('D.MM.YYYY, HH:mm') + msc}`;
     } else {
-      response = `${app.$defineGMT(date1, isMsc).format('DD.MM.YYYY')} c ${app
-        .$defineGMT(date1, isMsc)
-        .format('HH:mm')} по ${app.$defineGMT(date2, isMsc).format('HH:mm') + msc}`;
+      response = `${app.$defineGMT(date1).format('DD.MM.YYYY')} c ${app
+        .$defineGMT(date1)
+        .format('HH:mm')} по ${app.$defineGMT(date2).format('HH:mm') + msc}`;
     }
     return response;
   });
@@ -58,17 +61,17 @@ export default ({ app }, inject) => {
 
     // Определим кол-во минут, получив остаток от деления переменной diff на 60
     // (в результате целое число будет кол-вом часов, а значение после запятой - кол-вом минут, которое и запишется в переменную)
-    const minutes = diff % 60;
+    let minutes = diff % 60;
 
     // Далее отнимаем от переменной diff полученные выше минуты.
     // Затем делим это на 60 и получаем остаток от деления на 24
     // (т.е. получим кол-во дней целым числом и кол-во целых часов после запятой, которое и запишем в переменную)
-    const hours = ((diff - minutes) / 60) % 24;
+    let hours = ((diff - minutes) / 60) % 24;
 
     // Ну и наконец от переменной diff отнимаем полученное выше кол-во целых часов
     // (параллельно умножая их на 60, т.к. значение переменной diff в минутах) и кол-во минут.
     // И, наконец, делим все это на 1440 (кол-во минут в сутках) получая целое кол-во дней между событием b и a
-    const days = (diff - hours * 60 - minutes) / 1440;
+    let days = (diff - hours * 60 - minutes) / 1440;
 
     let minutesEndings;
     if (now < end) minutesEndings = ['минута', 'минуты', 'минут'];
@@ -91,16 +94,27 @@ export default ({ app }, inject) => {
     const dayEnding =
       daysEndings[days % 100 > 4 && days % 100 < 20 ? 2 : cases[days % 10 < 5 ? days % 10 : 5]];
 
+    //Переобпределим переменные прибавив к числовому значению словесное определение временного промежутка
+    const minutesWithEnding = minutes !== 0 ? `${minutes} ${minuteEnding}` : ``;
+    const hoursWithEnding = hours !== 0 ? `${hours} ${hourEnding}` : ``;
+    const daysWithEnding = days !== 0 ? `${days} ${dayEnding}` : ``;
+
     let result;
-    if (diff > 1439) {
-      result = `${days} ${dayEnding} ${hours} ${hourEnding} ${minutes} ${minuteEnding}`;
-    } else if (diff > 59) {
-      result = `${hours} ${hourEnding} ${minutes} ${minuteEnding}`;
-    } else if (diff === 0) {
-      if (now < end) result = `меньше минуты`; // До конца респа меньше минуты
-    } else {
-      result = `${minutes} ${minuteEnding}`;
+    switch (true) {
+      case diff > 1439: // Если разница дат сутки и более
+        result = `${daysWithEnding} ${minutesWithEnding}`;
+        break;
+      case diff > 59: //Если разница дат 1 час и более
+        result = `${hoursWithEnding} ${minutesWithEnding}`;
+        break;
+      case diff === 0: // Если разница дат составляет менее минуты
+        result = `меньше минуты`;
+        break;
+      case diff < 60: // Если разница дат меньше 60 минут
+        result = `${minutesWithEnding}`;
+        break;
     }
+
     let response;
     if (now > start && now < end) {
       response = `До макс. респа ${result}`;

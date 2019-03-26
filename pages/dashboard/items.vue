@@ -7,11 +7,11 @@
       class="button is-success"
       @click="isModalActive = true; modalAction = 'create'"
     >Добавить предмет</a>
-    <b-modal :active.sync="isModalActive">
+    <b-modal :active.sync="isModalActive" :width="640" scroll="clip" :canCancel="['x', 'outside']">
       <modal :initialAction="modalAction" :data="item" @copy="copy"></modal>
     </b-modal>
 
-    <itemsTable @remove="remove" @update="update"></itemsTable>
+    <itemsTable @remove="remove" @update="update" @copy="copy"></itemsTable>
     <remove :item="item" v-if="isRemove" @removed="isRemove = false"></remove>
   </div>
 </template>

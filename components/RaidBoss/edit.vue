@@ -1,12 +1,16 @@
 <template>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <div class="modal-card-title">
-        <span>Изменить информацию о</span>
-        <span class="rb-fullname" @click="$emit('copy')">{{boss.fullname}}</span>
+  <div class="card-content">
+    <div class="media">
+      <div class="media-content">
+        <p class="title is-4">
+          <span>Изменить информацию о</span>
+          <span class="rb-fullname" @click="$emit('copy')">{{boss.fullname}}</span>
+        </p>
       </div>
-    </header>
-    <edit :boss="boss" :action="'edit'" @back="$emit('back')" @update="update"></edit>
+    </div>
+    <div class="content">
+      <edit :boss="boss" :action="'edit'" @back="$emit('back')" @update="update"></edit>
+    </div>
   </div>
 </template>
 

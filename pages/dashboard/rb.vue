@@ -4,7 +4,7 @@
     <n-link to="/dashboard/">ПУ</n-link>
     <n-link to="/dashboard/items">Предметы</n-link>
     <a class="button is-success" @click="isModalActive = true; modalAction = 'create'">Добавить рб</a>
-    <b-modal :active.sync="isModalActive">
+    <b-modal :active.sync="isModalActive" :width="640" scroll="clip" :canCancel="['x', 'outside']">
       <modal :initialAction="modalAction"></modal>
     </b-modal>
 
@@ -25,7 +25,6 @@ export default {
       isModalActive: false
     };
   },
-
   async fetch({ store, params }) {
     await store.dispatch("raidbosses/fetch");
   }

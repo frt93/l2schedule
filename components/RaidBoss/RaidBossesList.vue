@@ -3,7 +3,7 @@
     <div class="container">
       <component
         :data="raidBosses"
-        :timeleftToRespawn.sync="timeleftToRespawn"
+        :timeleftToRespawn="timeleftToRespawn"
         @update="update"
         @copy="copy"
         @remove="remove"
@@ -12,8 +12,13 @@
       ></component>
     </div>
 
-    <b-modal :active.sync="isModalActive">
-      <modal :data="raidBossToManage" :initialAction="modalAction" @copy="copy"></modal>
+    <b-modal :active.sync="isModalActive" :width="640" scroll="clip" :canCancel="['x', 'outside']">
+      <modal
+        :data="raidBossToManage"
+        :initialAction="modalAction"
+        :timeleftToRespawn="timeleftToRespawn"
+        @copy="copy"
+      ></modal>
     </b-modal>
     <remove :boss="raidBossToManage" v-if="isRemove" @removed="isRemove=false"></remove>
   </section>
@@ -43,7 +48,8 @@ export default {
       isModalActive: false,
       modalAction: null,
       raidBossToManage: null,
-      isRemove: false
+      isRemove: false,
+      mmodal: modal
     };
   },
   props: {
@@ -55,10 +61,6 @@ export default {
     ...mapGetters({ raidBosses: "raidbosses/getAll" })
   },
   methods: {
-    sortDrop() {
-      const bosses = this.raidBosses;
-      // console.log(bosses);
-    },
     view(boss) {
       this.isModalActive = true;
       this.modalAction = "view";
@@ -119,14 +121,18 @@ export default {
           queue: false
         });
       } catch (e) {
-        console.error(e);
+        this.$toast.open({
+          message: e,
+          type: "is-danger",
+          duration: 3000,
+          queue: false
+        });
       }
     }
   },
 
   created() {
     this.calculateTimeleft();
-    this.sortDrop();
   },
   watch: {
     raidBosses() {
@@ -142,15 +148,19 @@ export default {
 </script>
 
 <style>
-.subtitle {
-  font-size: 0.85rem;
-  color: gray;
+.content {
+  font-size: 14px;
 }
 
 .rb-fullname,
-article.tile {
+.account {
   cursor: pointer;
 }
+
+.account:before {
+  content: "@";
+}
+
 @media screen and (min-width: 600px) and (max-width: 960px) {
   .tile.is-ancestor {
     grid-template-columns: repeat(2, 1fr);
@@ -191,15 +201,6 @@ article.tile {
     grid-template-columns: repeat(8, 1fr);
     display: grid !important;
   }
-}
-.image.level {
-  align-items: center;
-  display: flex;
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 0;
-  justify-content: center;
-  font-size: 20px;
 }
 </style>
 

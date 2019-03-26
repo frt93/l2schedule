@@ -1,11 +1,13 @@
 <template>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <div class="modal-card-title">
-        <span>Добавить новый предмет</span>
+  <div class="card-content">
+    <div class="media">
+      <div class="media-content">
+        <p class="title is-4">Добавить новый предмет</p>
       </div>
-    </header>
-    <create :item="item" :action="'create'" @create="create"></create>
+    </div>
+    <div class="content">
+      <create :item="item" :action="'create'" @create="create"></create>
+    </div>
   </div>
 </template>
 <script>

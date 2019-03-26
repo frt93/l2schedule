@@ -1,10 +1,16 @@
 export const state = () => ({
   allRaidBosses: [],
+  inWindow: [],
+  inResp: [],
+  lostResp: [],
 });
 
 export const mutations = {
   SET_RAIDBOSS_LIST(state, data) {
-    state.allRaidBosses = data;
+    state.allRaidBosses = data.all;
+    state.inWindow = data.inWindow;
+    state.inResp = data.inResp;
+    state.lostResp = data.lostResp;
   },
   update(state, payload) {
     state.allRaidBosses = payload;
@@ -25,7 +31,8 @@ export const mutations = {
 export const actions = {
   async fetch({ commit }) {
     const { data } = await this.$axios.get('/rb/all');
-    commit('SET_RAIDBOSS_LIST', data);
+    const sort = this.$sortByMaxResp(data);
+    commit('SET_RAIDBOSS_LIST', sort);
   },
 
   update({ commit, state }, boss) {

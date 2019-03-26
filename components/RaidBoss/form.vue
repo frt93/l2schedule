@@ -1,167 +1,157 @@
 <template>
-  <section class="modal-card-body modal-form">
-    <form class="raidboss" method="POST">
-      <b-field label="Полное имя рб">
-        <b-input placeholder="Полное имя рб" v-model="fullname" required></b-input>
-      </b-field>
-      <b-field label="Короткое имя рб">
-        <b-input placeholder="Короткое имя рб" v-model="shortname" required></b-input>
-      </b-field>
-      <b-field label="Аккаунт палилки" v-if="action === 'edit'">
-        <b-input placeholder="Аккаунт с палилкой на рб" v-model="account"></b-input>
-      </b-field>
-      <b-field label="Время смерти (ПО ВАШЕМУ ЧАСОВОМУ ПОЯСУ!)" v-if="action === 'edit'">
-        <b-tooltip
-          class="datepicker-tooltip"
-          :label="datepickerTooltipLabel"
-          position="is-bottom"
-          type="is-dark"
-          multilined
-          animated
-          size="is-large"
-        >
-          <date-picker
-            v-model="tod"
-            lang="ru"
-            type="datetime"
-            format="DD.MM.YYYY [в] HH:mm"
-            confirm
-          ></date-picker>
+  <form class="raidboss" method="POST">
+    <b-field label="Полное имя рб">
+      <b-input placeholder="Полное имя рб" v-model="fullname" required></b-input>
+    </b-field>
+    <b-field label="Короткое имя рб">
+      <b-input placeholder="Короткое имя рб" v-model="shortname" required></b-input>
+    </b-field>
+    <b-field label="Аккаунт палилки" v-if="action === 'edit'">
+      <b-input placeholder="Аккаунт с палилкой на рб" v-model="account"></b-input>
+    </b-field>
+    <b-field label="Время смерти (ПО ВАШЕМУ ЧАСОВОМУ ПОЯСУ!)" v-if="action === 'edit'">
+      <b-tooltip
+        class="datepicker-tooltip"
+        :label="datepickerTooltipLabel"
+        position="is-bottom"
+        type="is-dark"
+        multilined
+        animated
+        size="is-large"
+      >
+        <date-picker v-model="tod" lang="ru" type="datetime" format="DD.MM.YYYY [в] HH:mm"></date-picker>
+      </b-tooltip>
+    </b-field>
+    <span @click="tod = $moment().subtract(1, 'minute')">минуту назад,</span>
+    <span @click="tod = $moment().subtract(5, 'minute')">5 минут назад</span>
+    <b-field label="Минимальное время респа">
+      <b-input
+        type="number"
+        placeholder="Укажите время в МИНУТАХ(!)"
+        v-model="min_respawn"
+        required
+      ></b-input>
+    </b-field>
+    <b-field label="Максимальное время респа">
+      <b-input
+        type="number"
+        placeholder="Укажите время в МИНУТАХ(!)"
+        v-model="max_respawn"
+        required
+      ></b-input>
+    </b-field>
+    <b-field label="Статы"></b-field>
+    <b-field>
+      <div class="form-stats">
+        <b-tooltip label="Уровень рб" position="is-bottom" type="is-dark" animated>
+          <b-input required type="number" placeholder="Уровень РБ" v-model="lvl"></b-input>
         </b-tooltip>
-      </b-field>
-      <span @click="tod = $moment().subtract(1, 'minute')">минуту назад,</span>
-      <span @click="tod = $moment().subtract(5, 'minute')">5 минут назад</span>
-      <b-field label="Минимальное время респа">
-        <b-input
-          type="number"
-          placeholder="Укажите время в МИНУТАХ(!)"
-          v-model="min_respawn"
-          required
-        ></b-input>
-      </b-field>
-      <b-field label="Максимальное время респа">
-        <b-input
-          type="number"
-          placeholder="Укажите время в МИНУТАХ(!)"
-          v-model="max_respawn"
-          required
-        ></b-input>
-      </b-field>
-      <b-field label="Статы"></b-field>
-      <b-field>
-        <div class="form-stats">
-          <b-tooltip label="Уровень рб" position="is-bottom" type="is-dark" animated>
-            <b-input required type="number" placeholder="Уровень РБ" v-model="lvl"></b-input>
-          </b-tooltip>
-          <b-tooltip label="Физ. Атака" position="is-bottom" type="is-dark" animated>
-            <b-input required type="number" placeholder="P.Atk" v-model="p_atk"></b-input>
-          </b-tooltip>
-          <b-tooltip label="Физ. Защита" position="is-bottom" type="is-dark" animated>
-            <b-input required type="number" placeholder="P.Def" v-model="p_def"></b-input>
-          </b-tooltip>
-          <b-tooltip label="Маг. Атака" position="is-bottom" type="is-dark" animated>
-            <b-input required type="number" placeholder="M.Atk" v-model="m_atk"></b-input>
-          </b-tooltip>
-          <b-tooltip label="Маг. Защита" position="is-bottom" type="is-dark" animated>
-            <b-input required type="number" placeholder="M.Def" v-model="m_def"></b-input>
-          </b-tooltip>
-          <b-tooltip label="Кол-во ХП у рб" position="is-bottom" type="is-dark" animated>
-            <b-input required type="number" placeholder="HP" v-model="hp"></b-input>
-          </b-tooltip>
-        </div>
-      </b-field>
-      <b-field label="Дроп цельных вещей">
-        <b-taginput
-          name="items"
-          v-model="fulldrop"
-          :data="filteredFulldrop"
-          autocomplete
-          field="fullname"
-          type="is-dark"
-          placeholder="Добавить цельный дроп"
-          @typing="getFilteredFullDrop"
-        >
-          <template slot-scope="props">
-            <img class="drop-image" :src="`${props.option.image}`">
-            <div class="drop-item-name">{{props.option.fullname}}</div>
-          </template>
-          <template slot="empty">Нет шмота с таким наименованием</template>
-        </b-taginput>
-      </b-field>
-      <b-field label="Дроп кусков или расходников">
-        <b-taginput
-          name="piecesAndConsumables"
-          v-model="piecesAndConsumables"
-          :data="filteredPiecesAndConsumables"
-          autocomplete
-          field="fullname"
-          type="is-dark"
-          placeholder="Добавить куски или расходники"
-          @typing="getFilteredPiecesAndConsumables"
-        >
-          <template slot-scope="props">
-            <img class="drop-image" :src="`${props.option.image}`">
-            <div class="drop-item-name">{{props.option.fullname}}</div>
-          </template>
-          <template slot="empty">Нет кусков или расходников с таким наименованием</template>
-        </b-taginput>
-      </b-field>
-      <b-field label="Soul Crystals качаются?">
-        <b-checkbox v-model="isSA" type="is-success">{{ isEncahntSA }}</b-checkbox>
-      </b-field>
-      <b-field>
-        <b-taginput
-          v-if="isSA"
-          name="SA"
-          v-model="soulCrystals"
-          :data="filteredSoulCrystals"
-          autocomplete
-          field="fullname"
-          type="is-dark"
-          placeholder="Добавить SA"
-          @typing="getFilteredSoulCrystals"
-        >
-          <template slot-scope="props">
-            <img class="drop-image" :src="`${props.option.image}`">
-            <div class="drop-item-name">{{props.option.fullname}}</div>
-          </template>
-          <template slot="empty">Такого рода прокачки СА нет</template>
-        </b-taginput>
-      </b-field>
-      <b-field v-if="isSA">
-        <b-input
-          type="text"
-          placeholder="Условия прокачки Soul Crystals"
-          v-model="soulCrystalEnchantConditions"
-        ></b-input>
-      </b-field>
-      <b-field label="Тип рб"></b-field>
-      <b-field>
-        <b-radio v-model="type" native-value="regular" type="is-dark">Обычный</b-radio>
-        <b-radio v-model="type" native-value="epic" type="is-danger">Эпик</b-radio>
-      </b-field>
-    </form>
-    <footer class="modal-card-foot">
-      <button
-        v-if="action === 'edit'"
-        class="button is-danger"
-        type="button"
-        @click="$emit('back', $event)"
-      >Назад</button>
-      <button
-        v-if="action ==='edit'"
-        class="button is-success"
-        type="button"
-        @click="$emit('update', composeBossData())"
-      >Сохранить</button>
-      <button
-        v-if="action ==='create'"
-        class="button is-success"
-        type="button"
-        @click="$emit('create', composeBossData())"
-      >Создать</button>
-    </footer>
-  </section>
+        <b-tooltip label="Физ. Атака" position="is-bottom" type="is-dark" animated>
+          <b-input required type="number" placeholder="P.Atk" v-model="p_atk"></b-input>
+        </b-tooltip>
+        <b-tooltip label="Физ. Защита" position="is-bottom" type="is-dark" animated>
+          <b-input required type="number" placeholder="P.Def" v-model="p_def"></b-input>
+        </b-tooltip>
+        <b-tooltip label="Маг. Атака" position="is-bottom" type="is-dark" animated>
+          <b-input required type="number" placeholder="M.Atk" v-model="m_atk"></b-input>
+        </b-tooltip>
+        <b-tooltip label="Маг. Защита" position="is-bottom" type="is-dark" animated>
+          <b-input required type="number" placeholder="M.Def" v-model="m_def"></b-input>
+        </b-tooltip>
+        <b-tooltip label="Кол-во ХП у рб" position="is-bottom" type="is-dark" animated>
+          <b-input required type="number" placeholder="HP" v-model="hp"></b-input>
+        </b-tooltip>
+      </div>
+    </b-field>
+    <b-field label="Дроп цельных вещей">
+      <b-taginput
+        name="items"
+        v-model="fulldrop"
+        :data="filteredFulldrop"
+        autocomplete
+        field="fullname"
+        type="is-dark"
+        placeholder="Добавить цельный дроп"
+        @typing="getFilteredFullDrop"
+      >
+        <template slot-scope="props">
+          <img class="drop-image" :src="`${props.option.image}`">
+          <div class="drop-item-name">{{props.option.fullname}}</div>
+        </template>
+        <template slot="empty">Нет шмота с таким наименованием</template>
+      </b-taginput>
+    </b-field>
+    <b-field label="Дроп кусков или расходников">
+      <b-taginput
+        name="piecesAndConsumables"
+        v-model="piecesAndConsumables"
+        :data="filteredPiecesAndConsumables"
+        autocomplete
+        field="fullname"
+        type="is-dark"
+        placeholder="Добавить куски или расходники"
+        @typing="getFilteredPiecesAndConsumables"
+      >
+        <template slot-scope="props">
+          <img class="drop-image" :src="`${props.option.image}`">
+          <div class="drop-item-name">{{props.option.fullname}}</div>
+        </template>
+        <template slot="empty">Нет кусков или расходников с таким наименованием</template>
+      </b-taginput>
+    </b-field>
+    <b-field label="Soul Crystals качаются?">
+      <b-checkbox v-model="isSA" type="is-success">{{ isEncahntSA }}</b-checkbox>
+    </b-field>
+    <b-field>
+      <b-taginput
+        v-if="isSA"
+        name="SA"
+        v-model="soulCrystals"
+        :data="filteredSoulCrystals"
+        autocomplete
+        field="fullname"
+        type="is-dark"
+        placeholder="Добавить SA"
+        @typing="getFilteredSoulCrystals"
+      >
+        <template slot-scope="props">
+          <img class="drop-image" :src="`${props.option.image}`">
+          <div class="drop-item-name">{{props.option.fullname}}</div>
+        </template>
+        <template slot="empty">Такого рода прокачки СА нет</template>
+      </b-taginput>
+    </b-field>
+    <b-field v-if="isSA">
+      <b-input
+        type="text"
+        placeholder="Условия прокачки Soul Crystals"
+        v-model="soulCrystalEnchantConditions"
+      ></b-input>
+    </b-field>
+    <b-field label="Тип рб"></b-field>
+    <b-field>
+      <b-radio v-model="type" native-value="regular" type="is-dark">Обычный</b-radio>
+      <b-radio v-model="type" native-value="epic" type="is-danger">Эпик</b-radio>
+    </b-field>
+    <button
+      v-if="action === 'edit'"
+      class="button is-danger"
+      type="button"
+      @click="$emit('back', $event)"
+    >Назад</button>
+    <button
+      v-if="action ==='edit'"
+      class="button is-success"
+      type="button"
+      @click="$emit('update', composeBossData())"
+    >Сохранить</button>
+    <button
+      v-if="action ==='create'"
+      class="button is-success"
+      type="button"
+      @click="$emit('create', composeBossData())"
+    >Создать</button>
+  </form>
 </template>
 
 <script>
@@ -324,7 +314,7 @@ export default {
         });
       }
 
-      if (this.soulCrystals.length) {
+      if (this.soulCrystals.length && this.isSA) {
         this.soulCrystals.filter(i => {
           return boss.drop.push(i);
         });
@@ -372,15 +362,36 @@ export default {
   padding: 0;
 }
 
-form.raidboss {
-  padding: 20px;
-}
-
 .form-stats input {
   margin-bottom: 10px;
 }
 
 .datepicker-tooltip {
   width: 100%;
+}
+
+.drop-image {
+  float: left;
+}
+.drop-item-name {
+  line-height: 32px;
+  float: left;
+  padding-left: 10px;
+}
+.dropdown-item {
+  padding-right: 0 !important;
+}
+
+.mx-time-list {
+  width: 50% !important;
+  margin: 0 !important;
+}
+
+.mx-datepicker {
+  width: 100% !important;
+}
+
+.mx-datepicker .mx-panel.mx-panel-time ul:nth-child(3) {
+  display: none !important;
 }
 </style>

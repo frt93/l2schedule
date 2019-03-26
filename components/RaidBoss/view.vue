@@ -1,18 +1,29 @@
 <template>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <div class="modal-card-title">
-        <span class="rb-fullname" @click="$emit('copyFullname')">{{boss.fullname}}</span>
-      </div>
-    </header>
-    <section class="modal-card-body">
-      <b-field label="Аккаунт палилки" v-if="boss.account">
-        <div>
-          <b-tooltip label="Нажми, чтобы скопировать" position="is-right" type="is-dark" animated>
-            <a @click="$emit('copyAccount')">@{{boss.account}}</a>
-          </b-tooltip>
+  <div class="card-content">
+    <div class="media">
+      <div class="media-content">
+        <div class="title is-4">
+          <span class="rb-fullname" @click="$emit('copyFullname')">{{boss.fullname}}</span>
         </div>
-      </b-field>
+        <div class="subtitle is-6">
+          <span class="subtitle-child" v-if="boss.lvl">{{boss.lvl}} lvl</span>
+          <span class="subtitle-child" v-else>Нет палилки</span>
+          <span class="subtitle-child" v-if="boss.account" @click="$emit('copyAccount')">
+            <b-tooltip
+              label="Аккаунт с палилкой. Кликни, чтобы скопировать"
+              position="is-right"
+              type="is-dark"
+              animated
+              multilined
+            >
+              <span class="account">{{boss.account}}</span>
+            </b-tooltip>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
       <b-field label="Статы">
         <div>
           <p v-if="boss.lvl">Уровень: {{boss.lvl}}</p>
@@ -24,15 +35,52 @@
         </div>
       </b-field>
       <b-field label="Время последнего спаленного фарма">
-        <p>{{composeTodMessage}}</p>
+        <p>{{$todMessage(boss.tod)}}</p>
       </b-field>
       <b-field label="Окно респа рб">
-        <p>{{composeRespawnWindowMessage}}</p>
+        <p>
+          {{$respawnWindowMessage(
+          boss.respawn_start,
+          boss.respawn_end
+          )}} ({{timeleftToRespawn}})
+        </p>
       </b-field>
-    </section>
-    <footer class="modal-card-foot">
+      <b-field label="Дроп">
+        <span class="soul-crystal" v-if="soulCrystal">
+          <img :src="soulCrystal.image" :alt="soulCrystal.fullname">
+          <span
+            class="condition"
+          >С рб качается {{soulCrystal.fullname}}. {{boss.soulCrystalEnchantConditions}}</span>
+        </span>
+      </b-field>
+      <table class="drop">
+        <tbody>
+          <td class="items">
+            <tr v-for="item in fulldrop" :key="item.id">
+              <td class="item-image">
+                <img :src="item.image" :alt="item.fullname">
+              </td>
+              <td class="item-name clearfix">{{item.fullname}}</td>
+            </tr>
+            <tr v-for="item in consumables" :key="item.id">
+              <td class="item-image">
+                <img :src="item.image" :alt="item.fullname">
+              </td>
+              <td class="item-name clearfix">{{item.fullname}}</td>
+            </tr>
+          </td>
+          <td class="items">
+            <tr v-for="item in pieces" :key="item.id">
+              <td class="item-image">
+                <img :src="item.image" :alt="item.fullname">
+              </td>
+              <td class="item-name clearfix">{{item.fullname}}</td>
+            </tr>
+          </td>
+        </tbody>
+      </table>
       <button class="button is-info" type="button" @click="$emit('update')">Изменить</button>
-    </footer>
+    </div>
   </div>
 </template>
 
@@ -42,39 +90,84 @@ export default {
   name: "viewRaidBoss",
   data() {
     return {
-      isMoscow: ""
+      soulCrystal: this.$getSoulCrystals(this.boss.drop)[0]
     };
   },
   props: {
     boss: {
       type: Object,
       required: true
+    },
+    timeleftToRespawn: {
+      type: String
     }
   },
   computed: {
     ...mapGetters({ isSetTimeToMoscow: "datetime/isSetTimeToMoscow" }),
-    todTime() {
-      return this.$defineGMT(this.boss.tod, this.isSetTimeToMoscow).format(
-        "D.MM.YYYY в HH:mm"
-      );
+    fulldrop() {
+      let full = [];
+      const dropList = this.boss.drop;
+      return (full = dropList.filter(i => {
+        return (
+          i.type === "weapon" || i.type === "armor" || i.type === "jewelry"
+        );
+      }));
     },
-    composeTodMessage() {
-      let response;
-      this.isSetTimeToMoscow
-        ? (response = `${this.todTime} по МСК (GMT +3)`)
-        : (response = `${this.todTime}`);
-      return response;
+    consumables() {
+      let consumables = [];
+      const dropList = this.boss.drop;
+      return (consumables = dropList.filter(i => {
+        return i.type === "сonsumables";
+      }));
     },
-    composeRespawnWindowMessage() {
-      return this.$timeRange(
-        this.boss.respawn_start,
-        this.boss.respawn_end,
-        this.isSetTimeToMoscow
-      );
+    pieces() {
+      let consumables = [];
+      const dropList = this.boss.drop;
+      return dropList.filter(i => {
+        return i.type === "pieces";
+      });
     }
-  },
-  created() {
-    this.isMoscow = this.isSetTimeToMoscow;
   }
 };
 </script>
+
+<style>
+.drop {
+  width: 100%;
+}
+.content table td {
+  border: none;
+  padding: 0;
+}
+td.item-name {
+  padding-left: 8px !important;
+  line-height: 32px;
+}
+td.item-image img,
+.soul-crystal img {
+  height: 32px;
+  width: 32px;
+}
+.soul-crystal .condition {
+  line-height: 32px;
+  vertical-align: top;
+}
+@media screen and (max-width: 768px) {
+  .soul-crystal .condition {
+    line-height: 24px;
+    vertical-align: top;
+  }
+  td.items {
+    display: initial;
+  }
+  td.item-image img,
+  .soul-crystal img {
+    height: 24px;
+    width: 24px;
+  }
+  td.item-name {
+    padding-left: 4px;
+    line-height: 24px;
+  }
+}
+</style>
