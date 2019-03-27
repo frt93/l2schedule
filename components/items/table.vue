@@ -7,7 +7,6 @@
       detailed
       detail-key="id"
       :data="items"
-      :opened-detailed="defaultOpenedDetails"
       :show-detail-icon="showDetailIcon"
       :mobile-cards="true"
       :hoverable="true"
@@ -64,7 +63,6 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      defaultOpenedDetails: ["15530240018"],
       showDetailIcon: true,
       loading: this.isLoading
     };
@@ -84,11 +82,11 @@ export default {
 };
 </script>
 <style>
-.item-image,
-.item-name {
+table .item-image,
+table .item-name {
   float: left;
 }
-.item-name {
+table .item-name {
   padding-left: 5px;
   line-height: 32px;
   cursor: pointer;

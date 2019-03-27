@@ -29,20 +29,25 @@ export const mutations = {
 };
 
 export const actions = {
-  async fetch({ commit }) {
+  async fetch({ dispatch }) {
     const { data } = await this.$axios.get('/rb/all');
+    dispatch('sortByResp', data);
+  },
+
+  sortByResp({ commit }, data) {
     const sort = this.$sortByMaxResp(data);
     commit('SET_RAIDBOSS_LIST', sort);
   },
 
-  update({ commit, state }, boss) {
+  update({ dispatch, commit, state }, boss) {
     const allRaidBosses = state.allRaidBosses;
 
     let newRaidBossesList = allRaidBosses.filter(rb => {
       return rb.id !== boss.id;
     });
     newRaidBossesList.push(boss);
-    commit('update', newRaidBossesList);
+    // commit('update', newRaidBossesList);
+    dispatch('sortByResp', newRaidBossesList);
   },
 };
 

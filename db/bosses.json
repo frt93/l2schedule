@@ -171,8 +171,8 @@
       "account": "qqqq"
     },
     {
-      "fullname": "3",
-      "shortname": "3",
+      "fullname": "Galaxia",
+      "shortname": "Galaxia",
       "type": "regular",
       "id": "1553373746",
       "respawn_end": "1553569920",
@@ -202,8 +202,8 @@
       "max_respawn": "1320"
     },
     {
-      "fullname": "fsd",
-      "shortname": "fsd",
+      "fullname": "Decarbia",
+      "shortname": "Decarbia",
       "type": "regular",
       "id": "1553449497",
       "respawn_end": "1553698800",
@@ -232,13 +232,13 @@
       "max_respawn": "1320"
     },
     {
-      "fullname": "gfd",
-      "shortname": "gdf",
+      "fullname": "Mos",
+      "shortname": "Mos",
       "type": "regular",
       "id": "1553449513",
-      "respawn_end": "1553644800",
-      "respawn_start": "1553608800",
-      "tod": "1553565600",
+      "respawn_end": "1553684760",
+      "respawn_start": "1553684640",
+      "tod": "1553684040",
       "drop": [
         {
           "id": "1553024009",
@@ -250,12 +250,12 @@
           "weaponType": "blunt"
         }
       ],
-      "min_respawn": "720",
-      "max_respawn": "1320"
+      "min_respawn": "10",
+      "max_respawn": "12"
     },
     {
-      "fullname": "gfdgf",
-      "shortname": "gdf",
+      "fullname": "Brakki",
+      "shortname": "Brakki",
       "type": "regular",
       "id": "1553449530",
       "respawn_end": "1553702400",
@@ -276,7 +276,7 @@
       "max_respawn": "1320"
     },
     {
-      "fullname": "treb",
+      "fullname": "Anays",
       "type": "regular",
       "id": "1553449541",
       "respawn_end": "1546304400",
@@ -293,16 +293,16 @@
           "weaponType": "fist"
         }
       ],
-      "shortname": "gfdgfd"
+      "shortname": "Anays"
     },
     {
-      "fullname": "выаыв",
-      "shortname": "аывавы",
+      "fullname": "Tayr",
+      "shortname": "Tayr",
       "type": "regular",
       "id": "1553457523",
-      "respawn_end": null,
-      "respawn_start": null,
-      "tod": null,
+      "respawn_end": "0",
+      "respawn_start": "0",
+      "tod": "0",
       "drop": [
         {
           "id": "1553024009",
@@ -316,12 +316,12 @@
       ]
     },
     {
-      "fullname": "wer",
+      "fullname": "Hekaton",
       "type": "regular",
       "id": "1553457529",
-      "respawn_end": "1553641200",
-      "respawn_start": "1553605200",
-      "tod": "1553562000",
+      "respawn_end": "1553686020",
+      "respawn_start": "1553685960",
+      "tod": "1553685360",
       "drop": [
         {
           "id": "1553024010",
@@ -333,18 +333,18 @@
           "weaponType": "dagger"
         }
       ],
-      "min_respawn": "720",
-      "max_respawn": "1320",
-      "shortname": "wer"
+      "min_respawn": "10",
+      "max_respawn": "11",
+      "shortname": "Hekaton"
     },
     {
-      "fullname": "222",
-      "shortname": "222",
+      "fullname": "Shadith",
+      "shortname": "Shadith",
       "type": "regular",
       "id": "1553607399",
-      "respawn_end": null,
-      "respawn_start": null,
-      "tod": null,
+      "respawn_end": "0",
+      "respawn_start": "0",
+      "tod": "0",
       "lvl": "23",
       "drop": [
         {

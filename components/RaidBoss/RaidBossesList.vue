@@ -39,17 +39,16 @@ export default {
   },
   data() {
     return {
-      // В переменной timeleftToRespawn хранятся данные о времени, оставшемся до конца окна респа (или прошедшего с его конца).
+      // В свойстве timeleftToRespawn хранятся данные о времени, оставшемся до начала/конца окна респа (или прошедшего с его конца).
       // Ключем для значения является id рб
       timeleftToRespawn: {},
-      // В переменной intervals хранятся ID всех запущенных таймер-планировщиков.
-      // Ключом для значения в объекте так же является ID рб
-      intervals: {},
+      // В свойстве interval хранится ID запущенного в методе calculateTimeleft таймер-планировщиков.
+      // Это необходимо, чтобы была возмощность уничтожить планировщик вне области видимости метода, в котором он вызван
+      interval: 1,
       isModalActive: false,
       modalAction: null,
       raidBossToManage: null,
-      isRemove: false,
-      mmodal: modal
+      isRemove: false
     };
   },
   props: {
@@ -76,10 +75,11 @@ export default {
       this.raidBossToManage = boss;
     },
     calculateTimeleft() {
-      const allRB = this.raidBosses; // Записываем массив с РБ в отдельную переменную.
-      // Теперь перебираем массив и запускаем для каждого рб в нем таймер-планировщик
-      // для вычисления времени оставшегося до начала либо конца респауна
-      allRB.filter(boss => {
+      // Записываем массив с РБ в отдельную переменную.
+      const allRB = this.raidBosses;
+      // Теперь перебираем массив и вычисляем для каждого рб статус респа, записывая его значения в объект timeleftToRespawn
+      // Функцию перебора записываем в отдельную переменную, которая потом будет вызываться в запущенном ниже таймер-планировщике
+      const calc = allRB.filter(boss => {
         const value = this.$timeleftToRespawn(
           boss.respawn_start,
           boss.respawn_end,
@@ -89,25 +89,16 @@ export default {
         // то добавленные обычным методом в него свойства не будут реактивными.
         // Поэтому устанавливаем эти новые свойства с помощью сеттера
         this.$set(this.timeleftToRespawn, boss.id, value);
-        const timer = setInterval(
+      });
+      // Запускаем таймер-планировщик только на клиенте
+      if (process.client) {
+        this.interval = setInterval(
           function() {
-            return (this.timeleftToRespawn[boss.id] = this.$timeleftToRespawn(
-              boss.respawn_start,
-              boss.respawn_end,
-              boss.id
-            ));
+            this.$store.dispatch("raidbosses/sortByResp", allRB);
+            return calc;
           }.bind(this),
           10000
         );
-        this.$set(this.intervals, boss.id, timer);
-      });
-    },
-    clearIntervals() {
-      const intervals = this.intervals;
-      for (var id in intervals) {
-        // Перебираем объект с запущенными тайм-планировщиками и уничтожаем их,
-        // передавая в метод-убийцу ID босса, который является ключем для значения самого планировщика
-        clearInterval(intervals[id]);
       }
     },
 
@@ -132,17 +123,18 @@ export default {
   },
 
   created() {
+    // Запускаем метод определения состояния респа рб.
     this.calculateTimeleft();
   },
   watch: {
     raidBosses() {
-      this.clearIntervals();
+      clearInterval(this.interval);
       this.calculateTimeleft();
     }
   },
   beforeMount() {},
   beforeDestroy() {
-    this.clearIntervals();
+    clearInterval(this.interval);
   }
 };
 </script>
