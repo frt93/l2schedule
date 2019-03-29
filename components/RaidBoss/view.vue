@@ -142,6 +142,7 @@ export default {
 td.item-name {
   padding-left: 8px !important;
   line-height: 32px;
+  cursor: initial !important;
 }
 td.item-image img,
 .soul-crystal img {

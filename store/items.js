@@ -1,43 +1,43 @@
 export const state = () => ({
   allItems: [],
-  fulldrop: [],
-  pieces: [],
-  consumables: [],
-  sa: [],
+  // fulldrop: [],
+  // pieces: [],
+  // consumables: [],
+  // sa: [],
 });
 
 export const mutations = {
   SET_ITEMS_LIST(state, items) {
     state.allItems = items;
   },
-  SET_FULL_DROP_LIST(state) {
-    const items = state.allItems;
-    const fulldrop = items.filter(i => {
-      return i.type.toLowerCase() === 'armor' || i.type === 'weapon' || i.type === 'jewelry';
-    });
-    state.fulldrop = fulldrop;
-  },
-  SET_PIECES_LIST(state) {
-    const items = state.allItems;
-    const pieces = items.filter(i => {
-      return i.type.toLowerCase() === 'pieces';
-    });
-    state.pieces = pieces;
-  },
-  SET_CONSUMABLES_LIST(state) {
-    const items = state.allItems;
-    const consumables = items.filter(i => {
-      return i.type.toLowerCase() === 'сonsumables';
-    });
-    state.consumables = consumables;
-  },
-  SET_SA_LIST(state) {
-    const items = state.allItems;
-    const sa = items.filter(i => {
-      return i.type.toLowerCase() === 'sa';
-    });
-    state.sa = sa;
-  },
+  // SET_FULL_DROP_LIST(state) {
+  //   const items = state.allItems;
+  //   const fulldrop = items.filter(i => {
+  //     return i.type.toLowerCase() === 'armor' || i.type === 'weapon' || i.type === 'jewelry';
+  //   });
+  //   state.fulldrop = fulldrop;
+  // },
+  // SET_PIECES_LIST(state) {
+  //   const items = state.allItems;
+  //   const pieces = items.filter(i => {
+  //     return i.type.toLowerCase() === 'pieces';
+  //   });
+  //   state.pieces = pieces;
+  // },
+  // SET_CONSUMABLES_LIST(state) {
+  //   const items = state.allItems;
+  //   const consumables = items.filter(i => {
+  //     return i.type.toLowerCase() === 'сonsumables';
+  //   });
+  //   state.consumables = consumables;
+  // },
+  // SET_SA_LIST(state) {
+  //   const items = state.allItems;
+  //   const sa = items.filter(i => {
+  //     return i.type.toLowerCase() === 'sa';
+  //   });
+  //   state.sa = sa;
+  // },
   update(state, payload) {
     state.allItems = payload;
   },
@@ -70,12 +70,12 @@ export const actions = {
     commit('update', newItemsList);
   },
 
-  sortItemsByType({ commit }) {
-    commit('SET_FULL_DROP_LIST');
-    commit('SET_PIECES_LIST');
-    commit('SET_CONSUMABLES_LIST');
-    commit('SET_SA_LIST');
-  },
+  // sortItemsByType({ commit }) {
+  //   commit('SET_FULL_DROP_LIST');
+  //   commit('SET_PIECES_LIST');
+  //   commit('SET_CONSUMABLES_LIST');
+  //   commit('SET_SA_LIST');
+  // },
 };
 
 export const getters = {

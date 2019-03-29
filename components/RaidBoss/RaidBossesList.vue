@@ -1,15 +1,95 @@
 <template>
   <section class="section">
     <div class="container">
-      <component
-        :data="raidBosses"
-        :timeleftToRespawn="timeleftToRespawn"
-        @update="update"
-        @copy="copy"
-        @remove="remove"
-        @view="view"
-        v-bind:is="displayType"
-      ></component>
+      <div class="block navigate">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <!-- <a class="navbar-item" href="https://bulma.io">
+              <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+            </a>-->
+
+            <a
+              role="button"
+              class="navbar-burger burger"
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarBasicExample"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+              <a class="navbar-item">Все рб</a>
+              <a class="navbar-item">Эпики</a>
+
+              <a class="navbar-item">80-87 lvl</a>
+
+              <a class="navbar-item">70-79 lvl</a>
+              <a class="navbar-item">
+                <span class="search">
+                  <i class="mdi mdi-magnify" v-if="!isSearch" @click="isSearch=true"></i>
+                  <i class="mdi mdi-window-close" v-if="isSearch" @click="close"></i>
+                </span>
+              </a>
+            </div>
+
+            <div class="navbar-end">
+              <div class="navbar-item">
+                <div class="buttons">
+                  <div class="respawn-switch">
+                    <i
+                      class="mdi mdi-circle in-window"
+                      @click="respawnSwitchActive.window=!respawnSwitchActive.window"
+                      :class="{active: respawnSwitchActive.window === true}"
+                    ></i>
+                    <i class="mdi mdi-circle in-resp"></i>
+                    <i class="mdi mdi-circle resp-lost"></i>
+                  </div>
+
+                  <span class="view-type-switch">
+                    <i
+                      class="mdi mdi-view-module"
+                      :class="{active: displayAs === 'viewGrid'}"
+                      @click="displayAs = 'viewGrid'"
+                    ></i>
+                    <i
+                      class="mdi mdi-format-list-bulleted"
+                      :class="{active: displayAs === 'viewTable'}"
+                      @click="displayAs = 'viewTable'"
+                    ></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <transition name="menu-popover">
+          <search
+            v-if="isSearch"
+            :searchKey="searchKey"
+            @result="result"
+            @close="close"
+            @changeSearchKey="changeSearchKey"
+            ref="search"
+          ></search>
+        </transition>
+      </div>
+      <transition name="fade" mode="out-in">
+        <component
+          :data="searchResults ? searchResults : raidBosses"
+          :timeleftToRespawn="timeleftToRespawn"
+          @update="update"
+          @copy="copy"
+          @remove="remove"
+          @view="view"
+          @search="triggerSearch"
+          v-bind:is="displayAs"
+        ></component>
+      </transition>
     </div>
 
     <b-modal :active.sync="isModalActive" :width="640" scroll="clip" :canCancel="['x', 'outside']">
@@ -25,20 +105,23 @@
 </template>
 
 <script>
-import rbGrid from "./grid";
-import rbTable from "./table";
+import viewGrid from "./grid";
+import viewTable from "./table";
 import modal from "./modal";
 import remove from "./remove";
+import search from "../ui/search";
 import { mapGetters } from "vuex";
 export default {
   components: {
-    rbGrid,
-    rbTable,
+    viewGrid,
+    viewTable,
     modal,
-    remove
+    remove,
+    search
   },
   data() {
     return {
+      displayAs: this.displayType,
       // В свойстве timeleftToRespawn хранятся данные о времени, оставшемся до начала/конца окна респа (или прошедшего с его конца).
       // Ключем для значения является id рб
       timeleftToRespawn: {},
@@ -48,7 +131,14 @@ export default {
       isModalActive: false,
       modalAction: null,
       raidBossToManage: null,
-      isRemove: false
+      isRemove: false,
+      isSearch: false,
+      searchKey: "name",
+      searchResults: null,
+
+      respawnSwitchActive: {
+        window: false
+      }
     };
   },
   props: {
@@ -82,8 +172,7 @@ export default {
       const calc = allRB.filter(boss => {
         const value = this.$timeleftToRespawn(
           boss.respawn_start,
-          boss.respawn_end,
-          boss.id
+          boss.respawn_end
         );
         // Т.к. мы изначально создали в $data пустой объект timeleftToRespawn,
         // то добавленные обычным методом в него свойства не будут реактивными.
@@ -119,6 +208,29 @@ export default {
           queue: false
         });
       }
+    },
+
+    triggerSearch(item) {
+      // Метод вызывается по клику на элемент списка дропа в дочернем компоненте отображения списка РБ.
+      // Аргументом в метод передается наименование выбранного предмета
+      this.isSearch = true;
+      this.searchKey = item.type === "sa" ? "sa" : "item";
+      this.$nextTick(function() {
+        this.$refs.search.forceSearch(item);
+      });
+    },
+
+    changeSearchKey(key) {
+      this.searchKey = key;
+    },
+
+    result(data, query) {
+      this.searchResults = query ? data : this.raidBosses;
+    },
+    close() {
+      this.searchKey = "name";
+      this.isSearch = false;
+      this.searchResults = null;
     }
   },
 
@@ -193,6 +305,77 @@ export default {
     grid-template-columns: repeat(8, 1fr);
     display: grid !important;
   }
+}
+
+.menu-popover-enter,
+.menu-popover-leave-to {
+  opacity: 0;
+  transform: rotateY(10deg);
+}
+.menu-popover-enter-to,
+.menu-popover-leave {
+  opacity: 1;
+  transform: rotateY(0deg);
+}
+.menu-popover-enter-active,
+.menu-popover-leave-active {
+  transition: opacity, transform 400ms ease-out;
+}
+.navbar-start > .navbar-item:not(:last-child) {
+  margin-right: 10px;
+}
+.navbar-item {
+  padding: 0;
+}
+.respawn-switch {
+  margin-left: 4px;
+  display: inline-flex;
+}
+.respawn-switch i {
+  margin: 3px;
+}
+i.in-resp {
+  color: #ea9220;
+}
+i.in-window {
+  color: #23d160;
+}
+i.resp-lost {
+  color: #ff3860;
+}
+
+i.mdi-circle.active:before {
+  border-radius: 100%;
+  line-height: 1;
+  border: 2px solid;
+}
+
+.view-type-switch {
+  margin-left: 4px;
+}
+
+.view-type-switch i {
+  font-size: 24px;
+  line-height: 16px;
+  border: 1px solid #d2d2d2;
+  cursor: pointer;
+  padding: 4px;
+  float: left;
+}
+
+.view-type-switch i:first-of-type {
+  border-right: 0;
+  border-radius: 4px 0 0 4px;
+}
+.view-type-switch i:last-of-type {
+  border-left: 0;
+  border-radius: 0 4px 4px 0;
+}
+.view-type-switch .active {
+  background: #00a046;
+  border-color: #00a046;
+  color: #fff;
+  cursor: default;
 }
 </style>
 

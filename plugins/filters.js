@@ -1,22 +1,26 @@
 export default ({ app }, inject) => {
+  // Выбираем из списка всех предметов только шмот и оружие
   inject('getFulldrop', items => {
     return items.filter(item => {
       return item.type === 'weapon' || item.type === 'armor' || item.type === 'jewelry';
     });
   });
 
+  // Выбираем из списка всех предметов только куски и расходники
   inject('getPiecesAndConsumables', items => {
     return items.filter(item => {
       return item.type === 'pieces' || item.type === 'сonsumables';
     });
   });
 
+  // Выбираем из списка всех предметов только СА
   inject('getSoulCrystals', items => {
     return items.filter(item => {
       return item.type === 'sa';
     });
   });
 
+  // Выбираем из переданного массива объекты, у которых свойства fullname или shortname совпадает с переданным значением value
   inject('filterByFullAndShortNames', (items, value) => {
     return items.filter(item => {
       return (
@@ -32,6 +36,7 @@ export default ({ app }, inject) => {
     });
   });
 
+  // Выбираем из переданного массива объекты, у которых свойство fullname совпадает с переданным значением value
   inject('filterByFullname', (items, value) => {
     return items.filter(item => {
       return (
@@ -43,6 +48,7 @@ export default ({ app }, inject) => {
     });
   });
 
+  //Сортируем массив по наименованию в алфавитном порядке
   inject('sortByFullname', array => {
     let byName = array.slice(0);
     return byName.sort(function(a, b) {
@@ -52,6 +58,7 @@ export default ({ app }, inject) => {
     });
   });
 
+  //Сортируем РБ по их состоянию респа
   inject('sortByMaxResp', array => {
     const now = app.$moment().unix();
 

@@ -220,7 +220,7 @@ export default {
     // (но фильтруется только по полному наименованию предмета, т.к. у кусков и расходников нет сокращенного наименования)
     getFilteredPiecesAndConsumables(value) {
       const piecesAndConsumables = this.$getPiecesAndConsumables(this.items);
-      this.filteredPiecesAndConsumables = this.$filterByFullname(
+      this.filteredPiecesAndConsumables = this.$filterByFullAndShortNames(
         piecesAndConsumables,
         value
       );

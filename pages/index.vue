@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>1:{{time}}</p>
+    <!-- <p>1:{{time}}</p>
     <div>
       <b-checkbox
         v-model="isMoscow"
@@ -8,18 +8,18 @@
         :false-value="false"
       >По Москве?: {{ isMoscow }}</b-checkbox>
     </div>
-    {{parseGmt}}
-    <div>
+    {{parseGmt}}-->
+    <!-- <div>
       <p>from data:{{isMoscow}}</p>
       <p>from store: {{isSetTimeToMoscow}}</p>
-    </div>
-    <div @click="displayType = 'rbGrid'">
+    </div>-->
+    <!-- <div @click="displayType = 'rbGrid'">
       <b-icon icon="view-grid" size="is-medium"></b-icon>
     </div>
     <div @click="displayType = 'rbTable'">
       <b-icon icon="format-list-bulleted" size="is-medium"></b-icon>
-    </div>
-    <RaidBossesList :displayType="displayType"></RaidBossesList>
+    </div>-->
+    <RaidBossesList :displayType="'viewGrid'"></RaidBossesList>
   </div>
 </template>
 
@@ -40,8 +40,7 @@ export default {
         .utc()
         .format("MMMM DD YYYY, H:mm:ss"),
       time2: "",
-      isMoscow: "",
-      displayType: "rbGrid"
+      isMoscow: ""
     };
   },
 

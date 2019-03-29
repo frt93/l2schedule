@@ -22,7 +22,8 @@
           "id": "1553251597",
           "fullname": "Arcana Mace Head",
           "image": "/items/pieces/head.png",
-          "type": "pieces"
+          "type": "pieces",
+          "shortname": "AM Head"
         },
         {
           "id": "1553024011",
@@ -37,15 +38,8 @@
           "id": "1553427269",
           "fullname": "Basalt Battlehammer Head",
           "type": "pieces",
-          "image": "/items/pieces/head.png"
-        },
-        {
-          "id": "1553024007",
-          "fullname": "Blessed Scroll: Enchant Weapon (Grade S)",
-          "shortname": "BEWS",
-          "image": "/items/consumables/bews.png",
-          "type": "сonsumables",
-          "grade": "S"
+          "image": "/items/pieces/head.png",
+          "shortname": "Basalt Head"
         },
         {
           "id": "1553024014",
@@ -60,7 +54,8 @@
           "id": "1553427014",
           "fullname": "Dragon Hunter Axe Blade",
           "type": "pieces",
-          "image": "/items/pieces/blade.png"
+          "image": "/items/pieces/blade.png",
+          "shortname": "DHA Blade"
         },
         {
           "id": "1553024017",
@@ -75,21 +70,8 @@
           "id": "1553251556",
           "fullname": "Imperial Staff Head",
           "image": "/items/pieces/Imperial-Staff-Head.png",
-          "type": "pieces"
-        },
-        {
-          "id": "1553251512",
-          "fullname": "Scroll: Enchant Armor (Grade S)",
-          "image": "/items/consumables/eas.png",
-          "type": "сonsumables",
-          "grade": "S"
-        },
-        {
-          "id": "1553251515",
-          "fullname": "Scroll: Enchant Weapon (Grade S)",
-          "image": "/items/consumables/ews.png",
-          "type": "сonsumables",
-          "grade": "S"
+          "type": "pieces",
+          "shortname": "IS Head"
         },
         {
           "id": "1553426719",
@@ -104,7 +86,8 @@
           "id": "1553427542",
           "fullname": "Sealed Draconic Leather Helmet Pattern",
           "type": "pieces",
-          "image": "/items/pieces/brown-pouch.png"
+          "image": "/items/pieces/brown-pouch.png",
+          "shortname": "Drac Helmet Pattern"
         },
         {
           "id": "1553426806",
@@ -119,7 +102,8 @@
           "id": "1553427499",
           "fullname": "Sealed Imperial Crusader Helmet Pattern",
           "type": "pieces",
-          "image": "/items/pieces/brown-pouch.png"
+          "image": "/items/pieces/brown-pouch.png",
+          "shortname": "IC Helmet Pattern"
         },
         {
           "id": "1553426899",
@@ -134,7 +118,8 @@
           "id": "1553427411",
           "fullname": "Sealed Imperial Crusader Shield Part",
           "type": "pieces",
-          "image": "/items/pieces/chest.png"
+          "image": "/items/pieces/chest.png",
+          "shortname": "IC Shield Part"
         },
         {
           "id": "1553426217",
@@ -149,7 +134,8 @@
           "id": "1553427580",
           "fullname": "Sealed Major Arcana Circlet Pattern",
           "type": "pieces",
-          "image": "/items/pieces/brown-pouch.png"
+          "image": "/items/pieces/brown-pouch.png",
+          "shortname": "MA Circlet Pattern"
         },
         {
           "id": "1553251053",
@@ -319,18 +305,25 @@
       "fullname": "Hekaton",
       "type": "regular",
       "id": "1553457529",
-      "respawn_end": "1553686020",
-      "respawn_start": "1553685960",
-      "tod": "1553685360",
+      "respawn_end": "1553803320",
+      "respawn_start": "1553803260",
+      "tod": "1553802660",
       "drop": [
         {
-          "id": "1553024010",
-          "fullname": "Angel Slayer",
-          "shortname": "AS",
-          "image": "/items/full/Angel-Slayer.png",
+          "id": "1553024011",
+          "fullname": "Basalt Battlehammer",
+          "shortname": "Basalt",
+          "image": "/items/full/Basalt-Battlehammer.png",
           "type": "weapon",
           "grade": "S",
-          "weaponType": "dagger"
+          "weaponType": "blunt"
+        },
+        {
+          "id": "1553251596",
+          "fullname": "Soul Crystal с 10 по 12 уровни",
+          "shortname": "SA 10->12",
+          "type": "sa",
+          "image": "/items/full/Soul-Crystal.png"
         }
       ],
       "min_respawn": "10",

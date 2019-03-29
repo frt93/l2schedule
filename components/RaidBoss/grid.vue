@@ -49,7 +49,7 @@
               multilined
               animated
             >
-              <a class="drop-tags">
+              <a class="drop-tags" @click="$emit('search', sa); $event.stopPropagation()">
                 <span class="item-name">{{sa.shortname}}</span>
               </a>
             </b-tooltip>
@@ -63,7 +63,7 @@
               type="is-dark"
               animated
             >
-              <a class="drop-tags">
+              <a class="drop-tags" @click="$emit('search', item); $event.stopPropagation()">
                 <span class="item-name">{{item.shortname}}</span>
               </a>
             </b-tooltip>
