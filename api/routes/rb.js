@@ -4,7 +4,6 @@ const router = Router();
 const low = require('lowdb');
 const FileAsync = require('lowdb/adapters/FileAsync');
 const bosses = new FileAsync('db/bosses.json');
-const { addRaidBossesItems } = require('./raidbosses_items');
 
 low(bosses).then(db => {
   router.get('/rb/all', (req, res) => {
@@ -88,7 +87,6 @@ const createRaidBoss = (db, newRaidBoss, res) => {
     .push(newRaidBoss)
     .write()
     .then(boss => {
-      addRaidBossesItems(newRaidBoss);
       res.send(`Рейдовый босс ${newRaidBoss.fullname} успешно создан и добавлен в базу данных`);
     })
     .catch(e => res.status(500).send(e));
@@ -125,5 +123,4 @@ const checkFullnameDuplicate = (array, fullname) => {
   });
   if (fullnameDuplicate.length) throw Error(`РБ с именем '${fullname}' уже существует`);
 };
-
 module.exports = router;

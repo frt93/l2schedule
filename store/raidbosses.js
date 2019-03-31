@@ -55,4 +55,13 @@ export const getters = {
   getAll(state) {
     return state.allRaidBosses;
   },
+  getinWindow(state) {
+    return state.inWindow;
+  },
+  getinResp(state) {
+    return state.inResp;
+  },
+  getlostResp(state) {
+    return state.lostResp;
+  },
 };

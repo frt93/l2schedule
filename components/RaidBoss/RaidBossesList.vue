@@ -4,10 +4,6 @@
       <div class="block navigate">
         <nav class="navbar" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
-            <!-- <a class="navbar-item" href="https://bulma.io">
-              <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
-            </a>-->
-
             <a
               role="button"
               class="navbar-burger burger"
@@ -29,9 +25,9 @@
               <a class="navbar-item">80-87 lvl</a>
 
               <a class="navbar-item">70-79 lvl</a>
-              <a class="navbar-item">
+              <a class="navbar-item" :class="{'active-search': isSearch}">
                 <span class="search">
-                  <i class="mdi mdi-magnify" v-if="!isSearch" @click="isSearch=true"></i>
+                  <i class="mdi mdi-magnify" v-if="!isSearch" @click="initSearch"></i>
                   <i class="mdi mdi-window-close" v-if="isSearch" @click="close"></i>
                 </span>
               </a>
@@ -40,14 +36,22 @@
             <div class="navbar-end">
               <div class="navbar-item">
                 <div class="buttons">
-                  <div class="respawn-switch">
+                  <div class="respawn-switch" v-if="!isSearch">
                     <i
                       class="mdi mdi-circle in-window"
-                      @click="respawnSwitchActive.window=!respawnSwitchActive.window"
-                      :class="{active: respawnSwitchActive.window === true}"
+                      @click="filterByRespawn('inWindow')"
+                      :class="{active: respawnSwitcher === 'inWindow'}"
                     ></i>
-                    <i class="mdi mdi-circle in-resp"></i>
-                    <i class="mdi mdi-circle resp-lost"></i>
+                    <i
+                      class="mdi mdi-circle in-resp"
+                      @click="filterByRespawn('inResp')"
+                      :class="{active: respawnSwitcher === 'inResp'}"
+                    ></i>
+                    <i
+                      class="mdi mdi-circle lost-resp"
+                      @click="filterByRespawn('lostResp')"
+                      :class="{active: respawnSwitcher === 'lostResp'}"
+                    ></i>
                   </div>
 
                   <span class="view-type-switch">
@@ -68,14 +72,7 @@
           </div>
         </nav>
         <transition name="menu-popover">
-          <search
-            v-if="isSearch"
-            :searchKey="searchKey"
-            @result="result"
-            @close="close"
-            @changeSearchKey="changeSearchKey"
-            ref="search"
-          ></search>
+          <search v-if="isSearch" @result="result" @close="close" ref="search"></search>
         </transition>
       </div>
       <transition name="fade" mode="out-in">
@@ -133,12 +130,8 @@ export default {
       raidBossToManage: null,
       isRemove: false,
       isSearch: false,
-      searchKey: "name",
       searchResults: null,
-
-      respawnSwitchActive: {
-        window: false
-      }
+      respawnSwitcher: null
     };
   },
   props: {
@@ -210,27 +203,46 @@ export default {
       }
     },
 
+    initSearch() {
+      this.isSearch = true;
+      this.respawnSwitcher = this.searchResults = null;
+    },
+
     triggerSearch(item) {
       // Метод вызывается по клику на элемент списка дропа в дочернем компоненте отображения списка РБ.
       // Аргументом в метод передается наименование выбранного предмета
-      this.isSearch = true;
-      this.searchKey = item.type === "sa" ? "sa" : "item";
+      this.initSearch();
+      let key;
+      if (item.type === "sa") {
+        key = "sa";
+      } else {
+        key = "item";
+      }
+      this.initSearch();
       this.$nextTick(function() {
-        this.$refs.search.forceSearch(item);
+        this.$refs.search.forceSearch(item, key);
       });
-    },
-
-    changeSearchKey(key) {
-      this.searchKey = key;
     },
 
     result(data, query) {
       this.searchResults = query ? data : this.raidBosses;
     },
     close() {
-      this.searchKey = "name";
       this.isSearch = false;
       this.searchResults = null;
+    },
+
+    filterByRespawn(key) {
+      // Фильтруем рб по их статусу респа. Можно отобразить рб, у которых окно респа в данный момент / откат респа / респ утерян
+      // Первым делом закрываем форму поиска, если она открыта.
+      this.close();
+      if (key === this.respawnSwitcher) {
+        // Если повторно кликнули на тот же фильтр - отменяем фильтрацию и отобразим первоначальное содержимое
+        this.respawnSwitcher = this.searchResults = null;
+        return;
+      }
+      this.respawnSwitcher = key;
+      this.searchResults = this.$store.getters[`raidbosses/get${key}`];
     }
   },
 
@@ -321,15 +333,32 @@ export default {
 .menu-popover-leave-active {
   transition: opacity, transform 400ms ease-out;
 }
-.navbar-start > .navbar-item:not(:last-child) {
+/* .navbar-start > .navbar-item:not(:last-child) {
   margin-right: 10px;
-}
+} */
 .navbar-item {
-  padding: 0;
+  padding: 0 10px;
 }
+.navbar-item:hover {
+  background-color: transparent !important;
+}
+.navbar-item .search {
+  font-size: 24px;
+  line-height: 24px;
+  padding: 0 4px;
+}
+
+.navbar-item.active-search {
+  background-color: #ff3860 !important;
+  color: #fff !important;
+}
+
 .respawn-switch {
   margin-left: 4px;
-  display: inline-flex;
+  display: inline-block;
+  transition: 0.2s;
+  animation: fadeIn;
+  animation-duration: 0.5s;
 }
 .respawn-switch i {
   margin: 3px;
@@ -340,7 +369,7 @@ i.in-resp {
 i.in-window {
   color: #23d160;
 }
-i.resp-lost {
+i.lost-resp {
   color: #ff3860;
 }
 

@@ -1,26 +1,31 @@
 const { Router } = require('express');
 const router = Router();
 
-// Mock Users
-const users = [{ name: 'Alexandre' }, { name: 'Pooya' }, { name: 'Sébastien' }];
+const low = require('lowdb');
+const FileAsync = require('lowdb/adapters/FileAsync');
+const bosses = new FileAsync('db/bosses.json');
 
-/* GET users listing. */
-router.get('/users', function(req, res, next) {
-  res.json(users);
+const email = require('emailjs/email');
+const server = email.server.connect({
+  user: 'tvinkzak2@gmail.com',
+  password: 'God452yHgs854Kd',
+  host: 'smtp.gmail.com',
+  port: 465,
+  ssl: true,
 });
+const message = {
+  text: 'i hope this works 2',
+  from: 'l2schedule 👻',
+  to: 'frthere@gmail.com',
+  subject: 'Confirm Registration ✔',
+  // attachment: [{ data: '<html>i <i>hope</i> this works!</html>', alternative: true }],
+};
+router.get('/users/create', (req, res) => {
+  const user = req.body;
+  create(user);
 
-router.get('/users/getdata', function(req, res, next) {
-  res.json({ isMoscow: false });
+  // server.send(message, function(err, message) {
+  //   console.log(err || message);
+  // });
 });
-
-/* GET user by ID. */
-router.get('/users/:id', function(req, res, next) {
-  const id = parseInt(req.params.id);
-  if (id >= 0 && id < users.length) {
-    res.json(users[id]);
-  } else {
-    res.sendStatus(404);
-  }
-});
-
 module.exports = router;

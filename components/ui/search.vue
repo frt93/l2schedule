@@ -3,7 +3,7 @@
     <div class="block search">
       <!-- <i class="mdi mdi-window-close mdi-24px search-close" @click="close"></i> -->
       <div class="block search-key">
-        <b-dropdown v-model="searchBy" aria-role="list">
+        <b-dropdown v-model="searchBy" aria-role="list" @change="keyChanged">
           <span class="select-key" type="button" slot="trigger">
             <template v-if="searchBy">
               <span class="key-label">{{searchKeyLabel}}</span>
@@ -14,7 +14,7 @@
           <b-dropdown-item :value="'name'" aria-role="listitem">
             <div class="media">
               <div class="media-content">
-                <h3>По имени</h3>
+                <h3>Поиск по имени РБ</h3>
               </div>
             </div>
           </b-dropdown-item>
@@ -22,7 +22,7 @@
           <b-dropdown-item :value="'item'" aria-role="listitem">
             <div class="media">
               <div class="media-content">
-                <h3>По дропу</h3>
+                <h3>Поиск по дропу</h3>
               </div>
             </div>
           </b-dropdown-item>
@@ -30,7 +30,7 @@
           <b-dropdown-item :value="'sa'" aria-role="listitem">
             <div class="media">
               <div class="media-content">
-                <h3>С качем СА</h3>
+                <h3>Поиск РБ с качем SA</h3>
               </div>
             </div>
           </b-dropdown-item>
@@ -47,7 +47,7 @@
           @select="option => searchByDrop(option)"
         >
           <template slot-scope="props">
-            <div class="media" v-if="searchKey !== 'name'">
+            <div class="media" v-if="searchBy !== 'name'">
               <div class="media-left">
                 <img :src="props.option.image">
               </div>
@@ -63,11 +63,6 @@
             </div>
           </template>
         </b-autocomplete>
-        <transition name="fade" :duration="100">
-          <div class="block no-results" v-if="error">
-            <b-message type="is-danger">{{error}}</b-message>
-          </div>
-        </transition>
       </div>
     </div>
   </section>
@@ -80,30 +75,17 @@ export default {
   name: "searchForm",
   data() {
     return {
-      isSearch: false,
       bosses: this.$store.getters["raidbosses/getAll"],
       items: this.$store.getters["items/getAll"],
       filteredOptions: [],
-      searchBy: this.searchKey,
-      results: [],
-      error: null
+      searchBy: "name",
+      results: []
     };
-  },
-  props: {
-    searchTarget: {
-      type: String,
-      required: false
-    },
-    searchKey: {
-      type: String,
-      required: false,
-      default: "name"
-    }
   },
   computed: {
     placeholder() {
       return this.searchBy === "name"
-        ? `Введите имя`
+        ? `Введите имя РБ`
         : this.searchBy === "item"
         ? `Введите наименование предмета`
         : `Опишите вариант прокачки СА`;
@@ -118,20 +100,16 @@ export default {
   },
   methods: {
     getAsyncData: debounce(function(value) {
-      // В первую очередь обнуляем ошибки, которые могли возникнуть при предыдущем запросе
-      this.error = null;
       if (!value.length) {
         // Условие срабатывает если поисковое поле было полностью очищено.
         // Соответственно поисковый запрос не задан. Очищаем свойство results.
-        // Отправляем наверх пустые массив results и переменную value, давая понять
+        // Отправляем наверх пустые массив results и переменную value (пустую), давая понять
         // родительскому компоненту, что можно отобразить первоначальные данные
         this.results = [];
-        this.isSearch = false;
         this.$emit("result", this.results, value);
         return;
       }
       if (this.searchBy === "name") {
-        this.isSearch = true; // Триггерим поиск
         // Поиск по имени РБ. Записываем в свойство results результаты фильтрации
         this.results = this.$filterByFullAndShortNames(this.bosses, value);
         // Если результатов поиска нет - выбрасываем пользователю ошибку
@@ -196,7 +174,6 @@ export default {
       // Если предмет не выбран из выпадающего списка - очищаем этот список и отключаем "рабочее состояние" компонента
       if (!item) {
         this.filteredOptions = [];
-        this.isSearch = false;
         return;
       }
       // Предмет выбран в выпадающем списке. Очищаем свойства data с результатами поиска (results)
@@ -233,7 +210,6 @@ export default {
           queue: false
         });
       }
-
       // Отправляем результат родительскому компоненту
       this.$emit("result", this.results, item.fullname);
     },
@@ -270,42 +246,35 @@ export default {
           queue: false
         });
       }
-
       // Отправляем результат родительскому компоненту
       this.$emit("result", this.results, "soul crystals");
     },
 
-    forceSearch(item) {
+    forceSearch(item, key) {
       // Метод вызывается из родительского компонента при клике на предмет или SA в списке дропа РБ.
-      // В качестве аргумента получаем наименование предмета и запускаем метод поиска по дропу.
+      // В качестве аргумента получаем наименование предмета с ключом поиска и запускаем метод поиска по дропу.
+      this.searchBy = key;
       this.searchByDrop(item);
       // Обращаемся к поисковому инпуту и записываем в него наименование предмета.
       // Делаем это через $nextTick т.к. при первичной отрисовке и вставке в DOM нет доступа к содержимому
-      // this.$refs. Свойство $nextTick позволяет получить к нему доступ после срабатывания mounted lifecycle
+      // this.$el. Свойство $nextTick позволяет получить к нему доступ после срабатывания mounted lifecycle
       this.$nextTick(function() {
-        const searchInput = this.$refs.input.$el.querySelector("input");
-        searchInput.value = item.fullname;
+        this.$refs.input.newValue = item.fullname;
       });
-    }
-  },
-  watch: {
-    searchBy(newKey, oldKey) {
-      // При смене ключа поиска (по имени/дропу/са) обнуляем свойство с результатами (results)
-      // и отключаем "рабочее состояние" компонента
-      this.results = [];
-      this.isSearch = false;
-      // Далее сбрасываем значение поискового инпута таким же способом, как и в методе forceSearch
-      this.$nextTick(function() {
-        const searchInput = this.$refs.input.$el.querySelector("input");
-        searchInput.value = "";
-      });
+    },
+    keyChanged(key) {
+      // При смене ключа поиска (по имени/дропу/са) обнуляем свойство с результатами поиска (results)
+      // и фильтрации предметов дропа (или са) с предыдущих запросов
+      this.results = this.filteredOptions = [];
+      // Далее сбрасываем значение поискового инпута
+      this.$refs.input.newValue = "";
+
       // Отправляем событие родительскому компоненту с пустым свойством results
       // и null (в качестве переменной с поисковым запросом), заставляя его отрендерить первоначальное содержимое
       this.$emit("result", this.results, null);
-      this.$emit("changeSearchKey", newKey);
       // Если в качестве ключа поиска выбраны SA - запустим метод getRbWithSA и сразу отобразим только тех рб, с которых качается SA.
       // А дальше уже сам пользователь сам сможет конкретизировать запрос.
-      if (newKey === "sa") this.getRbWithSA();
+      if (key === "sa") this.getRbWithSA();
     }
   }
 };
@@ -349,11 +318,17 @@ export default {
 }
 .search .dropdown-menu {
   min-width: 0 !important;
-  width: 100%;
+  right: 0;
+  left: inherit;
   padding: 0;
 }
+
 .search .dropdown-content {
   padding: 0;
+}
+
+.search .dropdown-content > .dropdown-item {
+  padding-right: 8px !important;
 }
 
 a.dropdown-item.is-active {

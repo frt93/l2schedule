@@ -22,14 +22,16 @@ app.use(bodyParser.json());
 
 // Require API routes
 // const users = require('./routes/users');
-const raidbosses = require('./routes/raidbosses');
+const raidbosses = require('./routes/rb');
 const items = require('./routes/items');
+const users = require('./routes/users');
 //
 
 // Import API Routes
 // app.use(users);
 app.use(raidbosses);
 app.use(items);
+app.use(users);
 
 // Export the server middleware
 module.exports = {

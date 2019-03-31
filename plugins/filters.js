@@ -27,11 +27,13 @@ export default ({ app }, inject) => {
         item.fullname
           .toString()
           .toLowerCase()
-          .indexOf(value.toLowerCase()) >= 0 ||
+          .replace(/\s+/g, '')
+          .indexOf(value.toLowerCase().replace(/\s+/g, '')) >= 0 ||
         item.shortname
           .toString()
           .toLowerCase()
-          .indexOf(value.toLowerCase()) >= 0
+          .replace(/\s+/g, '')
+          .indexOf(value.toLowerCase().replace(/\s+/g, '')) >= 0
       );
     });
   });
@@ -43,7 +45,8 @@ export default ({ app }, inject) => {
         item.fullname
           .toString()
           .toLowerCase()
-          .indexOf(value.toLowerCase()) >= 0
+          .replace(/\s+/g, '')
+          .indexOf(value.toLowerCase().replace(/\s+/g, '')) >= 0
       );
     });
   });
