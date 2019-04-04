@@ -42,7 +42,8 @@
           {{$respawnWindowMessage(
           boss.respawn_start,
           boss.respawn_end
-          )}} ({{timeleftToRespawn}})
+          )}}
+          <span v-if="timeleftToRespawn">({{timeleftToRespawn}})</span>
         </p>
       </b-field>
       <b-field label="Дроп">

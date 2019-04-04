@@ -249,13 +249,13 @@
       "tod": "1553623200",
       "drop": [
         {
-          "id": "1553024009",
-          "fullname": "Arcana Mace",
-          "shortname": "AM",
-          "image": "/items/full/Arcana-Mace.png",
+          "id": "1553024010",
+          "fullname": "Angel Slayer",
+          "shortname": "AS",
+          "image": "/items/full/Angel-Slayer.png",
           "type": "weapon",
           "grade": "S",
-          "weaponType": "blunt"
+          "weaponType": "dagger"
         }
       ],
       "min_respawn": "720",
@@ -305,9 +305,9 @@
       "fullname": "Hekaton",
       "type": "regular",
       "id": "1553457529",
-      "respawn_end": "1553803320",
-      "respawn_start": "1553803260",
-      "tod": "1553802660",
+      "respawn_end": "1552251720",
+      "respawn_start": "1552251660",
+      "tod": "1552251060",
       "drop": [
         {
           "id": "1553024011",

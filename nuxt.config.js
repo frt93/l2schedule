@@ -26,6 +26,7 @@ module.exports = {
   plugins: [
     '~/plugins/datetime.js',
     '~/plugins/filters.js',
+    '~/plugins/auth.js',
     { src: '~/plugins/datepicker', ssr: false },
     // { src: '~/plugins/vuex-persistedstate.js', ssr: false },
   ],

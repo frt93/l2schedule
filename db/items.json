@@ -250,6 +250,15 @@
       "type": "pieces",
       "image": "/items/pieces/brown-pouch.png",
       "shortname": "MA Circlet Pattern"
+    },
+    {
+      "id": "1554390008",
+      "fullname": "Elysian",
+      "type": "weapon",
+      "shortname": "Elysian",
+      "image": "/items/full/elysian.png",
+      "grade": "A",
+      "weaponType": "blunt"
     }
   ]
 }

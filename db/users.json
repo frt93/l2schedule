@@ -1,4 +1,23 @@
 {
-  "users": [],
+  "users": [
+    {
+      "id": "1554199133",
+      "username": "frt",
+      "email": "razeb4enko@gmail.com",
+      "password": "$2a$10$F5H/GFtPM92aDo13Xsg9Qu7WWmfJqz0JmWi4fCQhzzvfXCDd48fU6"
+    },
+    {
+      "id": "1554315259",
+      "username": "gando",
+      "email": "frthere@gmail.com",
+      "password": "$2a$10$uODB0SDrB0nIDlLrymqi8usZAo0tmj0c/zPupV8z7ON.2jZM92eAq"
+    },
+    {
+      "id": "1554320807",
+      "username": "farot",
+      "email": "ectoprime@gmail.com",
+      "password": "$2a$10$prg8ri5WRhGhDF8KzRSj1uRSZD3ulZf1NZrvZ7bIT5ZikDPFrnOyK"
+    }
+  ],
   "rights": []
 }

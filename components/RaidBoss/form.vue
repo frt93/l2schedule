@@ -272,21 +272,18 @@ export default {
       boss.id =
         this.id !== null ? this.id : (boss.id = `${this.$moment().unix()}`);
 
-      if (this.action === "edit") {
-        //Вычисляем дату начала окна респа и переводим в формат unix
-        boss.respawn_start = `${this.$moment(this.tod)
-          .add(this.min_respawn, "minutes")
-          .unix()}`;
-        //Вычисляем дату конца окна респа и переводим в формат unix
-        boss.respawn_end = `${this.$moment(this.tod)
-          .add(this.max_respawn, "minutes")
-          .unix()}`;
-        // Время смерти переписываем в формат unix в последнюю очередь,
-        // т.к. окно респа высчитывались на основе его значения до перевода в unix
-        boss.tod = `${this.$moment(this.tod).unix()}`;
-      } else {
-        boss.tod = boss.respawn_start = boss.respawn_end = null;
-      }
+      //Вычисляем дату начала окна респа и переводим в формат unix
+      boss.respawn_start = `${this.$moment(this.tod)
+        .add(this.min_respawn, "minutes")
+        .unix()}`;
+      //Вычисляем дату конца окна респа и переводим в формат unix
+      boss.respawn_end = `${this.$moment(this.tod)
+        .add(this.max_respawn, "minutes")
+        .unix()}`;
+      // Время смерти переписываем в формат unix в последнюю очередь,
+      // т.к. окно респа высчитывались на основе его значения до перевода в unix
+      boss.tod = `${this.$moment(this.tod).unix()}`;
+
       if (this.action === "edit") boss.account = this.account;
       if (this.lvl) boss.lvl = this.lvl;
       if (this.hp) boss.hp = this.hp;

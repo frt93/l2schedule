@@ -21,26 +21,28 @@ export default {
       boss: {
         id: null,
         drop: [],
+        tod: 0,
         type: "regular"
       }
     };
   },
   methods: {
     create(boss) {
-      this.$axios
-        .post("/rb/create", boss)
+      this.$store
+        .dispatch("raidbosses/create", boss)
         .then(res => {
-          this.$emit("created", boss);
-          this.$store.commit("raidbosses/add", boss);
           this.$snackbar.open({
-            message: res.data,
-            duration: 7000,
+            duration: 5000,
+            message: `${res.data.message}`,
+            type: "is-success",
+            position: "is-bottom-right",
             queue: false
           });
+          this.$emit("created", res.data.boss);
         })
         .catch(e => {
           this.$snackbar.open({
-            duration: 7000,
+            duration: 5000,
             message: `${e.response.data.error.message}`,
             type: "is-danger",
             position: "is-bottom-left",

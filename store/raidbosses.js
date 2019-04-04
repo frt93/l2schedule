@@ -20,9 +20,9 @@ export const mutations = {
     state.allRaidBosses.push(boss);
   },
 
-  remove(state, boss) {
+  remove(state, id) {
     const raidBossesToKeep = state.allRaidBosses.filter(rb => {
-      return rb.id !== boss.id;
+      return rb.id !== id;
     });
     state.allRaidBosses = raidBossesToKeep;
   },
@@ -39,15 +39,52 @@ export const actions = {
     commit('SET_RAIDBOSS_LIST', sort);
   },
 
-  update({ dispatch, commit, state }, boss) {
-    const allRaidBosses = state.allRaidBosses;
-
-    let newRaidBossesList = allRaidBosses.filter(rb => {
-      return rb.id !== boss.id;
+  create({ commit }, boss) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('/rb/create', boss)
+        .then(res => {
+          commit('add', res.data.boss);
+          resolve(res);
+        })
+        .catch(e => {
+          reject(e);
+        });
     });
-    newRaidBossesList.push(boss);
-    // commit('update', newRaidBossesList);
-    dispatch('sortByResp', newRaidBossesList);
+  },
+
+  update({ dispatch, state }, boss) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('/rb/update', boss)
+        .then(res => {
+          const allRaidBosses = state.allRaidBosses;
+
+          let newRaidBossesList = allRaidBosses.filter(rb => {
+            return rb.id !== res.data.boss.id;
+          });
+          newRaidBossesList.push(boss);
+          dispatch('sortByResp', newRaidBossesList);
+          resolve(res);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  },
+
+  remove({ commit }, boss) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('/rb/remove', boss)
+        .then(res => {
+          commit('remove', boss.id);
+          resolve(res);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
   },
 };
 

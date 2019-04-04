@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="content">
-      <edit :item="item" :action="'update'" @update="update"></edit>
+      <edit :item="item" :action="'update'" @update="update" @back="$emit('updated', item)"></edit>
     </div>
   </div>
 </template>
@@ -32,20 +32,19 @@ export default {
   },
   methods: {
     update(item) {
-      this.$axios
-        .post(`/item/${item.id}/update`, item)
-        .then(async res => {
-          await this.$store.dispatch("items/update", item);
-          this.$emit("updated", item);
+      this.$store
+        .dispatch(`items/update`, item)
+        .then(res => {
           this.$snackbar.open({
-            message: res.data,
-            duration: 7000,
+            message: res.data.message,
+            duration: 5000,
             queue: false
           });
+          this.$emit("updated", item);
         })
         .catch(e => {
           this.$snackbar.open({
-            duration: 7000,
+            duration: 5000,
             message: `${e.response.data.error.message}`,
             type: "is-danger",
             position: "is-bottom-left",

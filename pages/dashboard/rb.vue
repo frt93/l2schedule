@@ -9,7 +9,7 @@
     </b-modal>
 
     <div class="container">
-      <RaidBossesList displayType="rbTable"></RaidBossesList>
+      <RaidBossesList displayType="viewTable"></RaidBossesList>
     </div>
   </div>
 </template>
@@ -18,6 +18,7 @@
 import RaidBossesList from "~/components/RaidBoss/RaidBossesList";
 import modal from "~/components/RaidBoss/modal";
 export default {
+  middleware: "auth",
   components: { RaidBossesList, modal },
   data() {
     return {

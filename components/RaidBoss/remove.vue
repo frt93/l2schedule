@@ -24,20 +24,19 @@ export default {
         },
         onConfirm: value => {
           if (value === boss.fullname) {
-            this.$axios
-              .post(`/rb/${boss.id}/remove`)
+            this.$store
+              .dispatch("raidbosses/remove", boss)
               .then(res => {
-                this.$emit("removed");
-                this.$store.commit("raidbosses/remove", boss);
                 this.$snackbar.open({
-                  message: res.data,
-                  duration: 7000,
+                  message: res.data.message,
+                  duration: 5000,
                   queue: false
                 });
+                this.$emit("removed");
               })
               .catch(e => {
                 this.$snackbar.open({
-                  duration: 7000,
+                  duration: 5000,
                   message: `${e.response.data.error.message}`,
                   type: "is-danger",
                   position: "is-bottom-left",
@@ -46,15 +45,15 @@ export default {
                 });
               });
           } else {
-            this.$emit("removed");
             this.$snackbar.open({
-              duration: 7000,
+              duration: 5000,
               message: `Вы ошиблись при указании имени удаляемого РБ. Попробуйте снова`,
               type: "is-danger",
               position: "is-bottom-left",
               actionText: "OK",
               queue: false
             });
+            this.$emit("removed");
           }
         },
         onCancel: () => {

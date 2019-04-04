@@ -32,20 +32,21 @@ export default {
   },
   methods: {
     update(boss) {
-      this.$axios
-        .post(`/rb/${boss.id}/update`, boss)
-        .then(async res => {
-          await this.$store.dispatch("raidbosses/update", boss);
-          this.$emit("updated", boss);
+      this.$store
+        .dispatch("raidbosses/update", boss)
+        .then(res => {
           this.$snackbar.open({
-            message: res.data,
-            duration: 7000,
+            duration: 5000,
+            message: `${res.data.message}`,
+            type: "is-success",
+            position: "is-bottom-right",
             queue: false
           });
+          this.$emit("updated", res.data.boss);
         })
         .catch(e => {
           this.$snackbar.open({
-            duration: 7000,
+            duration: 5000,
             message: `${e.response.data.error.message}`,
             type: "is-danger",
             position: "is-bottom-left",

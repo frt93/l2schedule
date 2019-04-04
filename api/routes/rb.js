@@ -1,14 +1,63 @@
 const { Router } = require('express');
 const router = Router();
 
+const toLowerCaseAndReplaceSpaces = require('../plugins/mixins');
+
 const low = require('lowdb');
 const FileAsync = require('lowdb/adapters/FileAsync');
 const bosses = new FileAsync('db/bosses.json');
 
 low(bosses).then(db => {
+  db._.mixin({
+    // Проверяем уникальность Рейдового Босса, путем поиска среди уже существующих идентичного полного имени,
+    // короткого имени (предварительно прогнав их через метод toLowerCaseAndReplaceSpaces) или ID.
+    // Эти три миксина вызываются в функции create() после получения коллекции РБ и перед попыткой сохранить в ней нового
+    isUniqueFullname: function(bosses, fullname) {
+      if (
+        bosses.findIndex(
+          boss =>
+            toLowerCaseAndReplaceSpaces(boss['fullname']) === toLowerCaseAndReplaceSpaces(fullname)
+        ) === -1
+      ) {
+        return bosses;
+      } else {
+        throw {
+          name: 'Fullname already taken',
+          message: `Рейдовый босс с именем ${fullname} уже сушествует`,
+        };
+      }
+    },
+    isUniqueShortname: function(bosses, shortname) {
+      if (
+        bosses.findIndex(
+          boss =>
+            toLowerCaseAndReplaceSpaces(boss['shortname']) ===
+            toLowerCaseAndReplaceSpaces(shortname)
+        ) === -1
+      ) {
+        return bosses;
+      } else {
+        throw {
+          name: 'Shortname already taken',
+          message: `Рейдовый босс с коротким именем ${shortname} уже сушествует`,
+        };
+      }
+    },
+    isUniqueID: function(bosses, id) {
+      if (bosses.findIndex(boss => boss['id'] === id) === -1) {
+        return bosses;
+      } else {
+        throw {
+          name: 'Raid Boss with specified ID already exists',
+          message: `Рейдовый босс с идентификатором ${id} уже сушествует`,
+        };
+      }
+    },
+  });
+
   router.get('/rb/all', (req, res) => {
     try {
-      const raidbosses = getAllRaidBosses(db);
+      const raidbosses = getAllRaidbosses(db);
       res.send(raidbosses);
     } catch (e) {
       res.status(500).send(e);
@@ -17,110 +66,161 @@ low(bosses).then(db => {
 
   router.get('/rb/:id', (req, res) => {
     const id = req.params.id;
-    getRaidBossById(db, id, res);
-  });
-
-  router.post('/rb/:id/update', (req, res) => {
-    const id = req.params.id;
-    const updatedRaidBoss = req.body;
-    //Составляем массив с РБ без учета исправляемого
-    const withoutUpdatedRaidBoss = getAllRaidBosses(db).filter(boss => {
-      return boss.id !== id;
-    });
-    //Проверяем, чтобы РБ, который подвергся изменению не был переименован в уже существующего РБ
-    checkFullnameDuplicate(withoutUpdatedRaidBoss, updatedRaidBoss.fullname);
-    //Обновляем
-    updateRaidBoss(db, id, updatedRaidBoss, res);
+    const rb = findRaidbossByID(db, id);
+    return res.send(rb);
   });
 
   router.post('/rb/create', (req, res) => {
-    const newRaidBoss = req.body;
-    createRaidBoss(db, newRaidBoss, res);
+    const boss = req.body;
+    create(db, boss, res);
   });
 
-  router.post('/rb/:id/remove', (req, res) => {
-    const id = req.params.id;
-    removeRaidBoss(db, id, res);
+  router.post('/rb/update', (req, res) => {
+    const boss = req.body;
+    update(db, boss, res);
+  });
+
+  router.post('/rb/remove', (req, res) => {
+    const boss = req.body;
+    remove(db, boss, res);
   });
 });
 
-// Получаем всех рейдовых боссов
-const getAllRaidBosses = db => {
+/**
+ * Получаем всех Рейдовых Боссов из БД
+ * @param db                Объект доступа к БД
+ * @return Array
+ */
+const getAllRaidbosses = db => {
   return db.get('raidbosses').value();
 };
 
-// Получаем конкретного рейдового босса по id
-const getRaidBossById = (db, id, res) => {
-  try {
-    const rb = db
-      .get('raidbosses')
-      .find({ id: id })
-      .value();
-    res.send(rb);
-  } catch (e) {
-    res.status(500).send(e);
-  }
+/**
+ * Поиск Рейдового Босса в БД по ID
+ * @param db                Объект доступа к БД
+ * @param id                ID искомого РБ
+ * @return Raidboss Object
+ */
+const findRaidbossByID = (db, id) => {
+  const boss = db
+    .get('raidbosses')
+    .find({ id: id })
+    .value();
+  return boss;
 };
 
-// Изменяем информацию о конкретном рейдовом боссе по его id
-const updateRaidBoss = (db, id, newdata, res) => {
-  return db
+/**
+ * Поиск Рейдового Босса в БД по полному имени
+ * @param db                Объект доступа к БД
+ * @param fullname          Полное имя искомого РБ
+ * @return Raidboss Object
+ */
+const findRaidbossByFullname = (db, fullname) => {
+  const rb = db
     .get('raidbosses')
-    .chain()
-    .find({ id: id })
-    .assign(newdata)
+    .find(function(rb) {
+      return toLowerCaseAndReplaceSpaces(rb.fullname) === toLowerCaseAndReplaceSpaces(fullname);
+    })
+    .value();
+
+  return rb;
+};
+
+/**
+ * Поиск Рейдового Босса в БД по полному имени
+ * @param db                Объект доступа к БД
+ * @param shortname         Короткое имя искомого РБ
+ * @return Raidboss Object
+ */
+const findRaidbossByShortname = (db, shortname) => {
+  const rb = db
+    .get('raidbosses')
+    .find(function(rb) {
+      return toLowerCaseAndReplaceSpaces(rb.shortname) === toLowerCaseAndReplaceSpaces(shortname);
+    })
+    .value();
+
+  return rb;
+};
+
+/**
+ * Создаем нового Рейдового Босса
+ * @param db                Объект доступа к БД
+ * @param boss              Экземпляр создаваемого РБ
+ * @param res               Объект ответа сервера
+ * @return Promise          Промис с созданным РБ или ошибкой
+ */
+const create = (db, boss, res) => {
+  db.get('raidbosses')
+    .isUniqueID(boss.id)
+    .isUniqueFullname(boss.fullname)
+    .isUniqueShortname(boss.shortname)
+    .push(boss)
     .write()
-    .then(boss => res.send(`Информация о ${boss.fullname} успешно изменена`))
+    .then(bosses => {
+      res.send({
+        message: `Рейдовый босс ${boss.fullname} успешно создан и добавлен в базу данных`,
+        boss,
+      });
+    })
     .catch(e => res.status(500).send(e));
 };
 
-// Создаем нового рейдового босса
-const createRaidBoss = (db, newRaidBoss, res) => {
-  const id = newRaidBoss.id;
-  const fullname = newRaidBoss.fullname;
-  const existingRaidBosses = getAllRaidBosses(db);
-  //Исключаем создание РБ с уже существующим ID и полным именем
-  checkIdDuplicate(existingRaidBosses, id);
-  checkFullnameDuplicate(existingRaidBosses, fullname);
+/**
+ * Изменяем информацию о Рейдовом Боссе
+ * @param db                Объект доступа к БД
+ * @param boss              Экземпляр изменяемого РБ
+ * @param res               Объект ответа сервера
+ * @return Promise          Промис с измененным РБ или ошибкой
+ */
+const update = (db, boss, res) => {
+  const isFullnamelUnique = findRaidbossByFullname(db, boss.fullname);
+  if (isFullnamelUnique && isFullnamelUnique.id !== boss.id)
+    throw {
+      name: 'Fullname already taken',
+      message: `РБ с полным именем ${boss.fullname} уже сушествует`,
+    };
+
+  const isShortnamelUnique = findRaidbossByShortname(db, boss.shortname);
+  if (isShortnamelUnique && isShortnamelUnique.id !== boss.id)
+    throw {
+      name: 'Shortname already taken',
+      message: `РБ с коротким именем ${boss.shortname} уже сушествует`,
+    };
 
   db.get('raidbosses')
-    .push(newRaidBoss)
+    .chain()
+    .find({ id: boss.id })
+    .assign(boss)
     .write()
     .then(boss => {
-      res.send(`Рейдовый босс ${newRaidBoss.fullname} успешно создан и добавлен в базу данных`);
+      res.send({ message: `Информация о РБ ${boss.fullname} изменена`, boss });
     })
     .catch(e => res.status(500).send(e));
 };
 
-// Удаляем рейдового босса
-const removeRaidBoss = (db, id, res) => {
-  const raidBossToDelete = db.get('raidbosses').find({ id: id });
-  //Проверяем существование РБ с заданным идентификатором в БД
-  if (!raidBossToDelete.value())
-    throw Error(`РБ с заданным идентификатором не найден в базе данных`);
-  //Если РБ существует - удаляем
+/**
+ * Удаляем информацию о Рейдовом Боссе
+ * @param db                Объект доступа к БД
+ * @param boss              Экземпляр изменяемого РБ
+ * @param res               Объект ответа сервера
+ * @return Promise
+ */
+const remove = (db, boss, res) => {
+  const raidBossToDelete = findRaidbossByID(db, boss.id);
+
+  if (!raidBossToDelete)
+    throw {
+      name: 'Raidboss not found',
+      message: `РБ с заданным идентификатором не найден в базе данных`,
+    };
+
   db.get('raidbosses')
-    .remove({ id: id })
+    .remove({ id: boss.id })
     .write()
     .then(rb => {
-      res.send(`РБ ${rb[0].fullname} успешно удален`);
+      res.send({ message: `РБ ${boss.fullname} успешно удален` });
     })
     .catch(e => res.status(500).send(e));
-};
-
-// Проверяем существование рейдового босса с указанным ID в переданном массиве
-const checkIdDuplicate = (array, id) => {
-  const idDuplicate = array.filter(i => {
-    return i.id === id;
-  });
-  if (idDuplicate.length) throw Error('РБ с заданным идентификатором уже существует');
-};
-
-// Проверяем существование рейдового босса с указанным fullname в переданном массиве
-const checkFullnameDuplicate = (array, fullname) => {
-  const fullnameDuplicate = array.filter(i => {
-    return i.fullname === fullname;
-  });
-  if (fullnameDuplicate.length) throw Error(`РБ с именем '${fullname}' уже существует`);
 };
 module.exports = router;

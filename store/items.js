@@ -46,9 +46,9 @@ export const mutations = {
     state.allItems.push(item);
   },
 
-  remove(state, item) {
+  remove(state, id) {
     const itemsToKeep = state.allItems.filter(i => {
-      return i.id !== item.id;
+      return i.id !== id;
     });
     state.allItems = itemsToKeep;
   },
@@ -60,14 +60,52 @@ export const actions = {
     commit('SET_ITEMS_LIST', data);
   },
 
-  update({ commit, state }, item) {
-    const allItems = state.allItems;
-
-    let newItemsList = allItems.filter(i => {
-      return i.id !== item.id;
+  create({ commit }, item) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('/item/create', item)
+        .then(res => {
+          commit('add', res.data.item);
+          resolve(res);
+        })
+        .catch(e => {
+          reject(e);
+        });
     });
-    newItemsList.push(item);
-    commit('update', newItemsList);
+  },
+
+  update({ commit, state }, item) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('/item/update', item)
+        .then(res => {
+          const allItems = state.allItems;
+
+          let newItemsList = allItems.filter(i => {
+            return i.id !== item.id;
+          });
+          newItemsList.push(item);
+          commit('update', newItemsList);
+          resolve(res);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  },
+
+  remove({ commit }, item) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('/item/remove', item)
+        .then(res => {
+          commit('remove', item.id);
+          resolve(res);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
   },
 
   // sortItemsByType({ commit }) {

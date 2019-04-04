@@ -22,6 +22,7 @@ import itemsTable from "~/components/items/table";
 import remove from "~/components/items/remove";
 
 export default {
+  middleware: "auth",
   components: {
     modal,
     itemsTable,

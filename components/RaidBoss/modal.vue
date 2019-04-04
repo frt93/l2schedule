@@ -46,7 +46,10 @@ export default {
       required: true
     },
     timeleftToRespawn: {
-      type: Object
+      type: Object,
+      default: function() {
+        return {};
+      }
     }
   },
 

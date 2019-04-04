@@ -1,10 +1,60 @@
 const { Router } = require('express');
 const router = Router();
+
+const toLowerCaseAndReplaceSpaces = require('../plugins/mixins');
+
 const low = require('lowdb');
 const FileAsync = require('lowdb/adapters/FileAsync');
 const items = new FileAsync('db/items.json');
 
 low(items).then(db => {
+  db._.mixin({
+    // Проверяем уникальность предмета, путем поиска среди уже существующих идентичного полного имени,
+    // короткого имени (предварительно прогнав их через метод toLowerCaseAndReplaceSpaces) или ID.
+    // Эти три миксина вызываются в функции create() после получения коллекции предметов и перед попыткой сохранить в ней новый
+    isUniqueFullname: function(items, fullname) {
+      if (
+        items.findIndex(
+          item =>
+            toLowerCaseAndReplaceSpaces(item['fullname']) === toLowerCaseAndReplaceSpaces(fullname)
+        ) === -1
+      ) {
+        return items;
+      } else {
+        throw {
+          name: 'Fullname already taken',
+          message: `Предмет с наименованием ${fullname} уже сушествует`,
+        };
+      }
+    },
+    isUniqueShortname: function(items, shortname) {
+      if (
+        items.findIndex(
+          item =>
+            toLowerCaseAndReplaceSpaces(item['shortname']) ===
+            toLowerCaseAndReplaceSpaces(shortname)
+        ) === -1
+      ) {
+        return items;
+      } else {
+        throw {
+          name: 'Shortname already taken',
+          message: `Предмет с сокращенным наименованием ${shortname} уже сушествует`,
+        };
+      }
+    },
+    isUniqueID: function(items, id) {
+      if (items.findIndex(item => item['id'] === id) === -1) {
+        return items;
+      } else {
+        throw {
+          name: 'Item with specified ID already exists',
+          message: `Предмет с идентификатором ${id} уже сушествует`,
+        };
+      }
+    },
+  });
+
   router.get('/items/all', (req, res) => {
     try {
       const items = getAllItems(db);
@@ -16,108 +66,161 @@ low(items).then(db => {
 
   router.get('/item/:id', (req, res) => {
     const id = req.params.id;
-    getItemById(db, id, res);
-  });
-
-  router.post('/item/:id/update', (req, res) => {
-    const id = req.params.id;
-    const updatedItem = req.body;
-    //Составляем массив с предметами без учета исправляемого
-    const withoutUpdatedItem = getAllItems(db).filter(item => {
-      return item.id !== id;
-    });
-    //Проверяем, чтобы предмет, который подвергся изменению не был переименован в уже существующий
-    checkFullnameDuplicate(withoutUpdatedItem, updatedItem.fullname);
-    //Обновляем
-    updateItem(db, id, updatedItem, res);
+    const item = findItemByID(db, id, res);
+    return res.send(item);
   });
 
   router.post('/item/create', (req, res) => {
-    const newItem = req.body;
-    createItem(db, newItem, res);
+    const item = req.body;
+    create(db, item, res);
   });
 
-  router.post('/item/:id/remove', (req, res) => {
-    const id = req.params.id;
-    removeItem(db, id, res);
+  router.post('/item/update', (req, res) => {
+    const item = req.body;
+    update(db, item, res);
+  });
+
+  router.post('/item/remove', (req, res) => {
+    const item = req.body;
+    remove(db, item, res);
   });
 });
 
-// Получаем все итемы
+/**
+ * Получаем все предметы
+ * @param db                Объект доступа к БД
+ * @return Array
+ */
 const getAllItems = db => {
   return db.get('items').value();
 };
 
-// Получаем конкретный предмет по его id
-const getItemById = (db, id, res) => {
-  try {
-    const item = db
-      .get('items')
-      .find({ id: id })
-      .value();
-    res.send(item);
-  } catch (e) {
-    res.status(500).send(e);
-  }
-};
-
-// Изменяем информацию о конкретном предмете по его id
-const updateItem = (db, id, newdata, res) => {
-  return db
+/**
+ * Поиск предмета в БД по ID
+ * @param db                Объект доступа к БД
+ * @param id                ID искомого РБ
+ * @return Item Object
+ */
+const findItemByID = (db, id) => {
+  const item = db
     .get('items')
-    .chain()
     .find({ id: id })
-    .assign(newdata)
-    .write()
-    .then(item => res.send(`Информация о ${item.fullname} успешно изменена`))
-    .catch(e => res.status(500).send(e));
+    .value();
+  return item;
 };
 
-// Создаем новый предмет
-const createItem = (db, newItem, res) => {
-  const id = newItem.id;
-  const fullname = newItem.fullname;
-  const existingItems = getAllItems(db);
-  //Исключаем создание предмета с уже существующим ID и именем
-  checkIdDuplicate(existingItems, id);
-  checkFullnameDuplicate(existingItems, fullname);
+/**
+ * Поиск предмета в БД по полному наименованию
+ * @param db                Объект доступа к БД
+ * @param fullname          Полное наименование искомого предмета
+ * @return Item Object
+ */
+const findItemByFullname = (db, fullname) => {
+  const item = db
+    .get('items')
+    .find(function(item) {
+      return toLowerCaseAndReplaceSpaces(item.fullname) === toLowerCaseAndReplaceSpaces(fullname);
+    })
+    .value();
 
-  db.get('items')
-    .push(newItem)
-    .write()
-    .then(item => res.send(`Предмет ${newItem.fullname} успешно создан и добавлен в базу данных`))
-    .catch(e => res.status(500).send(e));
+  return item;
 };
 
-// Удаляем предмет
-const removeItem = (db, id, res) => {
-  const ItemToDelete = db.get('items').find({ id: id });
-  //Проверяем существование предмета с заданным идентификатором в БД
-  if (!ItemToDelete.value())
-    throw Error(`Предмет с заданным идентификатором не найден в базе данных`);
-  //Если предмет существует - удаляем
+/**
+ * Поиск предмета в БД по сокращенному наименованию
+ * @param db                Объект доступа к БД
+ * @param shortname         Короткое наименование искомого предмета
+ * @return Item Object
+ */
+const findItemByShortname = (db, shortname) => {
+  const item = db
+    .get('items')
+    .find(function(item) {
+      return toLowerCaseAndReplaceSpaces(item.shortname) === toLowerCaseAndReplaceSpaces(shortname);
+    })
+    .value();
+
+  return item;
+};
+
+/**
+ * Создаем новый предмет
+ * @param db                Объект доступа к БД
+ * @param item              Экземпляр создаваемого предмета
+ * @param res               Объект ответа сервера
+ * @return Promise          Промис с созданным предметом или ошибкой
+ */
+const create = (db, item, res) => {
   db.get('items')
-    .remove({ id: id })
+    .isUniqueID(item.id)
+    .isUniqueFullname(item.fullname)
+    .isUniqueShortname(item.shortname)
+    .push(item)
     .write()
-    .then(item => {
-      res.send(`Предмет ${item[0].fullname} успешно удален`);
+    .then(items => {
+      res.send({
+        message: `Предмет ${item.fullname} успешно создан и добавлен в базу данных`,
+        item,
+      });
     })
     .catch(e => res.status(500).send(e));
 };
 
-// Проверяем существование предмета с указанным ID в переданном массиве
-const checkIdDuplicate = (array, id) => {
-  const idDuplicate = array.filter(i => {
-    return i.id === id;
-  });
-  if (idDuplicate.length) throw Error('Предмет с заданным идентификатором уже существует');
+/**
+ * Изменяем информацию о предмете
+ * @param db                Объект доступа к БД
+ * @param item              Экземпляр изменяемого предмета
+ * @param res               Объект ответа сервера
+ * @return Promise          Промис с измененным предметом или ошибкой
+ */
+const update = (db, item, res) => {
+  const isFullnamelUnique = findItemByFullname(db, item.fullname);
+  if (isFullnamelUnique && isFullnamelUnique.id !== item.id)
+    throw {
+      name: 'Fullname already taken',
+      message: `Предмет с полным наименованием ${item.fullname} уже сушествует`,
+    };
+
+  const isShortnamelUnique = findItemByShortname(db, item.shortname);
+  if (isShortnamelUnique && isShortnamelUnique.id !== item.id)
+    throw {
+      name: 'Shortname already taken',
+      message: `Предмет с коротким наименованием ${item.shortname} уже сушествует`,
+    };
+
+  db.get('items')
+    .chain()
+    .find({ id: item.id })
+    .assign(item)
+    .write()
+    .then(item => {
+      res.send({ message: `Информация о предмете ${item.fullname} изменена`, item });
+    })
+    .catch(e => res.status(500).send(e));
 };
 
-// Проверяем существование предмета с указанным fullname в переданном массиве
-const checkFullnameDuplicate = (array, fullname) => {
-  const fullnameDuplicate = array.filter(i => {
-    return i.fullname === fullname;
-  });
-  if (fullnameDuplicate.length) throw Error(`Предмет с наименованием '${fullname}' уже существует`);
+/**
+ * Удаляем информацию о предмете
+ * @param db                Объект доступа к БД
+ * @param item              Экземпляр удаляемого предмета
+ * @param res               Объект ответа сервера
+ * @return Promise
+ */
+const remove = (db, item, res) => {
+  const itemToDelete = findItemByID(db, item.id);
+
+  if (!itemToDelete)
+    throw {
+      name: 'Item not found',
+      message: `Предмет с заданным идентификатором не найден в базе данных`,
+    };
+
+  db.get('items')
+    .remove({ id: item.id })
+    .write()
+    .then(rb => {
+      res.send({ message: `Предмет ${item.fullname} успешно удален` });
+    })
+    .catch(e => res.status(500).send(e));
 };
 module.exports = router;
