@@ -178,7 +178,7 @@ export default {
         this.$set(this.timeleftToRespawn, boss.id, value);
       });
       // Запускаем таймер-планировщик только на клиенте
-      if (process.client) {
+      if (process.browser) {
         this.interval = setInterval(
           function() {
             this.$store.dispatch("raidbosses/sortByResp", allRB);
