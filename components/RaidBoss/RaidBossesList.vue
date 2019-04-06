@@ -177,6 +177,9 @@ export default {
         // Поэтому устанавливаем эти новые свойства с помощью сеттера
         this.$set(this.timeleftToRespawn, boss.id, value);
       });
+    },
+
+    calculateTimeleftInterval() {
       // Запускаем таймер-планировщик только на клиенте
       if (process.browser) {
         this.interval = setInterval(
@@ -257,6 +260,10 @@ export default {
   beforeMount() {
     // Запускаем метод определения состояния респа рб.
     this.calculateTimeleft();
+  },
+
+  mounted() {
+    calculateTimeleftInterval();
   },
   watch: {
     raidBosses() {
