@@ -4,6 +4,7 @@
 <script>
 import signup from "~/components/ui/auth/signup";
 export default {
+  name: "signUpPage",
   middleware: "notAuth",
   components: {
     signup

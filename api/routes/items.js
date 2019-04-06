@@ -55,7 +55,7 @@ low(items).then(db => {
     },
   });
 
-  router.get('/items/all', (req, res) => {
+  router.get('/all', (req, res) => {
     try {
       const items = getAllItems(db);
       res.send(items);
@@ -64,23 +64,23 @@ low(items).then(db => {
     }
   });
 
-  router.get('/item/:id', (req, res) => {
+  router.get('/:id', (req, res) => {
     const id = req.params.id;
     const item = findItemByID(db, id, res);
     return res.send(item);
   });
 
-  router.post('/item/create', (req, res) => {
+  router.post('/create', (req, res) => {
     const item = req.body;
     create(db, item, res);
   });
 
-  router.post('/item/update', (req, res) => {
+  router.post('/update', (req, res) => {
     const item = req.body;
     update(db, item, res);
   });
 
-  router.post('/item/remove', (req, res) => {
+  router.post('/remove', (req, res) => {
     const item = req.body;
     remove(db, item, res);
   });

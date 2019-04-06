@@ -55,34 +55,36 @@ low(bosses).then(db => {
     },
   });
 
-  router.get('/rb/all', (req, res) => {
-    try {
-      const raidbosses = getAllRaidbosses(db);
-      res.send(raidbosses);
-    } catch (e) {
+  router.get('/all', (req, res) => {
+    const raidbosses = getAllRaidbosses(db);
+    if (!raidbosses) {
       res.status(500).send(e);
     }
+    res.send(raidbosses);
   });
 
-  router.get('/rb/:id', (req, res) => {
+  router.get('/:id', (req, res) => {
     const id = req.params.id;
     const rb = findRaidbossByID(db, id);
     return res.send(rb);
   });
 
-  router.post('/rb/create', (req, res) => {
-    const boss = req.body;
-    create(db, boss, res);
+  router.post('/create', (req, res) => {
+    const boss = req.body.boss;
+    const user = req.body.user;
+    create(db, boss, user, req, res);
   });
 
-  router.post('/rb/update', (req, res) => {
-    const boss = req.body;
-    update(db, boss, res);
+  router.post('/update', (req, res) => {
+    const boss = req.body.boss;
+    const user = req.body.user;
+    update(db, boss, user, req, res);
   });
 
-  router.post('/rb/remove', (req, res) => {
-    const boss = req.body;
-    remove(db, boss, res);
+  router.post('/remove', (req, res) => {
+    const boss = req.body.boss;
+    const user = req.body.user;
+    remove(db, boss, user, req, res);
   });
 });
 
@@ -147,10 +149,12 @@ const findRaidbossByShortname = (db, shortname) => {
  * Создаем нового Рейдового Босса
  * @param db                Объект доступа к БД
  * @param boss              Экземпляр создаваемого РБ
+ * @param user              Экземпляр пользователя, который инициировал создание рб
+ * @param req               Объект ответа сервера
  * @param res               Объект ответа сервера
  * @return Promise          Промис с созданным РБ или ошибкой
  */
-const create = (db, boss, res) => {
+const create = (db, boss, user, req, res) => {
   db.get('raidbosses')
     .isUniqueID(boss.id)
     .isUniqueFullname(boss.fullname)
@@ -158,6 +162,11 @@ const create = (db, boss, res) => {
     .push(boss)
     .write()
     .then(bosses => {
+      const message = {
+        date: new Date().toJSON(),
+        message: `Пользователем ${user.username} добавлен новый РБ ${boss.fullname}`,
+      };
+      req.io.emit('raidboss-created', message, boss, user);
       res.send({
         message: `Рейдовый босс ${boss.fullname} успешно создан и добавлен в базу данных`,
         boss,
@@ -170,10 +179,12 @@ const create = (db, boss, res) => {
  * Изменяем информацию о Рейдовом Боссе
  * @param db                Объект доступа к БД
  * @param boss              Экземпляр изменяемого РБ
+ * @param user              Экземпляр пользователя, который инициировал редактирование
+ * @param req               Объект ответа сервера
  * @param res               Объект ответа сервера
  * @return Promise          Промис с измененным РБ или ошибкой
  */
-const update = (db, boss, res) => {
+const update = (db, boss, user, req, res) => {
   const isFullnamelUnique = findRaidbossByFullname(db, boss.fullname);
   if (isFullnamelUnique && isFullnamelUnique.id !== boss.id)
     throw {
@@ -194,6 +205,11 @@ const update = (db, boss, res) => {
     .assign(boss)
     .write()
     .then(boss => {
+      const message = {
+        date: new Date().toJSON(),
+        message: `Информация о РБ ${boss.fullname} изменена пользователем ${user.username}`,
+      };
+      req.io.emit('raidboss-updated', message, boss, user);
       res.send({ message: `Информация о РБ ${boss.fullname} изменена`, boss });
     })
     .catch(e => res.status(500).send(e));
@@ -203,10 +219,12 @@ const update = (db, boss, res) => {
  * Удаляем информацию о Рейдовом Боссе
  * @param db                Объект доступа к БД
  * @param boss              Экземпляр изменяемого РБ
+ * @param user              Экземпляр пользователя, который инициировал удаление
+ * @param req               Объект ответа сервера
  * @param res               Объект ответа сервера
  * @return Promise
  */
-const remove = (db, boss, res) => {
+const remove = (db, boss, user, req, res) => {
   const raidBossToDelete = findRaidbossByID(db, boss.id);
 
   if (!raidBossToDelete)
@@ -219,6 +237,11 @@ const remove = (db, boss, res) => {
     .remove({ id: boss.id })
     .write()
     .then(rb => {
+      const message = {
+        date: new Date().toJSON(),
+        message: `Информация о РБ ${boss.fullname} удалена пользователем ${user.username}`,
+      };
+      req.io.emit('raidboss-removed', message, boss, user);
       res.send({ message: `РБ ${boss.fullname} успешно удален` });
     })
     .catch(e => res.status(500).send(e));

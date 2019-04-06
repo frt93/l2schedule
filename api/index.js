@@ -1,10 +1,10 @@
 const express = require('express');
+// const SocketIO = require('socket.io');
 const bodyParser = require('body-parser');
-// const multer = require('multer');
-// const form = multer();
 // Create express instnace
-const app = express();
 
+const app = express();
+const io = require('socket.io').listen(app.listen(4000));
 // app.use(async (req, res, next) => {
 //   res.setHeader('Access-Control-Allow-Origin', '*');
 //   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
@@ -16,23 +16,33 @@ const app = express();
 // });
 
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-
-// app.use(form.array());
 
 // Require API routes
-// const users = require('./routes/users');
 const raidbosses = require('./routes/rb');
 const items = require('./routes/items');
 const users = require('./routes/users');
-//
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 
 // Import API Routes
-// app.use(users);
-app.use(raidbosses);
-app.use(items);
+app.use('/rb', raidbosses);
+app.use('/items', items);
 app.use(users);
 
+// Socket.io
+const messages = [];
+io.on('connection', socket => {
+  socket.on('last-messages', fn => {
+    fn(messages.slice(-50));
+  });
+  socket.on('send-message', message => {
+    messages.push(message);
+    socket.broadcast.emit('new-message', message);
+  });
+});
 // Export the server middleware
 module.exports = {
   path: '/api',

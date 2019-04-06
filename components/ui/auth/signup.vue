@@ -1,5 +1,5 @@
 <template>
-  <div class="container auth">
+  <div class="container form auth">
     <b-field
       label="Name"
       :message="usernameError"

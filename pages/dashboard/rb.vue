@@ -18,6 +18,7 @@
 import RaidBossesList from "~/components/RaidBoss/RaidBossesList";
 import modal from "~/components/RaidBoss/modal";
 export default {
+  name: "dashboardRaidbossesPage",
   middleware: "auth",
   components: { RaidBossesList, modal },
   data() {
@@ -25,9 +26,6 @@ export default {
       modalAction: null,
       isModalActive: false
     };
-  },
-  async fetch({ store, params }) {
-    await store.dispatch("raidbosses/fetch");
   }
 };
 </script>

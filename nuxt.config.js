@@ -27,9 +27,13 @@ module.exports = {
     '~/plugins/datetime.js',
     '~/plugins/filters.js',
     '~/plugins/auth.js',
+    '~/plugins/sockets.js',
     { src: '~/plugins/datepicker', ssr: false },
-    // { src: '~/plugins/vuex-persistedstate.js', ssr: false },
   ],
+
+  env: {
+    sockets: process.env.WS_URL || 'http://localhost:4000',
+  },
   /*
    **Axios module config
    */

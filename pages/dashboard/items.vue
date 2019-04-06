@@ -22,6 +22,7 @@ import itemsTable from "~/components/items/table";
 import remove from "~/components/items/remove";
 
 export default {
+  name: "dashboardItemsPage",
   middleware: "auth",
   components: {
     modal,
@@ -35,15 +36,6 @@ export default {
       item: null,
       isRemove: false
     };
-  },
-
-  // async fetch({ store, params }) {
-  //   await store.dispatch("items/fetch");
-  // },
-
-  async asyncData({ $axios, store, params }) {
-    let { data } = await $axios.get(`/items/all`);
-    return store.commit("items/SET_ITEMS_LIST", data);
   },
 
   methods: {

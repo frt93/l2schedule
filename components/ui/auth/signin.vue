@@ -1,6 +1,10 @@
 <template>
-  <div class="container auth">
-    <b-field label="Name" :message="loginKeyError" :type="{'is-danger':loginKeyError.length}">
+  <div class="container form auth">
+    <b-field
+      label="Никнейм или Email"
+      :message="loginKeyError"
+      :type="{'is-danger':loginKeyError.length}"
+    >
       <b-input type="text" :icon="loginIcon" v-model="login" @input="checkLogin"></b-input>
     </b-field>
     <b-field label="Password" :message="passwordError" :type="{'is-danger':passwordError.length}">
@@ -10,7 +14,7 @@
         v-model="password"
         :passwordReveal="true"
         :loading="passwordLoading"
-        @input="checkPassword($event); isErrors='login'"
+        @input="checkPassword($event); isErrors ='login'"
       ></b-input>
     </b-field>
     <button
@@ -19,6 +23,9 @@
       :disabled="isErrors"
       @click="signin"
     >Sign in</button>
+    <n-link to="/auth/restore">
+      <button class="button is-warning">Не помню пароль</button>
+    </n-link>
   </div>
 </template>
  <script>

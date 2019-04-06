@@ -43,7 +43,9 @@
           boss.respawn_start,
           boss.respawn_end
           )}}
-          <span v-if="timeleftToRespawn">({{timeleftToRespawn}})</span>
+          <span
+            v-if="timeleftToRespawn"
+          >({{timeleftToRespawn}})</span>
         </p>
       </b-field>
       <b-field label="Дроп">

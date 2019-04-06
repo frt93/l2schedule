@@ -4,6 +4,7 @@
 <script>
 import signin from "~/components/ui/auth/signin";
 export default {
+  name: "signInPage",
   middleware: "notAuth",
   components: {
     signin

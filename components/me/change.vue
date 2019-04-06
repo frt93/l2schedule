@@ -1,5 +1,5 @@
 <template>
-  <div class="container auth">
+  <div class="container form auth">
     <div v-if="data && !data.emailConfirmCode">
       <b-field label="Email">
         <b-input icon="at" v-model="user.email"></b-input>

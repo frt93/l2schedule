@@ -63,7 +63,7 @@ export const actions = {
   create({ commit }, item) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('/item/create', item)
+        .post('/items/create', item)
         .then(res => {
           commit('add', res.data.item);
           resolve(res);
@@ -77,7 +77,7 @@ export const actions = {
   update({ commit, state }, item) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('/item/update', item)
+        .post('/items/update', item)
         .then(res => {
           const allItems = state.allItems;
 
@@ -97,7 +97,7 @@ export const actions = {
   remove({ commit }, item) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('/item/remove', item)
+        .post('/items/remove', item)
         .then(res => {
           commit('remove', item.id);
           resolve(res);

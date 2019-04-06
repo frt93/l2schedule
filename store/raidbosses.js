@@ -3,6 +3,7 @@ export const state = () => ({
   inWindow: [],
   inResp: [],
   lostResp: [],
+  logs: [],
 });
 
 export const mutations = {
@@ -20,11 +21,15 @@ export const mutations = {
     state.allRaidBosses.push(boss);
   },
 
-  remove(state, id) {
+  remove(state, boss) {
     const raidBossesToKeep = state.allRaidBosses.filter(rb => {
-      return rb.id !== id;
+      return rb.id !== boss.id;
     });
     state.allRaidBosses = raidBossesToKeep;
+  },
+
+  addLog(state, message) {
+    state.logs.unshift(message);
   },
 };
 
@@ -44,7 +49,8 @@ export const actions = {
       this.$axios
         .post('/rb/create', boss)
         .then(res => {
-          commit('add', res.data.boss);
+          // Коммит вызовется сокетом в компоненте (raidbosses/notifications)
+          // commit('add', res.data.boss);
           resolve(res);
         })
         .catch(e => {
@@ -53,24 +59,29 @@ export const actions = {
     });
   },
 
-  update({ dispatch, state }, boss) {
+  update({ dispatch }, payload) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('/rb/update', boss)
+        .post('/rb/update', payload)
         .then(res => {
-          const allRaidBosses = state.allRaidBosses;
-
-          let newRaidBossesList = allRaidBosses.filter(rb => {
-            return rb.id !== res.data.boss.id;
-          });
-          newRaidBossesList.push(boss);
-          dispatch('sortByResp', newRaidBossesList);
+          dispatch('rebuild', res.data.boss);
           resolve(res);
         })
         .catch(e => {
           reject(e);
         });
     });
+  },
+
+  rebuild({ dispatch, state }, boss) {
+    // Перебираем массив со всеми рб и обновляем в нем экземпляр обновленного рб
+    const allRaidBosses = state.allRaidBosses;
+
+    let newRaidBossesList = allRaidBosses.filter(rb => {
+      return rb.id !== boss.id;
+    });
+    newRaidBossesList.push(boss);
+    dispatch('sortByResp', newRaidBossesList);
   },
 
   remove({ commit }, boss) {
@@ -78,7 +89,8 @@ export const actions = {
       this.$axios
         .post('/rb/remove', boss)
         .then(res => {
-          commit('remove', boss.id);
+          // Коммит вызовется сокетом в компоненте (raidbosses/notifications)
+          // commit('remove', boss);
           resolve(res);
         })
         .catch(e => {
@@ -100,5 +112,8 @@ export const getters = {
   },
   getlostResp(state) {
     return state.lostResp;
+  },
+  getLogs(state) {
+    return state.logs;
   },
 };

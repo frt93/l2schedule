@@ -3,7 +3,7 @@
 </template>
 <script>
 export default {
-  name: "confirmUserAuthData",
+  name: "confirmUserAuthDataPage",
   data() {
     return {
       response: ""

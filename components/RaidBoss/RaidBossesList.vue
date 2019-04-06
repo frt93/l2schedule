@@ -98,6 +98,7 @@
       ></modal>
     </b-modal>
     <remove :boss="raidBossToManage" v-if="isRemove" @removed="isRemove=false"></remove>
+    <notifications></notifications>
   </section>
 </template>
 
@@ -107,6 +108,7 @@ import viewTable from "./table";
 import modal from "./modal";
 import remove from "./remove";
 import search from "../ui/search";
+import notifications from "./notifications";
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -114,7 +116,8 @@ export default {
     viewTable,
     modal,
     remove,
-    search
+    search,
+    notifications
   },
   data() {
     return {
@@ -140,7 +143,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ raidBosses: "raidbosses/getAll" })
+    ...mapGetters({
+      raidBosses: "raidbosses/getAll"
+    })
   },
   methods: {
     view(boss) {
@@ -256,7 +261,6 @@ export default {
       this.calculateTimeleft();
     }
   },
-  beforeMount() {},
   beforeDestroy() {
     clearInterval(this.interval);
   }

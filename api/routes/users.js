@@ -80,6 +80,7 @@ low(users).then(db => {
           .status(403)
           .send({ type: 'error', message: 'Provided token is invalid.', error });
       const user = findUserByID(db, result.id);
+      console.log(user);
       return res.send(user);
     });
   });
@@ -131,6 +132,45 @@ low(users).then(db => {
   router.post('/users/signup', (req, res) => {
     const newUser = req.body;
     create(db, newUser, res);
+  });
+
+  router.post('/users/restore', (req, res) => {
+    const username = req.body.username;
+    const email = req.body.email;
+    let user;
+    if (username) {
+      user = findUserByUsername(db, username);
+      if (!user)
+        throw {
+          name: 'User not found',
+          message: `Пользователя с никнеймом ${username} не существует`,
+        };
+    }
+    if (email) {
+      user = findUserByEmail(db, email);
+      if (!user)
+        throw {
+          name: 'User not found',
+          message: `Пользователя с email адресом ${email} не сушествует`,
+        };
+    }
+
+    restoreAccess(user, res);
+  });
+
+  router.post('/user/reset', (req, res) => {
+    const id = req.body.id;
+    const password = req.body.password;
+    const user = findUserByID(db, id);
+
+    if (!user) {
+      throw {
+        name: 'Invalid access recovery code',
+        message: `Вы указали неверный код восстановления доступа`,
+      };
+    }
+
+    reset(db, user, password, res);
   });
 });
 
@@ -191,7 +231,7 @@ const findUserByEmail = (db, email) => {
 };
 
 /**
- * Создаем нового пользователя. Перед записью в БД хэшируем пароль
+ * Создаем нового пользователя. Перед записью в БД хэшируем пароль и присваиваем рядовую группу
  * @param db                Объект доступа к БД
  * @param newUser           Экземпляр создаваемого пользователя
  * @param res               Объект ответа сервера
@@ -200,11 +240,12 @@ const findUserByEmail = (db, email) => {
 const create = (db, newUser, res) => {
   const plaintextPassword = newUser.password;
   newUser.password = hashPassword(plaintextPassword);
-
+  newUser.privileges = 'common';
+  newUser.group = 'newbie';
   const { token, code } = emailConfirmToken(newUser);
   newUser.emailConfirmCode = `${code}`;
 
-  const message = config.registrationConfirmMessage(user, token, code);
+  const message = config.registrationConfirmMessage(user, token, code, plaintextPassword);
 
   db.get('users')
     .isUniqueID(newUser.id)
@@ -360,7 +401,7 @@ const changePassword = (db, user, res) => {
   }
 
   const { token, code } = emailConfirmToken(user);
-  const message = config.passwordChangeConfirmMessage(user, token, code);
+  const message = config.passwordChangeConfirmMessage(user, token, code, user.newPassword);
 
   db.get('users')
     .chain()
@@ -442,6 +483,49 @@ const confirmPasswordChange = (db, id, res) => {
   user.write();
 
   return res.send({ message: `Смена пароля подтверждена`, user });
+};
+
+/**
+ * Начало процедуры восстановления доступа к аккаунту
+ * @param db                Объект доступа к БД
+ * @param id                ID пользователя
+ * @param res               Объект ответа сервера
+ * @return Object
+ */
+const restoreAccess = (user, res) => {
+  const message = config.restoreAccessMessage(user);
+  emailConfirmMessage(message);
+  res.send({
+    message: `На ваш email адрес ${
+      user.email
+    } было выслано письмо с кодом восстановления доступа. Введите его в поле ниже, чтобы сменить пароль к своему аккаунту`,
+  });
+};
+
+/**
+ * Завершаем процедуру восстановления доступа к аккаунту путем смены пароля.
+ * В результате успешной смены - отправляем пользователю на электронную почту письмо с новым паролем
+ * @param db                Объект доступа к БД
+ * @param user              Экземпляр пользователя
+ * @param password          Новый пароль пользователя
+ * @param res               Объект ответа сервера
+ * @return Object
+ */
+const reset = (db, user, password, res) => {
+  const newPassword = hashPassword(password);
+
+  const message = config.resetedPasswordMessage(user, password);
+
+  db.get('users')
+    .chain()
+    .find({ id: user.id })
+    .assign({ password: newPassword })
+    .write()
+    .then(async user => {
+      await emailConfirmMessage(message);
+      await signin(db, { username: user.username, password: password }, res);
+    })
+    .catch(e => res.status(500).send({ message: e }));
 };
 
 /**

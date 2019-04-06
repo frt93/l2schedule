@@ -32,8 +32,9 @@ export default {
   },
   methods: {
     update(boss) {
+      const user = this.$store.getters["auth/getUser"];
       this.$store
-        .dispatch("raidbosses/update", boss)
+        .dispatch("raidbosses/update", { boss, user })
         .then(res => {
           this.$snackbar.open({
             duration: 5000,

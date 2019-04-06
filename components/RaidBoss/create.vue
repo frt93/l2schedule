@@ -28,8 +28,9 @@ export default {
   },
   methods: {
     create(boss) {
+      const user = this.$store.getters["auth/getUser"];
       this.$store
-        .dispatch("raidbosses/create", boss)
+        .dispatch("raidbosses/create", { boss, user })
         .then(res => {
           this.$snackbar.open({
             duration: 5000,

@@ -65,8 +65,11 @@ export default {
 };
 </script>
 <style>
-.auth .icon.is-left i,
-.auth .icon .mdi-eye {
+.form .control input {
+  transition: 0.3s linear;
+}
+.form .control .icon.is-left i,
+.form .control .icon .mdi-eye {
   color: #dbdbdb;
 }
 
@@ -74,10 +77,10 @@ export default {
   -webkit-animation: scale 0.2s ease-out;
   animation: scale 0.2s ease-out;
 }
-.auth .icon .mdi-eye-off {
+.form .control .icon .mdi-eye-off {
   color: #7a7a7a !important;
 }
-.auth .icon i:before {
+.form .control .icon i:before {
   font-size: 16px;
 }
 

@@ -37,7 +37,6 @@ export const actions = {
           resolve(res);
         })
         .catch(e => {
-          dispatch('signOut');
           reject(e);
         });
     });
@@ -54,16 +53,45 @@ export const actions = {
           resolve(res);
         })
         .catch(e => {
-          dispatch('signOut');
           reject(e);
         });
     });
   },
-  async signOut({ commit }) {
-    await commit('reset_user');
-    await resetAuthToken();
+
+  signOut({ commit }) {
+    resetAuthToken();
     cookies.remove('x-access-token');
     this.$router.go();
+    commit('reset_user');
+  },
+
+  restore({ commit }, key) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('/users/restore', key)
+        .then(res => {
+          resolve(res);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  },
+
+  reset({ commit }, user) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post(`/user/reset`, user)
+        .then(res => {
+          commit('set_user', res.data.user);
+          setAuthToken(res.data.token);
+          cookies.set('x-access-token', res.data.token, { expires: 365 });
+          resolve(res);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
   },
 };
 
