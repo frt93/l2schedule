@@ -27,7 +27,7 @@ module.exports = {
     '~/plugins/datetime.js',
     '~/plugins/filters.js',
     '~/plugins/auth.js',
-    '~/plugins/sockets.js',
+    // '~/plugins/sockets.js',
     { src: '~/plugins/datepicker', ssr: false },
   ],
 
