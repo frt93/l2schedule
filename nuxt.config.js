@@ -24,11 +24,11 @@ module.exports = {
 
   modules: ['@nuxtjs/axios', '@nuxtjs/dotenv', 'nuxt-buefy', 'nuxt-clipboard2', '@nuxtjs/moment'],
   plugins: [
-    '~/plugins/datetime.js',
-    '~/plugins/filters.js',
-    '~/plugins/auth.js',
-    '~/plugins/sockets.js',
-    { src: '~/plugins/datepicker', ssr: false },
+    // '~/plugins/datetime.js',
+    // '~/plugins/filters.js',
+    // '~/plugins/auth.js',
+    // '~/plugins/sockets.js',
+    // { src: '~/plugins/datepicker', ssr: false },
   ],
 
   env: {

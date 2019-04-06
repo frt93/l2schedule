@@ -177,11 +177,8 @@ export default {
         // Поэтому устанавливаем эти новые свойства с помощью сеттера
         this.$set(this.timeleftToRespawn, boss.id, value);
       });
-    },
-
-    calculateTimeleftInterval() {
       // Запускаем таймер-планировщик только на клиенте
-      if (process.browser) {
+      if (process.client) {
         this.interval = setInterval(
           function() {
             this.$store.dispatch("raidbosses/sortByResp", allRB);
@@ -252,28 +249,21 @@ export default {
       this.respawnSwitcher = key;
       this.searchResults = this.$store.getters[`raidbosses/get${key}`];
     }
+  },
+
+  beforeMount() {
+    // Запускаем метод определения состояния респа рб.
+    this.calculateTimeleft();
+  },
+  watch: {
+    raidBosses() {
+      clearInterval(this.interval);
+      this.calculateTimeleft();
+    }
+  },
+  beforeDestroy() {
+    clearInterval(this.interval);
   }
-
-  // created() {
-
-  // },
-  // beforeMount() {
-  //   // Запускаем метод определения состояния респа рб.
-  //   this.calculateTimeleft();
-  // },
-
-  // mounted() {
-  //   calculateTimeleftInterval();
-  // },
-  // watch: {
-  //   raidBosses() {
-  //     clearInterval(this.interval);
-  //     this.calculateTimeleft();
-  //   }
-  // },
-  // beforeDestroy() {
-  //   clearInterval(this.interval);
-  // }
 };
 </script>
 

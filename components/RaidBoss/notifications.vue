@@ -77,7 +77,7 @@ export default {
       }
     }
   },
-  beforeMount() {
+  mounted() {
     this.$socket().on("raidboss-updated", (message, boss, user) => {
       this.$store.commit("raidbosses/addLog", message);
       this.$store.dispatch("raidbosses/rebuild", boss);
