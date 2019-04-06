@@ -192,9 +192,9 @@
       "shortname": "Decarbia",
       "type": "regular",
       "id": "1553449497",
-      "respawn_end": "1553698800",
-      "respawn_start": "1553662800",
-      "tod": "1553619600",
+      "respawn_end": "1554044400",
+      "respawn_start": "1554008400",
+      "tod": "1553965200",
       "drop": [
         {
           "id": "1553024009",

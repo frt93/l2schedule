@@ -24,21 +24,21 @@ module.exports = {
 
   modules: ['@nuxtjs/axios', '@nuxtjs/dotenv', 'nuxt-buefy', 'nuxt-clipboard2', '@nuxtjs/moment'],
   plugins: [
-    // '~/plugins/datetime.js',
-    // '~/plugins/filters.js',
-    // '~/plugins/auth.js',
-    // '~/plugins/sockets.js',
-    // { src: '~/plugins/datepicker', ssr: false },
+    '~/plugins/datetime.js',
+    '~/plugins/filters.js',
+    '~/plugins/auth.js',
+    '~/plugins/sockets.js',
+    { src: '~/plugins/datepicker', ssr: false },
   ],
 
   env: {
-    sockets: 'https://l2schedule.herokuapp.com',
+    sockets: process.env.WS_URL || 'http://localhost:3000',
   },
   /*
    **Axios module config
    */
   axios: {
-    baseURL: 'https://l2schedule.herokuapp.com/api/',
+    baseURL: process.env.BASE_URL || 'https://l2schedule.herokuapp.com/api/',
     retry: { retries: 5 },
     debug: false,
   },
@@ -69,5 +69,20 @@ module.exports = {
       }
     },
   },
-  serverMiddleware: ['~/api/index.js'],
+  hooks: {
+    build: {
+      done(builder) {
+        if (!builder.nuxt.options.dev) {
+          setTimeout(() => process.exit(0), 1000);
+        }
+      },
+    },
+  },
+  serverMiddleware: [
+    // Will register file from project api directory to handle /api/* requires
+    { path: '/api', handler: '~/api/index.js' },
+
+    // We can create custom instances too
+    // { path: '/', handler: '~/server.js' },
+  ],
 };

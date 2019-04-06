@@ -339,7 +339,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.liveClock();
   },
   beforeCreate() {
