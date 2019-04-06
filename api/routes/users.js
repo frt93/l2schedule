@@ -80,7 +80,6 @@ low(users).then(db => {
           .status(403)
           .send({ type: 'error', message: 'Provided token is invalid.', error });
       const user = findUserByID(db, result.id);
-      console.log(user);
       return res.send(user);
     });
   });

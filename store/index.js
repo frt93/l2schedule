@@ -11,6 +11,7 @@ export const actions = {
       await dispatch('items/fetch'),
       await new Promise((resolve, reject) => {
         const cookies = cookie.parse(context.req.headers.cookie || '');
+        console.log(cookies['x-access-token']);
         if (cookies.hasOwnProperty('x-access-token')) {
           setAuthToken(cookies['x-access-token']);
           dispatch('auth/fetch')
