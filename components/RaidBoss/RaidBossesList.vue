@@ -252,28 +252,28 @@ export default {
       this.respawnSwitcher = key;
       this.searchResults = this.$store.getters[`raidbosses/get${key}`];
     }
-  },
+  }
 
   // created() {
 
   // },
-  beforeMount() {
-    // Запускаем метод определения состояния респа рб.
-    this.calculateTimeleft();
-  },
+  // beforeMount() {
+  //   // Запускаем метод определения состояния респа рб.
+  //   this.calculateTimeleft();
+  // },
 
-  mounted() {
-    calculateTimeleftInterval();
-  },
-  watch: {
-    raidBosses() {
-      clearInterval(this.interval);
-      this.calculateTimeleft();
-    }
-  },
-  beforeDestroy() {
-    clearInterval(this.interval);
-  }
+  // mounted() {
+  //   calculateTimeleftInterval();
+  // },
+  // watch: {
+  //   raidBosses() {
+  //     clearInterval(this.interval);
+  //     this.calculateTimeleft();
+  //   }
+  // },
+  // beforeDestroy() {
+  //   clearInterval(this.interval);
+  // }
 };
 </script>
 
