@@ -32,13 +32,13 @@ module.exports = {
   ],
 
   env: {
-    sockets: process.env.WS_URL || 'https://l2schedule.herokuapp.com:4000',
+    sockets: 'https://l2schedule.herokuapp.com',
   },
   /*
    **Axios module config
    */
   axios: {
-    baseURL: process.env.BASE_URL || 'https://l2schedule.herokuapp.com/api/',
+    baseURL: 'https://l2schedule.herokuapp.com/api/',
     retry: { retries: 5 },
     debug: false,
   },
