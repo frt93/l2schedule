@@ -5,7 +5,7 @@ import { setAuthToken, resetAuthToken } from './auth';
 let options = {};
 // The server-side needs a full url to works
 if (process.server) {
-  options.baseURL = `http://${process.env.HOST || 'localhost'}:${process.env.PORT || 3000}`;
+  options.baseURL = `http://${process.env.HOST || 'localhost'}:${process.env.PORT || 3333}`;
 }
 
 const token = cookies.get('x-access-token');

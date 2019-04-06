@@ -186,7 +186,7 @@ export default {
         this.interval = setInterval(
           function() {
             this.$store.dispatch("raidbosses/sortByResp", allRB);
-            // return calc;
+            return calc;
           }.bind(this),
           10000
         );
