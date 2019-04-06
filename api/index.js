@@ -3,8 +3,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 // Create express instnace
 
+const { io } = require('../server.js');
+
 const app = express();
-const io = require('socket.io').listen(app.listen(4000));
+// const io = require('socket.io').listen(app.listen(4000));
 // app.use(async (req, res, next) => {
 //   res.setHeader('Access-Control-Allow-Origin', '*');
 //   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
@@ -32,18 +34,13 @@ app.use('/rb', raidbosses);
 app.use('/items', items);
 app.use(users);
 
-// Socket.io
-const messages = [];
+// // Socket.io
+// const messages = [];
 io.on('connection', socket => {
-  socket.on('last-messages', fn => {
-    fn(messages.slice(-50));
-  });
-  socket.on('send-message', message => {
-    messages.push(message);
-    socket.broadcast.emit('new-message', message);
-  });
+  console.log('connected');
 });
 // Export the server middleware
+
 module.exports = {
   path: '/api',
   handler: app,

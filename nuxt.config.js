@@ -32,7 +32,7 @@ module.exports = {
   ],
 
   env: {
-    sockets: process.env.WS_URL || 'https://l2schedule.herokuapp.com/:4000',
+    sockets: process.env.WS_URL || 'http://localhost:3000',
   },
   /*
    **Axios module config
@@ -78,5 +78,11 @@ module.exports = {
       },
     },
   },
-  serverMiddleware: ['~/api/index.js'],
+  serverMiddleware: [
+    // Will register file from project api directory to handle /api/* requires
+    { path: '/api', handler: '~/api/index.js' },
+
+    // We can create custom instances too
+    // { path: '/', handler: '~/server.js' },
+  ],
 };
