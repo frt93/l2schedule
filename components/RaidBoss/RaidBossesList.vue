@@ -251,7 +251,10 @@ export default {
     }
   },
 
-  created() {
+  // created() {
+
+  // },
+  beforeMount() {
     // Запускаем метод определения состояния респа рб.
     this.calculateTimeleft();
   },
