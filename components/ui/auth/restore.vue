@@ -129,7 +129,7 @@ export default {
       if (this.loginKey === "username") key.username = this.login;
       else key.email = this.login;
       this.$store
-        .dispatch("auth/restore", key)
+        .dispatch("user/restore", key)
         .then(res => {
           // Письмо на email с кодом восстановления отправлено.
           // Устанавливаем свойству restored значение true и переходим к следующему этапу восстановления (созданию нового пароля)
@@ -145,7 +145,7 @@ export default {
     change() {
       const payload = { id: this.code, password: this.password };
       this.$store
-        .dispatch("auth/reset", payload)
+        .dispatch("user/reset", payload)
         .then(res => {
           // Успешно сменили пароль и залогинились. Отправляемся на главную страницу
           this.$router.push("/");

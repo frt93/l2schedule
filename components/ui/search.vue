@@ -1,7 +1,6 @@
 <template>
   <section>
     <div class="block search">
-      <!-- <i class="mdi mdi-window-close mdi-24px search-close" @click="close"></i> -->
       <div class="block search-key">
         <b-dropdown v-model="searchBy" aria-role="list" @change="keyChanged">
           <span class="select-key" type="button" slot="trigger">

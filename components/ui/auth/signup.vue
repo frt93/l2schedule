@@ -152,7 +152,7 @@ export default {
         password: this.password
       };
       this.$store
-        .dispatch("auth/signUp", user)
+        .dispatch("user/signUp", user)
         .then(res => {
           this.$snackbar.open({
             duration: 5000,

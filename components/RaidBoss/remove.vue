@@ -24,7 +24,7 @@ export default {
         },
         onConfirm: value => {
           if (value === boss.fullname) {
-            const user = this.$store.getters["auth/getUser"];
+            const user = this.$store.getters["user/getUser"];
             this.$store
               .dispatch("raidbosses/remove", { boss, user })
               .then(res => {

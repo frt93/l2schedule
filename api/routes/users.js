@@ -64,10 +64,33 @@ low(users).then(db => {
         };
       }
     },
+
+    isUniqueGroupID: function(groups, id) {
+      if (groups.findIndex(user => user['id'] === id) === -1) {
+        return groups;
+      } else {
+        throw {
+          name: 'Group with this ID already exist',
+          message: `Группа с идентификатором ${id} уже сушествует`,
+        };
+      }
+    },
+
+    isUniqueGroupName: function(groups, name) {
+      if (groups.findIndex(user => user['name'] === name) === -1) {
+        return groups;
+      } else {
+        throw {
+          name: 'Group with this name already exist',
+          message: `Группа с названием ${name} уже сушествует`,
+        };
+      }
+    },
   });
 
   router.get('/users/all', (req, res) => {
-    getAllUsers(db);
+    const users = getAllUsers(db);
+    res.send(users)
   });
 
   router.get('/me', (req, res) => {
@@ -122,6 +145,7 @@ low(users).then(db => {
       res.send({ user, error: `email адрес ${email} уже используется другим пользователем` });
     else res.send({ message: `Пользователь с email-адресом ${email} не найден` });
   });
+  
 
   router.post('/users/signin', (req, res) => {
     const credentials = req.body;
@@ -129,8 +153,8 @@ low(users).then(db => {
   });
 
   router.post('/users/signup', (req, res) => {
-    const newUser = req.body;
-    create(db, newUser, res);
+    const user = req.body;
+    create(db, user, res);
   });
 
   router.post('/users/restore', (req, res) => {
@@ -170,6 +194,32 @@ low(users).then(db => {
     }
 
     reset(db, user, password, res);
+  });
+
+  router.post('/group/create', (req, res) => {
+    const token = req.headers['x-access-token'];
+    if (!token) return res.status(400).send({ type: 'error', message: 'Authorization error.' });
+    const group = req.body;
+    createGroup(db, group, res);
+  });
+
+  router.post('/group/invite', (req, res) => {
+    const token = req.headers['x-access-token'];
+    if (!token) return res.status(400).send({ type: 'error', message: 'Authorization error.' });
+    const group = req.body.group;
+    const invitee = req.body.invitee;
+    const inviter = req.body.inviter;
+
+    inviteToGroup(db, group, invitee, inviter, res);
+  });
+
+  router.post('/group/accept', (req, res) => {
+    const token = req.headers['x-access-token'];
+    if (!token) return res.status(400).send({ type: 'error', message: 'Authorization error.' });
+    const group = req.body.group;
+    const invitee = req.body.user;
+
+    joinGroup(db, group, invitee, res);
   });
 });
 
@@ -232,29 +282,28 @@ const findUserByEmail = (db, email) => {
 /**
  * Создаем нового пользователя. Перед записью в БД хэшируем пароль и присваиваем рядовую группу
  * @param db                Объект доступа к БД
- * @param newUser           Экземпляр создаваемого пользователя
+ * @param user           Экземпляр создаваемого пользователя
  * @param res               Объект ответа сервера
  * @return Promise          Промис с созданным пользователем или ошибкой
  */
-const create = (db, newUser, res) => {
-  const plaintextPassword = newUser.password;
-  newUser.password = hashPassword(plaintextPassword);
-  newUser.privileges = 'common';
-  newUser.group = 'newbie';
-  const { token, code } = emailConfirmToken(newUser);
-  newUser.emailConfirmCode = `${code}`;
+const create = (db, user, res) => {
+  const plaintextPassword = user.password;
+  user.password = hashPassword(plaintextPassword);
+  user.privileges = 'common';
+  const { token, code } = emailConfirmToken(user);
+  user.emailConfirmCode = `${code}`;
 
   const message = config.registrationConfirmMessage(user, token, code, plaintextPassword);
 
   db.get('users')
-    .isUniqueID(newUser.id)
-    .isUniqueUsername(newUser.username)
-    .isUniqueEmail(newUser.email)
-    .push(newUser)
+    .isUniqueID(user.id)
+    .isUniqueUsername(user.username)
+    .isUniqueEmail(user.email)
+    .push(user)
     .write()
     .then(async users => {
       await emailConfirmMessage(message);
-      await signin(db, { username: newUser.username, password: plaintextPassword }, res);
+      await signin(db, { username: user.username, password: plaintextPassword }, res);
     })
     .catch(e => {
       res.status(500).send({ message: e });
@@ -600,5 +649,110 @@ const signin = async (db, credentials, res) => {
   } else {
     res.status(403).send({ key: 'login', message: errorMessage });
   }
+};
+
+/**
+ * Создаем новую группу. После создания сразу же инвайтим в нее создателя
+ * @param db                Объект доступа к БД
+ * @param group             Экземпляр создаваемой группы
+ * @param res               Объект ответа сервера
+ * @return Promise          Промис с созданным пользователем или ошибкой
+ */
+const createGroup = async (db, group, res) => {
+  await db
+    .get('groups')
+    .isUniqueGroupID(group.id)
+    .isUniqueGroupName(group.name)
+    .push(group)
+    .write()
+    .then(async groups => {
+      await joinGroup(db, group, { id: group.creatorID }, res);
+    })
+    .catch(e => {
+      res.status(500).send({ message: e });
+    });
+};
+
+/**
+ * Создаем новую группу. После создания сразу же инвайтим в нее создателя
+ * @param db                Объект доступа к БД
+ * @param group             Экземпляр группы, в которую приглашают пользователя
+ * @param invitee           Экземпляр пользователя, которого приглашают!
+ * @param inviter           Экземпляр пользователя, который приглашает!
+ * @param res               Объект ответа сервера
+ * @return Promise          Промис с созданным пользователем или ошибкой
+ */
+const inviteToGroup = async (db, group, invitee, inviter, res) => {
+  await db
+    .get('users')
+    .chain()
+    .find({ id: invitee.id })
+    .assign({ groupInvite: { id: group.id, name: group.name, inviterID: inviter.id } })
+    .write()
+    .then(user => {
+      res.send({
+        invitee: user,
+        message: `Пользователь ${invitee.username} приглашен в группу ${group.name}`,
+      });
+    })
+    .catch(e => res.status(500).send({ message: e }));
+};
+
+/**
+ * Присоединяемся к группе
+ * @param db                Объект доступа к БД
+ * @param group             Экземпляр группы, в которую вступает пользователь
+ * @param invitee           Экземпляр пользователя, который вступает в группу
+ * @param res               Объект ответа сервера
+ * @return Promise          Промис с созданным пользователем или ошибкой
+ */
+const joinGroup = async (db, group, invitee, res) => {
+  let role;
+  let inviter;
+  if (group.creatorID === invitee.id) {
+    // Если пользователь вступает в только что созданную собой группу
+    role = 'admin';
+  } else {
+    // Если пользователя кто-то пригласил.
+    // Помимо присвоения его "рядовой" роли получим экземпляр пригласившего пользователя.
+    // Он понадобится на клиенте для передачи в сокет
+    role = 'newbie';
+    inviter = await findUserByID(db, invitee.groupInvite.inviterID);
+  }
+
+  const invitee2 = await db.get('users').find({ id: invitee.id });
+
+  invitee2.unset('groupInvite').value();
+  invitee2.assign({ group: { name: group.name, id: group.id }, groupRole: role }).value();
+
+  invitee2
+    .write()
+    .then(async user => {
+      const message = `Вы присоединились к группе ${group.name}`;
+      res.send({ invitee: user, inviter, message });
+    })
+    .catch(e => res.status(500).send({ message: e }));
+};
+
+/**
+ * Изменяем внутригрупповые привилегии пользователя
+ * @param db                Объект доступа к БД
+ * @param user              Экземпляр пользователя, чьи привилегии изменяются
+ * @param role              Новая роль пользователя
+ * @param res               Объект ответа сервера
+ * @return Promise          Промис с созданным пользователем или ошибкой
+ */
+const changeGroupRole = async (db, user, role, res) => {
+  await db
+    .get('users')
+    .chain()
+    .find({ id: user.id })
+    .assign({ groupRole: role })
+    .write()
+    .then(user => {
+      const message = `Привилегии успешно изменены`;
+      res.send({ message });
+    })
+    .catch(e => res.status(500).send({ message: e }));
 };
 module.exports = router;

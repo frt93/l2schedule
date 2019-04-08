@@ -34,11 +34,6 @@ app.use('/rb', raidbosses);
 app.use('/items', items);
 app.use(users);
 
-// // Socket.io
-// const messages = [];
-io.on('connection', socket => {
-  console.log('connected');
-});
 // Export the server middleware
 
 module.exports = {

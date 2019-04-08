@@ -162,11 +162,6 @@ const create = (db, boss, user, req, res) => {
     .push(boss)
     .write()
     .then(bosses => {
-      const message = {
-        date: new Date().toJSON(),
-        message: `Пользователем ${user.username} добавлен новый РБ ${boss.fullname}`,
-      };
-      req.io.emit('raidboss-created', message, boss, user);
       res.send({
         message: `Рейдовый босс ${boss.fullname} успешно создан и добавлен в базу данных`,
         boss,
@@ -205,11 +200,6 @@ const update = (db, boss, user, req, res) => {
     .assign(boss)
     .write()
     .then(boss => {
-      const message = {
-        date: new Date().toJSON(),
-        message: `Информация о РБ ${boss.fullname} изменена пользователем ${user.username}`,
-      };
-      req.io.emit('raidboss-updated', message, boss, user);
       res.send({ message: `Информация о РБ ${boss.fullname} изменена`, boss });
     })
     .catch(e => res.status(500).send(e));
@@ -237,11 +227,6 @@ const remove = (db, boss, user, req, res) => {
     .remove({ id: boss.id })
     .write()
     .then(rb => {
-      const message = {
-        date: new Date().toJSON(),
-        message: `Информация о РБ ${boss.fullname} удалена пользователем ${user.username}`,
-      };
-      req.io.emit('raidboss-removed', message, boss, user);
       res.send({ message: `РБ ${boss.fullname} успешно удален` });
     })
     .catch(e => res.status(500).send(e));

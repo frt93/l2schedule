@@ -20,19 +20,23 @@ export default ({ app }, inject) => {
     });
   });
 
+  // Переведем полученное значение в строку, нижний регистр и уберем пробелы
+  inject('toLowerCaseAndReplaceSpaces', value => {
+    return value
+      .toString()
+      .toLowerCase()
+      .replace(/\s+/g, '');
+  });
+
   // Выбираем из переданного массива объекты, у которых свойства fullname или shortname совпадает с переданным значением value
   inject('filterByFullAndShortNames', (items, value) => {
     return items.filter(item => {
       return (
-        item.fullname
-          .toString()
-          .toLowerCase()
-          .replace(/\s+/g, '')
+        app
+          .$toLowerCaseAndReplaceSpaces(item.fullname)
           .indexOf(value.toLowerCase().replace(/\s+/g, '')) >= 0 ||
-        item.shortname
-          .toString()
-          .toLowerCase()
-          .replace(/\s+/g, '')
+        app
+          .$toLowerCaseAndReplaceSpaces(item.shortname)
           .indexOf(value.toLowerCase().replace(/\s+/g, '')) >= 0
       );
     });
@@ -42,10 +46,8 @@ export default ({ app }, inject) => {
   inject('filterByFullname', (items, value) => {
     return items.filter(item => {
       return (
-        item.fullname
-          .toString()
-          .toLowerCase()
-          .replace(/\s+/g, '')
+        app
+          .$toLowerCaseAndReplaceSpaces(item.fullname)
           .indexOf(value.toLowerCase().replace(/\s+/g, '')) >= 0
       );
     });
@@ -55,8 +57,8 @@ export default ({ app }, inject) => {
   inject('sortByFullname', array => {
     let byName = array.slice(0);
     return byName.sort(function(a, b) {
-      var x = a.fullname.toLowerCase();
-      var y = b.fullname.toLowerCase();
+      var x = app.$toLowerCaseAndReplaceSpaces(a.fullname);
+      var y = app.$toLowerCaseAndReplaceSpaces(b.fullname);
       return x < y ? -1 : x > y ? 1 : 0;
     });
   });

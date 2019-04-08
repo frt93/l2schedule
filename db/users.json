@@ -6,7 +6,11 @@
       "email": "razeb4enko@gmail.com",
       "password": "$2a$10$dUJeQBzWiULBt8dYIf7X7eKYHepmIexWdz6/jTs75uaLVH27whRW6",
       "privileges": "master",
-      "group": "newbie"
+      "group": {
+        "name": "wedabest",
+        "id": "1554631429"
+      },
+      "groupRole": "admin"
     },
     {
       "id": "1554315259",
@@ -14,7 +18,11 @@
       "email": "frthere@gmail.com",
       "password": "$2a$10$uODB0SDrB0nIDlLrymqi8usZAo0tmj0c/zPupV8z7ON.2jZM92eAq",
       "privileges": "common",
-      "group": "newbie"
+      "group": {
+        "name": "wedabest",
+        "id": "1554631429"
+      },
+      "groupRole": "newbie"
     },
     {
       "id": "1554320807",
@@ -22,8 +30,31 @@
       "email": "ectoprime@gmail.com",
       "password": "$2a$10$prg8ri5WRhGhDF8KzRSj1uRSZD3ulZf1NZrvZ7bIT5ZikDPFrnOyK",
       "privileges": "common",
-      "group": "newbie"
+      "groupInvite": {
+        "id": "1554631429",
+        "name": "wedabest",
+        "inviterID": "1554199133"
+      }
+    },
+    {
+      "id": "1554665649",
+      "username": "ex",
+      "email": "gandolero225@gmail.com",
+      "password": "$2a$10$Njl0dGSgB/s3USNB7cNKDO.fLx38H2jNTYXhHx9ZFjUxKGuClNKp.",
+      "privileges": "common",
+      "group": {
+        "name": "wedabest",
+        "id": "1554631429"
+      },
+      "groupRole": "newbie"
     }
   ],
-  "rights": []
+  "privileges": [],
+  "groups": [
+    {
+      "name": "wedabest",
+      "id": "1554631429",
+      "creatorID": "1554199133"
+    }
+  ]
 }

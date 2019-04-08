@@ -1,5 +1,5 @@
 <template>
-  <div class="rb-norifications" v-if="logs.length">
+  <div class="rb-norifications" v-if="notifications.length">
     <b-modal :active.sync="isModalActive" :width="640" scroll="clip" :canCancel="['x', 'outside']">
       <div class="card">
         <div class="card-content">
@@ -11,16 +11,23 @@
             </div>
           </div>
           <div class="content">
-            <p v-for="(log, index) in logs" :key="index">
-              <span class="log-date">{{$moment(log.date).format(('D.MM.YYYY в HH:mm'))}}</span>
-              <span class="log-message">{{log.message}}</span>
+            <p v-for="(notification, index) in notifications" :key="index">
+              <span class="log-date">{{$moment(notification.date).format(('D.MM.YYYY в HH:mm'))}}</span>
+              <span class="log-message">{{notification.message}}</span>
             </p>
           </div>
         </div>
       </div>
     </b-modal>
     <span class="trigger" v-if="!isModalActive" @click="isModalActive=true">
-      <i class="mdi mdi-bell mdi-24px"></i>
+      <b-tooltip
+        :label="`Новых оповещений: ${notifications.length}`"
+        position="is-left"
+        type="is-dark"
+        animated
+      >
+        <i class="mdi mdi-bell mdi-24px"></i>
+      </b-tooltip>
     </span>
   </div>
 </template>
@@ -28,7 +35,7 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
-  name: "raidbossesNotifications",
+  name: "userNotifications",
   data() {
     return {
       isModalActive: false
@@ -36,7 +43,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      logs: "raidbosses/getLogs"
+      notifications: "user/getNotifications",
+      user: "user/getUser"
     })
   },
   methods: {
@@ -79,7 +87,7 @@ export default {
   },
   mounted() {
     this.$socket().on("raidboss-updated", (message, boss, user) => {
-      this.$store.commit("raidbosses/addLog", message);
+      this.$store.commit("user/addNotification", message);
       this.$store.dispatch("raidbosses/rebuild", boss);
       this.playNotification("/notify/notify.mp3");
       // this.sendNotification("Верните Линуса!", {
@@ -89,13 +97,23 @@ export default {
       // });
     });
     this.$socket().on("raidboss-created", (message, boss, user) => {
-      this.$store.commit("raidbosses/addLog", message);
+      this.$store.commit("user/addNotification", message);
       this.$store.commit("raidbosses/add", boss);
       this.playNotification("/notify/notify.mp3");
     });
     this.$socket().on("raidboss-removed", (message, boss, user) => {
-      this.$store.commit("raidbosses/addLog", message);
+      this.$store.commit("user/addNotification", message);
       this.$store.commit("raidbosses/remove", boss);
+      this.playNotification("/notify/notify.mp3");
+    });
+    this.$socket().on("group-invite", (message, inviter, invitee) => {
+      this.$store.commit("user/addNotification", message);
+      this.$store.commit("user/set_user", invitee);
+      this.playNotification("/notify/notify.mp3");
+    });
+
+    this.$socket().on("user-joined", (message, inviter, invitee) => {
+      this.$store.commit("user/addNotification", message);
       this.playNotification("/notify/notify.mp3");
     });
   }

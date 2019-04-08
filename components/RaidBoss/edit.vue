@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     update(boss) {
-      const user = this.$store.getters["auth/getUser"];
+      const user = this.$store.getters["user/getUser"];
       this.$store
         .dispatch("raidbosses/update", { boss, user })
         .then(res => {

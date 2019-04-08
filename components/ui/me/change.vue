@@ -1,5 +1,5 @@
 <template>
-  <div class="container form auth">
+  <div class="container form user">
     <div v-if="data && !data.emailConfirmCode">
       <b-field label="Email">
         <b-input icon="at" v-model="user.email"></b-input>
@@ -89,7 +89,7 @@ export default {
             position: "is-bottom-right",
             queue: false
           });
-          this.$store.commit("auth/set_user", res.data.user);
+          this.$store.commit("user/set_user", res.data.user);
         })
         .catch(e => {
           this.$snackbar.open({
@@ -115,7 +115,7 @@ export default {
             position: "is-bottom-right",
             queue: false
           });
-          this.$store.commit("auth/set_user", res.data.user);
+          this.$store.commit("user/set_user", res.data.user);
         })
         .catch(e => {
           const error = e.response.data;
@@ -143,7 +143,7 @@ export default {
             position: "is-bottom-right",
             queue: false
           });
-          this.$store.commit("auth/set_user", res.data.user);
+          this.$store.commit("user/set_user", res.data.user);
         })
         .catch(e => {
           this.$snackbar.open({
@@ -166,8 +166,8 @@ export default {
             position: "is-bottom-right",
             queue: false
           });
-          this.$store.dispatch("auth/signOut");
-          this.$router.push("/auth/signin");
+          this.$store.dispatch("user/signOut");
+          this.$router.push("/user/signin");
         })
         .catch(e => {
           this.$snackbar.open({
@@ -192,7 +192,7 @@ export default {
             position: "is-bottom-right",
             queue: false
           });
-          this.$store.commit("auth/set_user", res.data.user);
+          this.$store.commit("user/set_user", res.data.user);
         })
         .catch(e => {
           this.$snackbar.open({

@@ -3,7 +3,6 @@ export const state = () => ({
   inWindow: [],
   inResp: [],
   lostResp: [],
-  logs: [],
 });
 
 export const mutations = {
@@ -27,10 +26,6 @@ export const mutations = {
     });
     state.allRaidBosses = raidBossesToKeep;
   },
-
-  addLog(state, message) {
-    state.logs.unshift(message);
-  },
 };
 
 export const actions = {
@@ -44,13 +39,13 @@ export const actions = {
     commit('SET_RAIDBOSS_LIST', sort);
   },
 
-  create({ commit }, boss) {
+  create({ commit }, { boss, user }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('/rb/create', boss)
+        .post('/rb/create', { boss, user })
         .then(res => {
-          // Коммит вызовется сокетом в компоненте (raidbosses/notifications)
-          // commit('add', res.data.boss);
+          this._vm.$socket().emit('create-boss', boss, user);
+          commit('add', res.data.boss);
           resolve(res);
         })
         .catch(e => {
@@ -59,11 +54,12 @@ export const actions = {
     });
   },
 
-  update({ dispatch }, payload) {
+  update({ dispatch }, { boss, user }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('/rb/update', payload)
+        .post('/rb/update', { boss, user })
         .then(res => {
+          this._vm.$socket().emit('update-boss', boss, user);
           dispatch('rebuild', res.data.boss);
           resolve(res);
         })
@@ -84,13 +80,13 @@ export const actions = {
     dispatch('sortByResp', newRaidBossesList);
   },
 
-  remove({ commit }, boss) {
+  remove({ commit }, { boss, user }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('/rb/remove', boss)
+        .post('/rb/remove', { boss, user })
         .then(res => {
-          // Коммит вызовется сокетом в компоненте (raidbosses/notifications)
-          // commit('remove', boss);
+          this._vm.$socket().emit('remove-boss', boss, user);
+          commit('remove', boss);
           resolve(res);
         })
         .catch(e => {
@@ -112,8 +108,5 @@ export const getters = {
   },
   getlostResp(state) {
     return state.lostResp;
-  },
-  getLogs(state) {
-    return state.logs;
   },
 };

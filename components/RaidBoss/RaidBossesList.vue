@@ -4,20 +4,14 @@
       <div class="block navigate">
         <nav class="navbar" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
-            <a
-              role="button"
-              class="navbar-burger burger"
-              aria-label="menu"
-              aria-expanded="false"
-              data-target="navbarBasicExample"
-            >
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false">
               <span aria-hidden="true"></span>
               <span aria-hidden="true"></span>
               <span aria-hidden="true"></span>
             </a>
           </div>
 
-          <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-menu sub-menu">
             <div class="navbar-start">
               <a class="navbar-item">Все рб</a>
               <a class="navbar-item">Эпики</a>
@@ -108,7 +102,7 @@ import viewTable from "./table";
 import modal from "./modal";
 import remove from "./remove";
 import search from "../ui/search";
-import notifications from "./notifications";
+import notifications from "../ui/me/notifications";
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -352,9 +346,13 @@ export default {
 /* .navbar-start > .navbar-item:not(:last-child) {
   margin-right: 10px;
 } */
-.navbar-item {
-  padding: 0 10px;
+.sub-menu .navbar-item {
+  padding: 0;
 }
+.sub-menu .navbar-start > .navbar-item:not(:last-child) {
+  margin-right: 10px;
+}
+
 .navbar-item:hover {
   background-color: transparent !important;
 }

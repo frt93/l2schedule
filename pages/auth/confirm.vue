@@ -23,12 +23,12 @@ export default {
             queue: false
           });
           if (credential === "email") {
-            this.$store.commit("auth/set_user", res.data.user);
+            this.$store.commit("user/set_user", res.data.user);
             this.$router.replace("/");
           }
           if (credential === "password") {
-            this.$store.dispatch("auth/signOut");
-            this.$router.push("/auth/signin");
+            this.$store.dispatch("user/signOut");
+            this.$router.push("/user/signin");
           }
         })
         .catch(e => {

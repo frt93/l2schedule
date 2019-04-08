@@ -90,7 +90,7 @@ export default {
       if (this.loginKey === "username") user.username = this.login;
       else user.email = this.login;
       this.$store
-        .dispatch("auth/signIn", user)
+        .dispatch("user/signIn", user)
         .then(res => {
           this.$snackbar.open({
             duration: 5000,

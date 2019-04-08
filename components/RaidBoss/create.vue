@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     create(boss) {
-      const user = this.$store.getters["auth/getUser"];
+      const user = this.$store.getters["user/getUser"];
       this.$store
         .dispatch("raidbosses/create", { boss, user })
         .then(res => {
