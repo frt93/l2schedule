@@ -20,10 +20,10 @@
 
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
-        <n-link to="/" class="navbar-item" no-prefetch>Главная</n-link>
+        <n-link to="/" class="navbar-item">Главная</n-link>
 
-        <n-link to="/dashboard/rb" class="navbar-item" no-prefetch>Рейдбоссы</n-link>
-        <n-link to="/dashboard/items" class="navbar-item" no-prefetch>Предметы</n-link>
+        <n-link to="/dashboard/rb" class="navbar-item">Рейдбоссы</n-link>
+        <n-link to="/dashboard/items" class="navbar-item">Предметы</n-link>
       </div>
 
       <div class="navbar-end">
@@ -53,7 +53,7 @@
   </nav>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "headerNavbar",
   computed: {
@@ -87,19 +87,25 @@ export default {
     }
   },
   beforeMount() {
-    this.$socket().on("you-connected", message => {
-      console.log(message);
-      if (this.user) {
-        let user = {};
-        user.id = this.user.id;
-
-        if (this.user.group) {
-          user.group = this.user.group.name;
-        }
-
-        this.$socket().emit("authorized", user);
+    console.log(this.user);
+    if (this.user) {
+      const userID = this.user.id;
+      this.$socket().emit("authorized", userID);
+      if (this.user.group && !this.user.connected) {
+        const group = this.user.group.name;
+        console.log(`'emit`);
+        this.$socket().emit("group-connect", group);
       }
-    });
+
+      this.$socket().on("connected-group", () => {
+        const user = this.user;
+        user.connected = true;
+        this.$store.commit("user/addNotification", {
+          message: `${this.user.username} connected`
+        });
+        this.$store.commit("user/set_user", user);
+      });
+    }
   }
 };
 </script>

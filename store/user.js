@@ -54,7 +54,7 @@ export const actions = {
           commit('set_user', res.data.user);
           setAuthToken(res.data.token);
           cookies.set('x-access-token', res.data.token, { expires: 365 });
-          this.$router.go();
+          // this.$router.go();
           resolve(res);
         })
         .catch(e => {

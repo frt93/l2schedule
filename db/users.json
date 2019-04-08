@@ -30,11 +30,11 @@
       "email": "ectoprime@gmail.com",
       "password": "$2a$10$prg8ri5WRhGhDF8KzRSj1uRSZD3ulZf1NZrvZ7bIT5ZikDPFrnOyK",
       "privileges": "common",
-      "groupInvite": {
-        "id": "1554631429",
+      "group": {
         "name": "wedabest",
-        "inviterID": "1554199133"
-      }
+        "id": "1554631429"
+      },
+      "groupRole": "newbie"
     },
     {
       "id": "1554665649",

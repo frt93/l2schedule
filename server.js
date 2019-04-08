@@ -29,9 +29,6 @@ server.listen(port, '0.0.0.0');
 let users = {};
 
 io.on('connection', socket => {
-  const connectedUser = io.sockets.connected[socket.id];
-  connectedUser.emit('you-connected', 'you connected');
-  console.log(`clients ${io.engine.clientsCount}`);
   /**
    * Сокет срабатывает при входе пользователя в приложение.
    * На клиенте эмитируется событие authorized и отправляется ID авторизованного пользователя.
@@ -42,23 +39,20 @@ io.on('connection', socket => {
    * @param id                ID подключившегося пользователя
    * @return Object
    */
-  socket.on('authorized', function(user) {
-    // console.log(user);
-    users[user.id] = socket.id;
-    // console.log(`user joined`);
-    // console.log(`userID: ${user.id}. user socket id: ${socket.id}`);
-    const isRoomExist = io.sockets.adapter.rooms[user.group];
-    // console.log(isRoomExist);
-    const isUserAlreadyInRoom = isRoomExist && isRoomExist.sockets[socket.id];
-    // console.log(isUserAlreadyInRoom);
-    socket.join(user.group);
-  });
+  socket.on('authorized', function(userID) {
+    let isUserReconnected;
 
-  socket.on('log-out', function(userID, group) {
-    console.log(`user logout`);
-    console.log(`userID: ${userID}. user socket id: ${socket.id}. user group: ${group}`);
-    delete users[userID];
-    socket.leave(group);
+    for (var id in users) {
+      // этот код будет вызван для каждого свойства объекта
+      // ..и выведет имя свойства и его значение
+      if (id[userID]) {
+        isUserReconnected = users[userID];
+        console.log(`use reconnecting. Previous socket - ${isUserReconnected}`);
+      }
+    }
+
+    users[userID] = socket.id;
+    console.log(`user connected - ${userID}`);
   });
 
   /**
@@ -68,12 +62,10 @@ io.on('connection', socket => {
    * @param group             Название группы, которым будет называться socket.room
 
    */
-  // socket.on('group-connect', function(group) {
-  //   console.log(`group name: ${group}`);
-  //   socket.join(group);
-  //   console.log(`user joined group`);
-  //   console.log(socket.id);
-  // });
+  socket.once('group-connect', function(group) {
+    socket.join(group);
+    socket.emit('connected-group');
+  });
 
   /**
    * Сокет срабатывает при выходе пользователя из приложении.
@@ -82,13 +74,10 @@ io.on('connection', socket => {
    *
    * @return Object
    */
-  socket.on('disconnect', function(reason) {
+  socket.on('disconnect', function() {
     let disconnectedUser;
     for (var userID in users) {
-      if (users[userID] === socket.id) {
-        disconnectedUser = userID;
-        console.log(`user disconnected: ${userID}`);
-      }
+      if (users[userID] === socket.id) disconnectedUser = userID;
     }
     if (disconnectedUser) delete users[disconnectedUser];
   });
@@ -104,7 +93,7 @@ io.on('connection', socket => {
       date: new Date().toJSON(),
       message: `Информация о РБ ${boss.fullname} изменена пользователем ${user.username}`,
     };
-    console.log(io.sockets.adapter.rooms[user.group.name].sockets);
+
     socket.broadcast.to(user.group.name).emit('raidboss-updated', message, boss, user);
   });
 
