@@ -9,6 +9,10 @@ export const state = () => ({
 export const mutations = {
   set_user(state, user) {
     state.user = user;
+    this._vm.$socket().emit('authorized', user.id);
+    if (user.group) {
+      this._vm.$socket().emit('group-connect', user.group.name);
+    }
   },
   reset_user(state) {
     state.user = null;
@@ -54,7 +58,7 @@ export const actions = {
           commit('set_user', res.data.user);
           setAuthToken(res.data.token);
           cookies.set('x-access-token', res.data.token, { expires: 365 });
-          // this.$router.go();
+          this.$router.go();
           resolve(res);
         })
         .catch(e => {

@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 
-const toLowerCaseAndReplaceSpaces = require('../plugins/mixins');
+const mixin = require('../plugins/mixins');
 
 const low = require('lowdb');
 const FileAsync = require('lowdb/adapters/FileAsync');
@@ -16,7 +16,8 @@ low(bosses).then(db => {
       if (
         bosses.findIndex(
           boss =>
-            toLowerCaseAndReplaceSpaces(boss['fullname']) === toLowerCaseAndReplaceSpaces(fullname)
+            mixin.toLowerCaseAndReplaceSpaces(boss['fullname']) ===
+            mixin.toLowerCaseAndReplaceSpaces(fullname)
         ) === -1
       ) {
         return bosses;
@@ -31,8 +32,8 @@ low(bosses).then(db => {
       if (
         bosses.findIndex(
           boss =>
-            toLowerCaseAndReplaceSpaces(boss['shortname']) ===
-            toLowerCaseAndReplaceSpaces(shortname)
+            mixin.toLowerCaseAndReplaceSpaces(boss['shortname']) ===
+            mixin.toLowerCaseAndReplaceSpaces(shortname)
         ) === -1
       ) {
         return bosses;
@@ -121,7 +122,10 @@ const findRaidbossByFullname = (db, fullname) => {
   const rb = db
     .get('raidbosses')
     .find(function(rb) {
-      return toLowerCaseAndReplaceSpaces(rb.fullname) === toLowerCaseAndReplaceSpaces(fullname);
+      return (
+        mixin.toLowerCaseAndReplaceSpaces(rb.fullname) ===
+        mixin.toLowerCaseAndReplaceSpaces(fullname)
+      );
     })
     .value();
 
@@ -138,7 +142,10 @@ const findRaidbossByShortname = (db, shortname) => {
   const rb = db
     .get('raidbosses')
     .find(function(rb) {
-      return toLowerCaseAndReplaceSpaces(rb.shortname) === toLowerCaseAndReplaceSpaces(shortname);
+      return (
+        mixin.toLowerCaseAndReplaceSpaces(rb.shortname) ===
+        mixin.toLowerCaseAndReplaceSpaces(shortname)
+      );
     })
     .value();
 
@@ -150,7 +157,7 @@ const findRaidbossByShortname = (db, shortname) => {
  * @param db                Объект доступа к БД
  * @param boss              Экземпляр создаваемого РБ
  * @param user              Экземпляр пользователя, который инициировал создание рб
- * @param req               Объект ответа сервера
+ * @param req               Объект запроса сервера
  * @param res               Объект ответа сервера
  * @return Promise          Промис с созданным РБ или ошибкой
  */
@@ -176,7 +183,7 @@ const create = (db, boss, user, req, res) => {
  * @param boss              Экземпляр изменяемого РБ
  * @param user              Экземпляр пользователя, который инициировал редактирование
  * @param req               Объект ответа сервера
- * @param res               Объект ответа сервера
+ * @param res               Объект запроса сервера
  * @return Promise          Промис с измененным РБ или ошибкой
  */
 const update = (db, boss, user, req, res) => {
@@ -211,7 +218,7 @@ const update = (db, boss, user, req, res) => {
  * @param boss              Экземпляр изменяемого РБ
  * @param user              Экземпляр пользователя, который инициировал удаление
  * @param req               Объект ответа сервера
- * @param res               Объект ответа сервера
+ * @param res               Объект запроса сервера
  * @return Promise
  */
 const remove = (db, boss, user, req, res) => {

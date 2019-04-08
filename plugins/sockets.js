@@ -5,7 +5,3 @@ const socket = io.connect(process.env.sockets);
 Vue.prototype.$socket = () => {
   return socket;
 };
-
-const soc = io(process.env.sockets);
-
-export default soc;

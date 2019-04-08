@@ -3,11 +3,12 @@ const http = require('http');
 const { Nuxt, Builder } = require('nuxt');
 const express = require('express');
 const SocketIO = require('socket.io');
-
+const bodyParser = require('body-parser');
 const port = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === 'production';
 
 const app = express();
+
 const server = http.createServer(app);
 const io = SocketIO(server);
 
@@ -22,7 +23,7 @@ if (config.dev) {
   builder.build();
 }
 app.use(nuxt.render);
-
+app.use(bodyParser.json());
 // Listen the server
 server.listen(port, '0.0.0.0');
 
@@ -40,19 +41,7 @@ io.on('connection', socket => {
    * @return Object
    */
   socket.on('authorized', function(userID) {
-    let isUserReconnected;
-
-    for (var id in users) {
-      // этот код будет вызван для каждого свойства объекта
-      // ..и выведет имя свойства и его значение
-      if (id[userID]) {
-        isUserReconnected = users[userID];
-        console.log(`use reconnecting. Previous socket - ${isUserReconnected}`);
-      }
-    }
-
     users[userID] = socket.id;
-    console.log(`user connected - ${userID}`);
   });
 
   /**
@@ -62,9 +51,8 @@ io.on('connection', socket => {
    * @param group             Название группы, которым будет называться socket.room
 
    */
-  socket.once('group-connect', function(group) {
+  socket.on('group-connect', function(group) {
     socket.join(group);
-    socket.emit('connected-group');
   });
 
   /**

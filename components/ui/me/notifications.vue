@@ -87,6 +87,7 @@ export default {
   },
   mounted() {
     this.$socket().on("raidboss-updated", (message, boss, user) => {
+      console.log("updated on client");
       this.$store.commit("user/addNotification", message);
       this.$store.dispatch("raidbosses/rebuild", boss);
       this.playNotification("/notify/notify.mp3");

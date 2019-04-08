@@ -43,6 +43,45 @@ button {
   transition: 0.5s;
 }
 
+table .login,
+table .password,
+table .nickname {
+  border-bottom: 1px dashed #b5b5b5;
+}
+
+.manage-icons {
+  margin-left: 10px;
+  position: absolute;
+  visibility: hidden;
+}
+
+.manage-icons.left {
+  left: 0;
+}
+
+.row:hover .manage-icons {
+  visibility: initial;
+}
+.row .manage-icons i {
+  opacity: 0.5;
+}
+.row .manage-icons i:hover {
+  opacity: 1;
+}
+
+.manage-icons .edit {
+  color: #167df0;
+}
+.manage-icons .edit:hover {
+  color: #0f77ea;
+}
+.manage-icons .remove {
+  color: #ff3860;
+}
+.manage-icons .remove:hover {
+  color: #ff2b56;
+}
+
 @-webkit-keyframes scale {
   0% {
     -webkit-transform: scale(0.5, 0.5);

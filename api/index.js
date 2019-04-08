@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 // Create express instnace
 
-const { io } = require('../server.js');
+// const { io } = require('../server.js');
 
 const app = express();
 // const io = require('socket.io').listen(app.listen(4000));
@@ -23,15 +23,17 @@ app.use(bodyParser.json());
 const raidbosses = require('./routes/rb');
 const items = require('./routes/items');
 const users = require('./routes/users');
+const accounts = require('./routes/accounts');
 
-app.use((req, res, next) => {
-  req.io = io;
-  next();
-});
+// app.use((req, res, next) => {
+//   req.io = io;
+//   next();
+// });
 
 // Import API Routes
 app.use('/rb', raidbosses);
 app.use('/items', items);
+app.use('/accounts', accounts);
 app.use(users);
 
 // Export the server middleware

@@ -92,7 +92,6 @@
       ></modal>
     </b-modal>
     <remove :boss="raidBossToManage" v-if="isRemove" @removed="isRemove=false"></remove>
-    <notifications></notifications>
   </section>
 </template>
 
@@ -102,7 +101,6 @@ import viewTable from "./table";
 import modal from "./modal";
 import remove from "./remove";
 import search from "../ui/search";
-import notifications from "../ui/me/notifications";
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -110,8 +108,7 @@ export default {
     viewTable,
     modal,
     remove,
-    search,
-    notifications
+    search
   },
   data() {
     return {
@@ -278,12 +275,14 @@ export default {
   font-size: 14px;
 }
 
-.rb-fullname,
-.account {
+.login,
+.nickname,
+.password,
+.manage-icons i {
   cursor: pointer;
 }
 
-.account:before {
+.login:before {
   content: "@";
 }
 
@@ -343,9 +342,7 @@ export default {
 .menu-popover-leave-active {
   transition: opacity, transform 400ms ease-out;
 }
-/* .navbar-start > .navbar-item:not(:last-child) {
-  margin-right: 10px;
-} */
+
 .sub-menu .navbar-item {
   padding: 0;
 }

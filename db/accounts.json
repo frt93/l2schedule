@@ -1,0 +1,92 @@
+{
+  "accounts": [
+    {
+      "id": "1235265891",
+      "login": "wdbLogin",
+      "password": "hui pizda",
+      "master": "Some master account",
+      "type": "main",
+      "owner": "memory",
+      "characters": [
+        {
+          "nickname": "memory",
+          "profecy": "Mystic Muse"
+        }
+      ]
+    },
+    {
+      "id": "12352654891",
+      "login": "wdbLogin2",
+      "password": "hui pizda2",
+      "master": "Some master account",
+      "type": "main",
+      "owner": "goodbye",
+      "characters": [
+        {
+          "nickname": "wdbMain2",
+          "profecy": "Mystic Muse"
+        }
+      ]
+    },
+    {
+      "id": "1235266891",
+      "login": "wdbTrader",
+      "password": "hui pizda",
+      "master": "Some master account",
+      "type": "trader",
+      "characters": [
+        {
+          "nickname": "wdbTrade",
+          "profecy": "maestro",
+          "shopType": "buy",
+          "items": [
+            {
+              "name": "cookies",
+              "price": "1000 aden",
+              "quantity": "8500"
+            },
+            {
+              "name": "sop of purity",
+              "price": "7000 aden",
+              "quantity": "8500"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "12f266891",
+      "login": "wdbHorse",
+      "password": "hui pizda",
+      "master": "Some master account 2",
+      "type": "tvink",
+      "characters": [
+        {
+          "nickname": "wdbHorse",
+          "profecy": "elemental master",
+          "isMain": true
+        }
+      ]
+    },
+    {
+      "login": "wdb3",
+      "password": "erewrew",
+      "master": "deds",
+      "masterPassword": "dsadas",
+      "type": "main",
+      "owner": "asti",
+      "characters": [],
+      "id": "1554760522"
+    },
+    {
+      "login": "wdb4",
+      "password": "wads",
+      "master": "dfsd",
+      "masterPassword": "sadds",
+      "type": "main",
+      "owner": "marm",
+      "characters": [],
+      "id": "1554760722"
+    }
+  ]
+}

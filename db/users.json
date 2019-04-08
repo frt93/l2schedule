@@ -47,6 +47,18 @@
         "id": "1554631429"
       },
       "groupRole": "newbie"
+    },
+    {
+      "id": "1554727178",
+      "username": "gnida",
+      "email": "petalex139@gmail.com",
+      "password": "$2a$10$8EwAFbHP6.czP/kNzbIRa.mnd03CpMowZTFQ3Fg8ZyiAKPZlGL5qq",
+      "privileges": "common",
+      "groupInvite": {
+        "id": "1554631429",
+        "name": "wedabest",
+        "inviterID": "1554199133"
+      }
     }
   ],
   "privileges": [],

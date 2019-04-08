@@ -31,7 +31,7 @@
                 animated
                 multilined
               >
-                <span class="account">{{boss.account}}</span>
+                <span class="login">{{boss.account}}</span>
               </b-tooltip>
             </span>
             <span class="subtitle-child timeleft">{{timeleftToRespawn[boss.id]}}</span>

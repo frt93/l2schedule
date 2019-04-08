@@ -6,6 +6,7 @@
       per-page="50"
       detailed
       detail-key="id"
+      :row-class="(row, index) => 'row'"
       :data="data"
       :loading="loading"
       :show-detail-icon="showDetailIcon"
@@ -17,14 +18,18 @@
       <template slot-scope="props">
         <b-table-column field="shortname" label="Имя РБ">
           <template v-if="showDetailIcon">{{ props.row.shortname }}</template>
+          <span class="manage-icons">
+            <i class="mdi mdi-pencil edit" @click="$emit('update', props.row)"></i>
+            <i class="mdi mdi-delete remove" @click="$emit('remove', props.row)"></i>
+          </span>
         </b-table-column>
 
         <b-table-column field="lvl" label="Уровень" sortable>{{ props.row.lvl }}</b-table-column>
-        <b-table-column field="id" label="Аккаунт палилки">
+        <b-table-column field="account" label="Аккаунт палилки">
           <span class="subtitle-child" v-if="!props.row.account">Нет палилки</span>
           <span
             v-else
-            class="account"
+            class="login"
             @click="$emit('copy',`Логин аккаунта ${props.row.account} с палилкой скопирован`, props.row.account)"
           >
             <b-tooltip
@@ -46,11 +51,7 @@
 
       <template slot="detail" slot-scope="props">
         <article class="media">
-          <figure class="media-left">
-            <p class="image is-64x64">
-              <img src="https://buefy.org/static/img/placeholder-128x128.png">
-            </p>
-          </figure>
+          <figure class="media-left"></figure>
           <div class="media-content">
             <div class="content">
               <p>
@@ -66,10 +67,6 @@
                 Конец респа: {{$moment.unix(props.row.respawn_end).format('DD MM YYYY HH:mm')}}
               </p>
             </div>
-          </div>
-          <div class="level-right">
-            <a class="button is-info" @click="$emit('update', props.row)">Редактировать</a>
-            <a class="button is-danger" @click="$emit('remove', props.row)">Удалить</a>
           </div>
         </article>
       </template>
@@ -114,10 +111,6 @@ export default {
 </script>
 
 <style>
-table .account {
-  border-bottom: 1px dashed #b5b5b5;
-}
-
 a.button {
   margin-left: 10px;
 }

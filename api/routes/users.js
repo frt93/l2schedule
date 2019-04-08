@@ -1,6 +1,3 @@
-const config = require('../config');
-const toLowerCaseAndReplaceSpaces = require('../plugins/mixins');
-
 const { Router } = require('express');
 const router = Router();
 
@@ -8,6 +5,8 @@ const low = require('lowdb');
 const FileAsync = require('lowdb/adapters/FileAsync');
 const users = new FileAsync('db/users.json');
 
+const config = require('../config');
+const mixin = require('../plugins/mixins');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const jwtToken = config.jwtSignature;
@@ -29,7 +28,8 @@ low(users).then(db => {
       if (
         users.findIndex(
           user =>
-            toLowerCaseAndReplaceSpaces(user['username']) === toLowerCaseAndReplaceSpaces(username)
+            mixin.toLowerCaseAndReplaceSpaces(user['username']) ===
+            mixin.toLowerCaseAndReplaceSpaces(username)
         ) === -1
       ) {
         return users;
@@ -43,7 +43,9 @@ low(users).then(db => {
     isUniqueEmail: function(users, email) {
       if (
         users.findIndex(
-          user => toLowerCaseAndReplaceSpaces(user['email']) === toLowerCaseAndReplaceSpaces(email)
+          user =>
+            mixin.toLowerCaseAndReplaceSpaces(user['email']) ===
+            mixin.toLowerCaseAndReplaceSpaces(email)
         ) === -1
       ) {
         return users;
@@ -90,7 +92,7 @@ low(users).then(db => {
 
   router.get('/users/all', (req, res) => {
     const users = getAllUsers(db);
-    res.send(users)
+    res.send(users);
   });
 
   router.get('/me', (req, res) => {
@@ -145,7 +147,6 @@ low(users).then(db => {
       res.send({ user, error: `email адрес ${email} уже используется другим пользователем` });
     else res.send({ message: `Пользователь с email-адресом ${email} не найден` });
   });
-  
 
   router.post('/users/signin', (req, res) => {
     const credentials = req.body;
@@ -256,7 +257,10 @@ const findUserByUsername = (db, username) => {
   const user = db
     .get('users')
     .find(function(user) {
-      return toLowerCaseAndReplaceSpaces(user.username) === toLowerCaseAndReplaceSpaces(username);
+      return (
+        mixin.toLowerCaseAndReplaceSpaces(user.username) ===
+        mixin.toLowerCaseAndReplaceSpaces(username)
+      );
     })
     .value();
 
@@ -273,7 +277,9 @@ const findUserByEmail = (db, email) => {
   const user = db
     .get('users')
     .find(function(user) {
-      return toLowerCaseAndReplaceSpaces(user.email) === toLowerCaseAndReplaceSpaces(email);
+      return (
+        mixin.toLowerCaseAndReplaceSpaces(user.email) === mixin.toLowerCaseAndReplaceSpaces(email)
+      );
     })
     .value();
   return user;
@@ -282,7 +288,7 @@ const findUserByEmail = (db, email) => {
 /**
  * Создаем нового пользователя. Перед записью в БД хэшируем пароль и присваиваем рядовую группу
  * @param db                Объект доступа к БД
- * @param user           Экземпляр создаваемого пользователя
+ * @param user              Экземпляр создаваемого пользователя
  * @param res               Объект ответа сервера
  * @return Promise          Промис с созданным пользователем или ошибкой
  */
@@ -370,7 +376,7 @@ const changeEmail = (db, user, res) => {
 /**
  * Определяем каким способом подтверждается смена email адреса: путем перехода по ссылке из письма или
  * с помощью кода подтверждения в личном кабинете
- * @param req               Объект запроса
+ * @param req               Объект запроса серверу
  * @param res               Объект ответа сервера
  * @param db                Объект доступа к БД
  * @return mixed

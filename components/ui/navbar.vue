@@ -21,9 +21,9 @@
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
         <n-link to="/" class="navbar-item">Главная</n-link>
-
         <n-link to="/dashboard/rb" class="navbar-item">Рейдбоссы</n-link>
         <n-link to="/dashboard/items" class="navbar-item">Предметы</n-link>
+        <n-link to="/accounts" class="navbar-item">Аккаунты</n-link>
       </div>
 
       <div class="navbar-end">
@@ -50,12 +50,17 @@
         </div>
       </div>
     </div>
+    <notifications></notifications>
   </nav>
 </template>
 <script>
 import { mapGetters } from "vuex";
+import notifications from "../ui/me/notifications";
 export default {
   name: "headerNavbar",
+  components: {
+    notifications
+  },
   computed: {
     ...mapGetters({ user: "user/getUser" })
   },
@@ -87,24 +92,14 @@ export default {
     }
   },
   beforeMount() {
-    console.log(this.user);
     if (this.user) {
       const userID = this.user.id;
       this.$socket().emit("authorized", userID);
-      if (this.user.group && !this.user.connected) {
+      if (this.user.group) {
         const group = this.user.group.name;
-        console.log(`'emit`);
+
         this.$socket().emit("group-connect", group);
       }
-
-      this.$socket().on("connected-group", () => {
-        const user = this.user;
-        user.connected = true;
-        this.$store.commit("user/addNotification", {
-          message: `${this.user.username} connected`
-        });
-        this.$store.commit("user/set_user", user);
-      });
     }
   }
 };
