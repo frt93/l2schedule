@@ -6,42 +6,18 @@
       </div>
     </div>
     <div class="content">
-      <template>
-        <form class="account" method="POST">
-          <b-field label="Логин">
-            <b-input placeholder="Логин аккаунта" v-model="account.login" required></b-input>
-          </b-field>
-          <b-field label="Пароль">
-            <b-input placeholder="Пароль аккаунта" v-model="account.password" required></b-input>
-          </b-field>
-          <b-field label="Мастер аккаунт">
-            <b-input placeholder="Логин мастер аккаунта" v-model="account.master"></b-input>
-          </b-field>
-          <b-field label="Пароль мастер аккаунта">
-            <b-input placeholder="Пароль мастер аккаунта" v-model="account.masterPassword"></b-input>
-          </b-field>
-          <b-field label="Тип аккаунта">
-            <div class="block">
-              <b-radio v-model="account.type" native-value="main">Мейн</b-radio>
-              <b-radio v-model="account.type" native-value="tvink">Твинк</b-radio>
-              <b-radio v-model="account.type" native-value="trader">Трейдер</b-radio>
-              <b-radio v-model="account.type" native-value="watcher">Палилка</b-radio>
-            </div>
-          </b-field>
-          <b-field label="Владелец чара">
-            <b-input placeholder="Мембер, который сидит на мейне" v-model="account.owner"></b-input>
-          </b-field>
-
-          <button class="button is-success" type="button" @click="create">Создать</button>
-        </form>
-      </template>
+      <create :account="account" :action="'create'" @create="create"></create>
     </div>
   </div>
 </template>
 
 <script>
+import create from "./accountForm";
 export default {
-  name: "itemsForm",
+  name: "createAccount",
+  components: {
+    create
+  },
   data() {
     return {
       account: {
@@ -56,10 +32,12 @@ export default {
     };
   },
   methods: {
-    create() {
+    create(newAccount) {
       const user = this.$store.getters["user/getUser"];
-      const account = this.account;
+
+      const account = newAccount;
       account.id = `${this.$moment().unix()}`;
+      account.characters = [];
       this.$store
         .dispatch("accounts/create", { account, user })
         .then(res => {

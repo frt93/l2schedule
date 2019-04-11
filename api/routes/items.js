@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 
-const toLowerCaseAndReplaceSpaces = require('../plugins/mixins');
+const mixin = require('../plugins/mixins');
 
 const low = require('lowdb');
 const FileAsync = require('lowdb/adapters/FileAsync');
@@ -16,7 +16,8 @@ low(items).then(db => {
       if (
         items.findIndex(
           item =>
-            toLowerCaseAndReplaceSpaces(item['fullname']) === toLowerCaseAndReplaceSpaces(fullname)
+            mixin.toLowerCaseAndReplaceSpaces(item['fullname']) ===
+            mixin.toLowerCaseAndReplaceSpaces(fullname)
         ) === -1
       ) {
         return items;
@@ -31,8 +32,8 @@ low(items).then(db => {
       if (
         items.findIndex(
           item =>
-            toLowerCaseAndReplaceSpaces(item['shortname']) ===
-            toLowerCaseAndReplaceSpaces(shortname)
+            mixin.toLowerCaseAndReplaceSpaces(item['shortname']) ===
+            mixin.toLowerCaseAndReplaceSpaces(shortname)
         ) === -1
       ) {
         return items;
@@ -119,7 +120,10 @@ const findItemByFullname = (db, fullname) => {
   const item = db
     .get('items')
     .find(function(item) {
-      return toLowerCaseAndReplaceSpaces(item.fullname) === toLowerCaseAndReplaceSpaces(fullname);
+      return (
+        mixin.toLowerCaseAndReplaceSpaces(item.fullname) ===
+        mixin.toLowerCaseAndReplaceSpaces(fullname)
+      );
     })
     .value();
 
@@ -136,7 +140,10 @@ const findItemByShortname = (db, shortname) => {
   const item = db
     .get('items')
     .find(function(item) {
-      return toLowerCaseAndReplaceSpaces(item.shortname) === toLowerCaseAndReplaceSpaces(shortname);
+      return (
+        mixin.toLowerCaseAndReplaceSpaces(item.shortname) ===
+        mixin.toLowerCaseAndReplaceSpaces(shortname)
+      );
     })
     .value();
 

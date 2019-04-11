@@ -1,7 +1,8 @@
 export default ({ app, store }, inject) => {
   inject('defineGMT', (time, isMsk) => {
-    const isSetTimeToMoscow = isMsk ? isMsk : store.getters['datetime/isSetTimeToMoscow'];
-    if (isSetTimeToMoscow) {
+    const isSetTimeToMoscow = isMsk ? isMsk : store.state.user.isSetTimeToMoscow;
+
+    if (isSetTimeToMoscow === 'true') {
       return app.$moment.unix(time).utcOffset(3);
     } else {
       return app.$moment.unix(time).local();
@@ -10,19 +11,19 @@ export default ({ app, store }, inject) => {
 
   inject('todMessage', tod => {
     const todTime = app.$defineGMT(tod).format('D.MM.YYYY в HH:mm');
-    const isSetTimeToMoscow = store.getters['datetime/isSetTimeToMoscow'];
-    const response = isSetTimeToMoscow ? `${todTime} по МСК (GMT +3)` : `${todTime}`;
+    const isSetTimeToMoscow = store.getters['user/isSetTimeToMoscow'];
+    const response = isSetTimeToMoscow === 'true' ? `${todTime} по МСК (GMT +3)` : `${todTime}`;
     return response;
   });
 
   inject('respawnWindowMessage', (date1, date2) => {
-    const isSetTimeToMoscow = store.getters['datetime/isSetTimeToMoscow'];
+    const isSetTimeToMoscow = store.getters['user/isSetTimeToMoscow'];
     //Проверяем две даты на совпадение дня, месяца и года
     const isSameDMY =
       app.$defineGMT(date1).format('DD.MM.YYYY') === app.$defineGMT(date2).format('DD.MM.YYYY');
 
     //Если выбран московский часовой пояс - сформируем сноску (показывается рядом с временным промежутком) об этом
-    const msc = isSetTimeToMoscow ? ' по МСК (GMT +3)' : '';
+    const msc = isSetTimeToMoscow === 'true' ? ' по МСК (GMT +3)' : '';
 
     // Формируем текст ответа. Если дата начала и конца временного промежутка находится в
     // пределах одного дня - ответ будет вида DD.MM.YYYY с HH::mm по HH::mm.
@@ -102,7 +103,7 @@ export default ({ app, store }, inject) => {
     let result;
     switch (true) {
       case diff > 1439: // Если разница дат сутки и более
-        result = `${daysWithEnding} ${minutesWithEnding}`;
+        result = `${daysWithEnding} ${hoursWithEnding} ${minutesWithEnding}`;
         break;
       case diff > 59: //Если разница дат 1 час и более
         result = `${hoursWithEnding} ${minutesWithEnding}`;

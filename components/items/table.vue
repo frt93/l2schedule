@@ -2,10 +2,11 @@
   <section>
     <b-table
       ref="table"
-      paginated
+      :paginated="isPaginated()"
       per-page="50"
       detailed
       detail-key="id"
+      :row-class="(row, index) => 'row item'"
       :data="items"
       :show-detail-icon="showDetailIcon"
       :mobile-cards="true"
@@ -28,6 +29,19 @@
                 animated
               >{{ props.row.fullname }}</b-tooltip>
             </span>
+            <span class="manage-icons">
+              <b-tooltip
+                label="Изменить информацию о предмете"
+                position="is-bottom"
+                type="is-dark"
+                animated
+              >
+                <i class="mdi mdi-pencil edit" @click="$emit('update', props.row)"></i>
+              </b-tooltip>
+              <b-tooltip label="Удалить предмет" position="is-bottom" type="is-dark" animated>
+                <i class="mdi mdi-delete remove" @click="$emit('remove', props.row)"></i>
+              </b-tooltip>
+            </span>
           </template>
         </b-table-column>
 
@@ -47,10 +61,6 @@
                 <small>{{itemType(props.row)}}</small>
               </p>
             </div>
-          </div>
-          <div class="level-right">
-            <a class="button is-info" @click="$emit('update', props.row)">Редактировать</a>
-            <a class="button is-danger" @click="$emit('remove', props.row)">Удалить</a>
           </div>
         </article>
       </template>
@@ -77,6 +87,14 @@ export default {
       if (item.armorType) response = response + ` (${item.armorType})`;
       if (item.jewelryType) response = response + ` (${item.jewelryType})`;
       return response;
+    },
+    isPaginated() {
+      return this.items.length > 50 ? true : false;
+    }
+  },
+  watch: {
+    items() {
+      this.isPaginated();
     }
   }
 };

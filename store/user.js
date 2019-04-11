@@ -4,6 +4,8 @@ export const state = () => ({
   user: null,
   allUsers: [],
   notifications: [],
+  raidbossesDisplayType: 'grid',
+  isSetTimeToMoscow: false,
 });
 
 export const mutations = {
@@ -23,6 +25,20 @@ export const mutations = {
 
   addNotification(state, message) {
     state.notifications.unshift(message);
+  },
+
+  resetNotifications(state) {
+    state.notifications = [];
+  },
+
+  setRaidbossesDisplayType(state, type) {
+    cookies.set('rb-display-type', type, { expires: 365 });
+    state.raidbossesDisplayType = type;
+  },
+
+  isSetTimeToMoscow(state, boolean) {
+    cookies.set('is-moscow-time', boolean, { expires: 365 });
+    state.isSetTimeToMoscow = boolean;
   },
 };
 
@@ -174,5 +190,11 @@ export const getters = {
   },
   getNotifications(state) {
     return state.notifications;
+  },
+  getRaidbossesDisplayType(state) {
+    return state.raidbossesDisplayType;
+  },
+  isSetTimeToMoscow(state) {
+    return state.isSetTimeToMoscow;
   },
 };

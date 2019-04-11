@@ -54,6 +54,11 @@ low(accounts).then(db => {
     const user = req.body.user;
     remove(db, account, user, req, res);
   });
+
+  router.get('/professions', (req, res) => {
+    const professions = getProfessions(db);
+    res.send(professions);
+  });
 });
 
 /**
@@ -100,7 +105,7 @@ const findAccountByLogin = (db, login) => {
 };
 
 /**
- * Добавляемый новый партийный аккаунт.
+ * Добавляем новый партийный аккаунт.
  * @param db                Объект доступа к БД
  * @param account           Экземпляр создаваемого аккаунта
  * @param res               Объект ответа сервера
@@ -160,7 +165,6 @@ const update = (db, account, user, req, res) => {
  * @return Promise
  */
 const remove = (db, account, user, req, res) => {
-  console.log(`Запрос пришел`);
   const accountToDelete = findAccountByID(db, account.id);
 
   if (!accountToDelete)
@@ -174,7 +178,7 @@ const remove = (db, account, user, req, res) => {
       name: 'Account not empty',
       message: `Сначала удалите всех персонажей на аккаунте`,
     };
-  console.log(`Запрос дошел`);
+
   db.get('accounts')
     .remove({ id: account.id })
     .write()
@@ -182,5 +186,13 @@ const remove = (db, account, user, req, res) => {
       res.send({ message: `Аккаунт ${account.login} успешно удален` });
     })
     .catch(e => res.status(500).send(e));
+};
+/**
+ * Получаем список всех проф
+ * @param db                Объект доступа к БД
+ * @return Array
+ */
+const getProfessions = db => {
+  return db.get('professions').value();
 };
 module.exports = router;

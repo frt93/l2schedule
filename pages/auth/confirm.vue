@@ -14,7 +14,6 @@ export default {
       this.$axios
         .post(`/me/confirm/${credential}`, { token })
         .then(res => {
-          console.log(res.data.user);
           this.$snackbar.open({
             duration: 5000,
             message: `${res.data.message}`,

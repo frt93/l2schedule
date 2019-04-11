@@ -11,6 +11,8 @@
     </b-field>
     <span @click="image='/items/pieces/'">Кусок,</span>
     <span @click="image='/items/full/'">Целый</span>
+    <span @click="image='/items/consumables/'">Расходники</span>
+    <span @click="image='/items/resources/'">Ресурсы</span>
     <b-field label="Тип предмета">
       <div class="block">
         <b-radio v-model="type" native-value="weapon">Оружие</b-radio>
@@ -18,11 +20,15 @@
         <b-radio v-model="type" native-value="jewelry">Бижутерия</b-radio>
         <b-radio v-model="type" native-value="pieces">Куски</b-radio>
         <b-radio v-model="type" native-value="сonsumables">Расходники</b-radio>
+        <b-radio v-model="type" native-value="resources">Ресурсы</b-radio>
         <b-radio v-model="type" native-value="sa">SA</b-radio>
       </div>
     </b-field>
 
-    <b-field label="Ранг предмета" v-if="type && type !=='pieces' && type !=='sa'">
+    <b-field
+      label="Ранг предмета"
+      v-if="type && type !=='pieces' && type !=='sa' && type !=='resources'"
+    >
       <b-select placeholder="Выберите ранг" v-model="grade">
         <option v-for="grade in grades" :key="grade.value" :value="grade.value">{{grade.name}}</option>
       </b-select>
@@ -75,7 +81,7 @@ export default {
       fullname: this.item.fullname,
       shortname: this.item.shortname,
       image: this.item.image,
-      type: this.item.type, //full or piece,
+      type: "resources", //full or piece,
       grade: this.item.grade,
       weaponType: this.weaponType,
       armorType: this.armorType,

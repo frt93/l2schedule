@@ -3,6 +3,7 @@
     {
       "id": "1554199133",
       "username": "frt",
+      "emailConfirmCode": "4545",
       "email": "razeb4enko@gmail.com",
       "password": "$2a$10$dUJeQBzWiULBt8dYIf7X7eKYHepmIexWdz6/jTs75uaLVH27whRW6",
       "privileges": "master",
@@ -53,12 +54,7 @@
       "username": "gnida",
       "email": "petalex139@gmail.com",
       "password": "$2a$10$8EwAFbHP6.czP/kNzbIRa.mnd03CpMowZTFQ3Fg8ZyiAKPZlGL5qq",
-      "privileges": "common",
-      "groupInvite": {
-        "id": "1554631429",
-        "name": "wedabest",
-        "inviterID": "1554199133"
-      }
+      "privileges": "common"
     }
   ],
   "privileges": [],

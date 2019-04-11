@@ -10,6 +10,14 @@ export const mutations = {
     state.accounts.push(account);
   },
 
+  update(state, updated) {
+    state.accounts.forEach(function(part, index, theArray) {
+      if (theArray[index].id === updated.id) {
+        theArray[index] = updated;
+      }
+    });
+  },
+
   remove(state, account) {
     const accountsToKeep = state.accounts.filter(acc => {
       return acc.id !== account.id;
@@ -29,6 +37,20 @@ export const actions = {
         .post('/accounts/create', { account, user })
         .then(res => {
           commit('add', res.data.account);
+          resolve(res);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  },
+
+  update({ commit }, { account, user }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('/accounts/update', { account, user })
+        .then(res => {
+          commit('update', res.data.account);
           resolve(res);
         })
         .catch(e => {

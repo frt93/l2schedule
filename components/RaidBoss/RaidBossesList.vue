@@ -1,87 +1,88 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <div class="block navigate">
-        <nav class="navbar" role="navigation" aria-label="main navigation">
-          <div class="navbar-brand">
-            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false">
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
+  <div class="container">
+    <transition name="menu-popover">
+      <search v-if="isSearch" @result="result" @close="closeSearchForm" ref="search"></search>
+    </transition>
+    <div class="block navigate">
+      <nav class="navbar" role="navigation" aria-label="main navigation">
+        <!-- <div class="navbar-brand">
+          <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>-->
+
+        <div class="navbar-menu sub-menu">
+          <div class="navbar-start">
+            <a class="navbar-item">Все рб</a>
+            <a class="navbar-item">Эпики</a>
+
+            <a class="navbar-item">80-87 lvl</a>
+
+            <a class="navbar-item">70-79 lvl</a>
+            <a class="navbar-item" :class="{'active-search': isSearch}">
+              <span class="search">
+                <i class="mdi mdi-magnify" v-if="!isSearch" @click="initSearch"></i>
+                <i class="mdi mdi-window-close" v-if="isSearch" @click="closeSearchForm"></i>
+              </span>
             </a>
           </div>
 
-          <div class="navbar-menu sub-menu">
-            <div class="navbar-start">
-              <a class="navbar-item">Все рб</a>
-              <a class="navbar-item">Эпики</a>
-
-              <a class="navbar-item">80-87 lvl</a>
-
-              <a class="navbar-item">70-79 lvl</a>
-              <a class="navbar-item" :class="{'active-search': isSearch}">
-                <span class="search">
-                  <i class="mdi mdi-magnify" v-if="!isSearch" @click="initSearch"></i>
-                  <i class="mdi mdi-window-close" v-if="isSearch" @click="close"></i>
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <span class="respawn-switch" v-if="!isSearch">
+                  <i
+                    class="mdi mdi-circle in-window"
+                    title="Показать рб, которые сейчас в респе"
+                    @click="filterByRespawn('inWindow')"
+                    :class="{active: respawnSwitcher === 'inWindow'}"
+                  ></i>
+                  <i
+                    class="mdi mdi-circle in-resp"
+                    title="Показать рб, у которых сейчас откат респа"
+                    @click="filterByRespawn('inResp')"
+                    :class="{active: respawnSwitcher === 'inResp'}"
+                  ></i>
+                  <i
+                    class="mdi mdi-circle lost-resp"
+                    title="Показать рб, респ которых утерян"
+                    @click="filterByRespawn('lostResp')"
+                    :class="{active: respawnSwitcher === 'lostResp'}"
+                  ></i>
                 </span>
-              </a>
-            </div>
 
-            <div class="navbar-end">
-              <div class="navbar-item">
-                <div class="buttons">
-                  <div class="respawn-switch" v-if="!isSearch">
-                    <i
-                      class="mdi mdi-circle in-window"
-                      @click="filterByRespawn('inWindow')"
-                      :class="{active: respawnSwitcher === 'inWindow'}"
-                    ></i>
-                    <i
-                      class="mdi mdi-circle in-resp"
-                      @click="filterByRespawn('inResp')"
-                      :class="{active: respawnSwitcher === 'inResp'}"
-                    ></i>
-                    <i
-                      class="mdi mdi-circle lost-resp"
-                      @click="filterByRespawn('lostResp')"
-                      :class="{active: respawnSwitcher === 'lostResp'}"
-                    ></i>
-                  </div>
-
-                  <span class="view-type-switch">
-                    <i
-                      class="mdi mdi-view-module"
-                      :class="{active: displayAs === 'viewGrid'}"
-                      @click="displayAs = 'viewGrid'"
-                    ></i>
-                    <i
-                      class="mdi mdi-format-list-bulleted"
-                      :class="{active: displayAs === 'viewTable'}"
-                      @click="displayAs = 'viewTable'"
-                    ></i>
-                  </span>
-                </div>
+                <span class="view-type-switch">
+                  <i
+                    class="mdi mdi-view-module"
+                    :class="{active: displayType === 'grid'}"
+                    @click="setDisplayType('grid')"
+                  ></i>
+                  <i
+                    class="mdi mdi-format-list-bulleted"
+                    :class="{active: displayType === 'tabular'}"
+                    @click="setDisplayType('tabular')"
+                  ></i>
+                </span>
               </div>
             </div>
           </div>
-        </nav>
-        <transition name="menu-popover">
-          <search v-if="isSearch" @result="result" @close="close" ref="search"></search>
-        </transition>
-      </div>
-      <transition name="fade" mode="out-in">
-        <component
-          :data="searchResults ? searchResults : raidBosses"
-          :timeleftToRespawn="timeleftToRespawn"
-          @update="update"
-          @copy="copy"
-          @remove="remove"
-          @view="view"
-          @search="triggerSearch"
-          v-bind:is="displayAs"
-        ></component>
-      </transition>
+        </div>
+      </nav>
     </div>
+    <transition name="fade" mode="out-in">
+      <component
+        :data="searchResults ? searchResults : raidBosses"
+        :timeleftToRespawn="timeleftToRespawn"
+        @update="update"
+        @copy="copy"
+        @remove="remove"
+        @view="view"
+        @search="triggerSearch"
+        v-bind:is="displayType"
+      ></component>
+    </transition>
 
     <b-modal :active.sync="isModalActive" :width="640" scroll="clip" :canCancel="['x', 'outside']">
       <modal
@@ -92,27 +93,26 @@
       ></modal>
     </b-modal>
     <remove :boss="raidBossToManage" v-if="isRemove" @removed="isRemove=false"></remove>
-  </section>
+  </div>
 </template>
 
 <script>
-import viewGrid from "./grid";
-import viewTable from "./table";
+import grid from "./grid";
+import tabular from "./table";
 import modal from "./modal";
 import remove from "./remove";
 import search from "../ui/search";
 import { mapGetters } from "vuex";
 export default {
   components: {
-    viewGrid,
-    viewTable,
+    grid,
+    tabular,
     modal,
     remove,
     search
   },
   data() {
     return {
-      displayAs: this.displayType,
       // В свойстве timeleftToRespawn хранятся данные о времени, оставшемся до начала/конца окна респа (или прошедшего с его конца).
       // Ключем для значения является id рб
       timeleftToRespawn: {},
@@ -203,6 +203,15 @@ export default {
       }
     },
 
+    /**
+     * Переключение типа отображения содержимого между grid-сеткой и таблицей
+     * @param type              Наименование типа
+     * @return Array
+     */
+    setDisplayType(type) {
+      this.$store.commit("user/setRaidbossesDisplayType", type);
+    },
+
     initSearch() {
       this.isSearch = true;
       this.respawnSwitcher = this.searchResults = null;
@@ -227,7 +236,7 @@ export default {
     result(data, query) {
       this.searchResults = query ? data : this.raidBosses;
     },
-    close() {
+    closeSearchForm() {
       this.isSearch = false;
       this.searchResults = null;
     },
@@ -235,7 +244,7 @@ export default {
     filterByRespawn(key) {
       // Фильтруем рб по их статусу респа. Можно отобразить рб, у которых окно респа в данный момент / откат респа / респ утерян
       // Первым делом закрываем форму поиска, если она открыта.
-      this.close();
+      this.closeSearchForm();
       if (key === this.respawnSwitcher) {
         // Если повторно кликнули на тот же фильтр - отменяем фильтрацию и отобразим первоначальное содержимое
         this.respawnSwitcher = this.searchResults = null;
@@ -273,17 +282,6 @@ export default {
 <style>
 .content {
   font-size: 14px;
-}
-
-.login,
-.nickname,
-.password,
-.manage-icons i {
-  cursor: pointer;
-}
-
-.login:before {
-  content: "@";
 }
 
 @media screen and (min-width: 600px) and (max-width: 960px) {
@@ -362,18 +360,30 @@ export default {
 .navbar-item.active-search {
   background-color: #ff3860 !important;
   color: #fff !important;
+  padding: 0 10px;
 }
-
+.view-type-switch,
 .respawn-switch {
-  margin-left: 4px;
-  display: inline-block;
+  margin-left: 10px;
   transition: 0.2s;
   animation: fadeIn;
-  animation-duration: 0.5s;
+  animation-duration: 0.3s;
+  display: inline-block;
+  cursor: pointer;
 }
+
+.view-type-switch i,
 .respawn-switch i {
-  margin: 3px;
+  padding: 4px;
+  float: left;
+  border: 1px solid #d2d2d2;
+  line-height: 20px;
 }
+
+.view-type-switch i {
+  font-size: 24px;
+}
+
 i.in-resp {
   color: #ea9220;
 }
@@ -384,38 +394,35 @@ i.lost-resp {
   color: #ff3860;
 }
 
-i.mdi-circle.active:before {
-  border-radius: 100%;
-  line-height: 1;
-  border: 2px solid;
-}
-
-.view-type-switch {
-  margin-left: 4px;
-}
-
-.view-type-switch i {
-  font-size: 24px;
-  line-height: 16px;
-  border: 1px solid #d2d2d2;
-  cursor: pointer;
-  padding: 4px;
-  float: left;
-}
-
-.view-type-switch i:first-of-type {
+.view-type-switch i:first-of-type,
+.respawn-switch i:first-of-type {
   border-right: 0;
   border-radius: 4px 0 0 4px;
 }
-.view-type-switch i:last-of-type {
+.view-type-switch i:last-of-type,
+.respawn-switch i:last-of-type {
   border-left: 0;
   border-radius: 0 4px 4px 0;
 }
-.view-type-switch .active {
+.view-type-switch .active,
+.respawn-switch .active {
   background: #00a046;
   border-color: #00a046;
   color: #fff;
   cursor: default;
+}
+
+.respawn-switch .in-resp.active {
+  background: #ea9220;
+  border-color: #ea9220;
+}
+.respawn-switch .in-window.active {
+  background: #23d160;
+  border-color: #23d160;
+}
+.respawn-switch .lost-resp.active {
+  background: #ff3860;
+  border-color: #ff3860;
 }
 </style>
 

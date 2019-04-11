@@ -1,8 +1,10 @@
 <template>
   <div>
     <navbar></navbar>
-    <div></div>
-    <nuxt/>
+
+    <div class="app">
+      <nuxt/>
+    </div>
   </div>
 </template>
 <script>
@@ -15,6 +17,10 @@ export default {
 </script>
 
 <style>
+.app {
+  margin-top: 80px;
+}
+
 .form .control input {
   transition: 0.3s linear;
 }
@@ -43,6 +49,11 @@ button {
   transition: 0.5s;
 }
 
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
 table .login,
 table .password,
 table .nickname {
@@ -54,18 +65,19 @@ table .nickname {
   position: absolute;
   visibility: hidden;
 }
-
-.manage-icons.left {
-  left: 0;
+.row.item .manage-icons {
+  position: inherit;
 }
 
 .row:hover .manage-icons {
   visibility: initial;
+  -webkit-animation: scale 0.1s ease-out;
+  animation: scale 0.1s ease-out;
 }
 .row .manage-icons i {
   opacity: 0.5;
 }
-.row .manage-icons i:hover {
+.row .manage-icons i:hover:not(.disabled) {
   opacity: 1;
 }
 
@@ -80,6 +92,12 @@ table .nickname {
 }
 .manage-icons .remove:hover {
   color: #ff2b56;
+}
+.manage-icons .add {
+  color: #23d160;
+}
+.manage-icons .add:hover {
+  color: #22c65b;
 }
 
 @-webkit-keyframes scale {
@@ -102,6 +120,11 @@ table .nickname {
     -webkit-transform: scale(1, 1);
     transform: scale(1, 1);
   }
+}
+
+.account,
+.login {
+  cursor: pointer;
 }
 </style>
 

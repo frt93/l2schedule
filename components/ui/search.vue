@@ -1,70 +1,68 @@
 <template>
-  <section>
-    <div class="block search">
-      <div class="block search-key">
-        <b-dropdown v-model="searchBy" aria-role="list" @change="keyChanged">
-          <span class="select-key" type="button" slot="trigger">
-            <template v-if="searchBy">
-              <span class="key-label">{{searchKeyLabel}}</span>
-            </template>
-            <b-icon icon="menu-down"></b-icon>
-          </span>
-
-          <b-dropdown-item :value="'name'" aria-role="listitem">
-            <div class="media">
-              <div class="media-content">
-                <h3>Поиск по имени РБ</h3>
-              </div>
-            </div>
-          </b-dropdown-item>
-
-          <b-dropdown-item :value="'item'" aria-role="listitem">
-            <div class="media">
-              <div class="media-content">
-                <h3>Поиск по дропу</h3>
-              </div>
-            </div>
-          </b-dropdown-item>
-
-          <b-dropdown-item :value="'sa'" aria-role="listitem">
-            <div class="media">
-              <div class="media-content">
-                <h3>Поиск РБ с качем SA</h3>
-              </div>
-            </div>
-          </b-dropdown-item>
-        </b-dropdown>
-      </div>
-      <div class="block">
-        <b-autocomplete
-          ref="input"
-          :data="filteredOptions"
-          :placeholder="placeholder"
-          field="fullname"
-          size="is-large"
-          @typing="getAsyncData"
-          @select="option => searchByDrop(option)"
-        >
-          <template slot-scope="props">
-            <div class="media" v-if="searchBy !== 'name'">
-              <div class="media-left">
-                <img :src="props.option.image">
-              </div>
-              <div class="media-content">
-                {{ props.option.fullname }}
-                <img
-                  v-if="props.option.grade"
-                  :src="`/items/grade/${props.option.grade}.gif`"
-                >
-                <br>
-                <small>{{props.option.type}}</small>
-              </div>
-            </div>
+  <div class="block search">
+    <div class="block search-key">
+      <b-dropdown v-model="searchBy" aria-role="list" @change="keyChanged">
+        <span class="select-key" type="button" slot="trigger">
+          <template v-if="searchBy">
+            <span class="key-label">{{searchKeyLabel}}</span>
           </template>
-        </b-autocomplete>
-      </div>
+          <b-icon icon="menu-down"></b-icon>
+        </span>
+
+        <b-dropdown-item :value="'name'" aria-role="listitem">
+          <div class="media">
+            <div class="media-content">
+              <h3>Поиск по имени РБ</h3>
+            </div>
+          </div>
+        </b-dropdown-item>
+
+        <b-dropdown-item :value="'item'" aria-role="listitem">
+          <div class="media">
+            <div class="media-content">
+              <h3>Поиск по дропу</h3>
+            </div>
+          </div>
+        </b-dropdown-item>
+
+        <b-dropdown-item :value="'sa'" aria-role="listitem">
+          <div class="media">
+            <div class="media-content">
+              <h3>Поиск РБ с качем SA</h3>
+            </div>
+          </div>
+        </b-dropdown-item>
+      </b-dropdown>
     </div>
-  </section>
+    <div class="block">
+      <b-autocomplete
+        ref="input"
+        :data="filteredOptions"
+        :placeholder="placeholder"
+        field="fullname"
+        size="is-large"
+        @typing="getAsyncData"
+        @select="option => searchByDrop(option)"
+      >
+        <template slot-scope="props">
+          <div class="media" v-if="searchBy !== 'name'">
+            <div class="media-left">
+              <img :src="props.option.image">
+            </div>
+            <div class="media-content">
+              {{ props.option.fullname }}
+              <img
+                v-if="props.option.grade"
+                :src="`/items/grade/${props.option.grade}.gif`"
+              >
+              <br>
+              <small>{{props.option.type}}</small>
+            </div>
+          </div>
+        </template>
+      </b-autocomplete>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -281,6 +279,13 @@ export default {
 <style>
 .block.search {
   position: relative;
+  margin-bottom: 0;
+  z-index: 39;
+  height: 54px;
+  margin-top: -54px;
+}
+.autocomplete .dropdown-menu {
+  padding: 1px 0;
 }
 .search-key {
   position: absolute;
@@ -304,32 +309,25 @@ export default {
   height: 54px;
 }
 
-/* .search-close {
-  position: absolute;
-  right: -30px;
-  z-index: 2;
-  line-height: 54px;
-  cursor: pointer;
-} */
 .search input {
   padding-right: 150px;
 }
-.search .dropdown-menu {
+.search-key .dropdown-menu {
   min-width: 0 !important;
   right: 0;
   left: inherit;
   padding: 0;
 }
 
-.search .dropdown-content {
+.search-key .dropdown-content {
   padding: 0;
 }
 
-.search .dropdown-content > .dropdown-item {
+.search-key .dropdown-content > .dropdown-item {
   padding-right: 8px !important;
 }
 
-a.dropdown-item.is-active {
+.search-key a.dropdown-item.is-active {
   background-color: #23d160;
 }
 

@@ -431,7 +431,7 @@ const confirmEmailChangeHandle = (req, res, db) => {
  * @return Object
  */
 const confirmEmail = (db, id, res) => {
-  const user = db.get('users').find({ id: id });
+  let user = db.get('users').find({ id: id });
   user.unset('emailConfirmCode').write();
 
   return res.send({ message: `email адрес подтвержден`, user });
@@ -528,7 +528,7 @@ const confirmPasswordChangeHandle = (req, res, db) => {
  * @return Object
  */
 const confirmPasswordChange = (db, id, res) => {
-  const user = db.get('users').find({ id: id });
+  let user = db.get('users').find({ id: id });
   const newPassword = hashPassword(user.value().newPassword);
 
   user.unset('newPassword').value();
@@ -726,7 +726,7 @@ const joinGroup = async (db, group, invitee, res) => {
     inviter = await findUserByID(db, invitee.groupInvite.inviterID);
   }
 
-  const invitee2 = await db.get('users').find({ id: invitee.id });
+  let invitee2 = await db.get('users').find({ id: invitee.id });
 
   invitee2.unset('groupInvite').value();
   invitee2.assign({ group: { name: group.name, id: group.id }, groupRole: role }).value();

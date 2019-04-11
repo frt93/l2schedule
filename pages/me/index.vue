@@ -1,14 +1,16 @@
 <template>
-  <div class="container">
-    <groups></groups>
-  </div>
+  <settings :data="user"></settings>
 </template>
 
 <script>
-import groups from "~/components/ui/me/groups";
+import settings from "~/components/ui/me/settings";
+import { mapGetters } from "vuex";
 export default {
-  name: "profileMainPage",
+  name: "accountSettingsPage",
   middleware: "auth",
-  components: { groups }
+  components: { settings },
+  computed: {
+    ...mapGetters({ user: "user/getUser" })
+  }
 };
 </script>

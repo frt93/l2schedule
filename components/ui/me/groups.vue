@@ -31,6 +31,15 @@
       </b-field>
       <button class="button is-success" :disabled="!userToInvite" @click="invite">Пригласить</button>
     </div>
+
+    <div>
+      <p v-for="user in users" :key="user.id">
+        {{user.username}}
+        <a v-if="!user.group">
+          <i class="mdi mdi-account-multiple-plus" @click="invite(user)"></i>
+        </a>
+      </p>
+    </div>
   </div>
 </template>
 

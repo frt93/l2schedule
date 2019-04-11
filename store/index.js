@@ -5,14 +5,21 @@ export const state = () => ({});
 
 export const mutations = {};
 export const actions = {
-  async nuxtServerInit({ dispatch }, context) {
+  async nuxtServerInit({ dispatch, commit }, context) {
     return (
       await dispatch('raidbosses/fetch'),
       await dispatch('items/fetch'),
       await new Promise((resolve, reject) => {
         const cookies = cookie.parse(context.req.headers.cookie || '');
+
         if (cookies.hasOwnProperty('x-access-token')) {
           setAuthToken(cookies['x-access-token']);
+          if (cookies.hasOwnProperty('rb-display-type')) {
+            commit('user/setRaidbossesDisplayType', cookies['rb-display-type']);
+          }
+          if (cookies.hasOwnProperty('is-moscow-time')) {
+            commit('user/isSetTimeToMoscow', cookies['is-moscow-time']);
+          }
           dispatch('user/fetch')
             .then(result => {
               resolve(true);

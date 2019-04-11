@@ -26,7 +26,6 @@
     <div class="content">
       <b-field label="Статы">
         <div>
-          <p v-if="boss.lvl">Уровень: {{boss.lvl}}</p>
           <p v-if="boss.hp">HP: {{boss.hp}}</p>
           <p v-if="boss.p_atk">P. Atk: {{boss.p_atk}}</p>
           <p v-if="boss.p_def">P. Def: {{boss.p_def}}</p>
@@ -106,7 +105,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ isSetTimeToMoscow: "datetime/isSetTimeToMoscow" }),
     fulldrop() {
       let full = [];
       const dropList = this.boss.drop;

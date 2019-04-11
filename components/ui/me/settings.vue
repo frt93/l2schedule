@@ -14,7 +14,7 @@
     </div>
     <div v-if="data && !data.passwordConfirmCode">
       <b-field
-        label="Текущий пароль"
+        label="Сменить пароль"
         :type="{'is-danger':currentPasswordError.length}"
         :message="currentPasswordError"
       >
@@ -27,7 +27,7 @@
           @input="currentPasswordError=[]"
         ></b-input>
       </b-field>
-      <b-field label="Новый пароль">
+      <b-field>
         <b-input
           icon="lock"
           type="password"
@@ -53,6 +53,14 @@
       <b-field label="Сменить никнейм">
         <b-input icon="lock" v-model="user.username"></b-input>
       </b-field>
+
+      <b-field label="Использовать московское время?">
+        <b-switch
+          v-model="isSetTimeToMoscow"
+          true-value="true"
+          false-value="false"
+        >{{ isSetTimeToMoscow }}</b-switch>
+      </b-field>
       <button class="button is-success" @click="update">Отправить</button>
     </div>
   </div>
@@ -69,7 +77,8 @@ export default {
       oldPassword: "",
       newPassword: "",
       currentPasswordError: [],
-      user: this.data
+      user: this.data,
+      isSetTimeToMoscow: this.$store.state.user.isSetTimeToMoscow
     };
   },
   props: {
@@ -180,10 +189,9 @@ export default {
         });
     },
     update() {
-      let usser = this.user;
-      usser.id = "1554320807";
+      let user = this.user;
       this.$axios
-        .post(`/me/update`, usser)
+        .post(`/me/update`, user)
         .then(res => {
           this.$snackbar.open({
             duration: 5000,
@@ -203,6 +211,11 @@ export default {
             queue: false
           });
         });
+    }
+  },
+  watch: {
+    isSetTimeToMoscow(newValue) {
+      this.$store.commit("user/isSetTimeToMoscow", newValue);
     }
   }
 };

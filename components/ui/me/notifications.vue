@@ -1,12 +1,12 @@
 <template>
-  <div class="rb-norifications" v-if="notifications.length">
+  <div class="norifications" v-if="notifications.length">
     <b-modal :active.sync="isModalActive" :width="640" scroll="clip" :canCancel="['x', 'outside']">
       <div class="card">
         <div class="card-content">
           <div class="media">
             <div class="media-content">
               <p class="title is-4">
-                <span>Логи изменений</span>
+                <span>Оповещения</span>
               </p>
             </div>
           </div>
@@ -15,6 +15,7 @@
               <span class="log-date">{{$moment(notification.date).format(('D.MM.YYYY в HH:mm'))}}</span>
               <span class="log-message">{{notification.message}}</span>
             </p>
+            <a class="button is-danger reset" @click="reset">Очистить</a>
           </div>
         </div>
       </div>
@@ -26,6 +27,7 @@
         type="is-dark"
         animated
       >
+        <span class="notifications-count">{{notifications.length}}</span>
         <i class="mdi mdi-bell mdi-24px"></i>
       </b-tooltip>
     </span>
@@ -83,11 +85,14 @@ export default {
         // Пользователь ранее отклонил наш запрос на показ уведомлений
         // В этом месте мы можем, но не будем его беспокоить. Уважайте решения своих пользователей.
       }
+    },
+
+    reset() {
+      this.$store.commit("user/resetNotifications");
     }
   },
   mounted() {
     this.$socket().on("raidboss-updated", (message, boss, user) => {
-      console.log("updated on client");
       this.$store.commit("user/addNotification", message);
       this.$store.dispatch("raidbosses/rebuild", boss);
       this.playNotification("/notify/notify.mp3");
@@ -121,100 +126,4 @@ export default {
 };
 </script>
 <style>
-.rb-norifications .trigger {
-  height: 48px;
-  width: 48px;
-  position: fixed;
-  right: 40px;
-  bottom: 40px;
-  cursor: pointer;
-
-  border-radius: 100%;
-  text-align: center;
-  background-color: transparent;
-}
-
-.rb-norifications .trigger i {
-  line-height: 48px;
-  height: 48px;
-  width: 48px;
-  color: #167df0;
-  background-color: transparent;
-}
-
-.rb-norifications .trigger i:before {
-  transition: 2s ease-in-out;
-  -webkit-animation: swinging 2s ease-in-out 0s infinite;
-  -moz-animation: swinging 2s ease-in-out 0s infinite;
-  animation: swinging 2s ease-in-out 0s infinite;
-  -webkit-transform-origin: 50% 0%;
-  -moz-transform-origin: 50% 0;
-  transform-origin: 50% 0;
-  content: " \F09A";
-}
-.rb-norifications .trigger i:hover:before {
-  content: "\F09E";
-}
-
-.rb-norifications .log-date:after {
-  content: "•";
-  margin-left: 3px;
-}
-
-@keyframes bell {
-  0% {
-    content: "\F09E";
-  }
-  50% {
-    content: " \F09A";
-  }
-  100% {
-    content: "\F09E";
-  }
-}
-
-@keyframes swinging {
-  0% {
-    transform: rotate(0);
-  }
-  25% {
-    transform: rotate(2deg);
-  }
-  50% {
-    transform: rotate(-1deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-}
-
-@-webkit-keyframes swinging {
-  0% {
-    -webkit-transform: rotate(0);
-  }
-  25% {
-    -webkit-transform: rotate(2deg);
-  }
-  50% {
-    -webkit-transform: rotate(-1deg);
-  }
-  100% {
-    -webkit-transform: rotate(0deg);
-  }
-}
-
-@-moz-keyframes swinging {
-  0% {
-    -moz-transform: rotate(0);
-  }
-  25% {
-    -moz-transform: rotate(2deg);
-  }
-  50% {
-    -moz-transform: rotate(-1deg);
-  }
-  100% {
-    -moz-transform: rotate(0deg);
-  }
-}
 </style>

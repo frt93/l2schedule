@@ -2,7 +2,7 @@
   <section>
     <b-table
       ref="table"
-      paginated
+      :paginated="isPaginated()"
       per-page="50"
       detailed
       detail-key="id"
@@ -12,19 +12,26 @@
       :show-detail-icon="showDetailIcon"
       :mobile-cards="true"
       :hoverable="true"
-      default-sort-direction="desc"
-      default-sort="respawn_end"
     >
       <template slot-scope="props">
         <b-table-column field="shortname" label="Имя РБ">
           <template v-if="showDetailIcon">{{ props.row.shortname }}</template>
           <span class="manage-icons">
-            <i class="mdi mdi-pencil edit" @click="$emit('update', props.row)"></i>
-            <i class="mdi mdi-delete remove" @click="$emit('remove', props.row)"></i>
+            <b-tooltip
+              label="Изменить информацию о РБ"
+              position="is-bottom"
+              type="is-dark"
+              animated
+            >
+              <i class="mdi mdi-pencil edit" @click="$emit('update', props.row)"></i>
+            </b-tooltip>
+            <b-tooltip label="Удалить РБ" position="is-bottom" type="is-dark" animated>
+              <i class="mdi mdi-delete remove" @click="$emit('remove', props.row)"></i>
+            </b-tooltip>
           </span>
         </b-table-column>
 
-        <b-table-column field="lvl" label="Уровень" sortable>{{ props.row.lvl }}</b-table-column>
+        <b-table-column field="lvl" label="Уровень">{{ props.row.lvl }}</b-table-column>
         <b-table-column field="account" label="Аккаунт палилки">
           <span class="subtitle-child" v-if="!props.row.account">Нет палилки</span>
           <span
@@ -41,7 +48,7 @@
           </span>
         </b-table-column>
 
-        <b-table-column field="respawn_end" label="Статус респа" sortable centered>
+        <b-table-column field="respawn_end" label="Статус респа" centered>
           <span
             class="tag"
             :class="tagClass(props.row.respawn_start, props.row.respawn_end)"
@@ -105,6 +112,14 @@ export default {
       else if (start > now) return "is-warning";
       else if (now >= start && now < end) return "is-success";
       else if (now > end) return "is-danger";
+    },
+    isPaginated() {
+      return this.data.length > 50 ? true : false;
+    }
+  },
+  watch: {
+    data() {
+      this.isPaginated();
     }
   }
 };
