@@ -1,5 +1,7 @@
 # dependencies
 node_modules
+db
+
 
 # logs
 npm-debug.log
@@ -10,8 +12,6 @@ npm-debug.log
 # Nuxt generate
 dist
 
-#db
-db
 
 config
 
