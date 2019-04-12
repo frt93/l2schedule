@@ -36,7 +36,7 @@
       <p v-for="user in users" :key="user.id">
         {{user.username}}
         <a v-if="!user.group">
-          <i class="mdi mdi-account-multiple-plus" @click="invite(user)"></i>
+          <i class="mdi mdi-account-multiple-plus" @click="userToInvite = user, invite()"></i>
         </a>
       </p>
     </div>

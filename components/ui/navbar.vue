@@ -288,10 +288,6 @@ export default {
   line-height: 24px;
 }
 
-.account {
-  cursor: pointer;
-}
-
 .account .account-notify {
   position: absolute;
   top: 14px;

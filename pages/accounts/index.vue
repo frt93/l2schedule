@@ -5,7 +5,7 @@
 import accounts from "~/components/accounts/list";
 export default {
   name: "accountsListMainPage",
-  middleware: "auth",
+  middleware: ["auth", "group"],
   components: {
     accounts
   },
