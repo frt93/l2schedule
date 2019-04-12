@@ -1,7 +1,7 @@
 /**
  * Корневой адрес приложения
  */
-const url = 'http://localhost:3000';
+const url = 'http://l2schedule.fun/';
 
 /**
  * Секретный ключ для хэширования токена

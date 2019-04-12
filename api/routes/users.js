@@ -12,8 +12,8 @@ const jwt = require('jsonwebtoken');
 const jwtToken = config.jwtSignature;
 const email = require('emailjs/email');
 const sendEmail = email.server.connect({
-  user: 'tvinkzak2@gmail.com',
-  password: 'God452yHgs854Kd',
+  user: 'lineage2schedule@gmail.com',
+  password: 'FhBnIu76_oiLk3',
   host: 'smtp.gmail.com',
   port: 465,
   ssl: true,
