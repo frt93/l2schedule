@@ -29,7 +29,7 @@
       "id": "1553024010",
       "fullname": "Angel Slayer",
       "shortname": "AS",
-      "image": "/items/full/angel-slayer.png",
+      "image": "/items/full/Angel-Slayer.png",
       "type": "weapon",
       "grade": "S",
       "weaponType": "dagger"
@@ -1351,7 +1351,7 @@
       "fullname": "Thread",
       "type": "resources",
       "shortname": "Thread",
-      "image": "/items/resources/thread.png"
+      "image": "/items/resources/Thread.png"
     },
     {
       "id": "1554999624",
@@ -1386,7 +1386,7 @@
       "fullname": "Coal",
       "type": "resources",
       "shortname": "Coal",
-      "image": "/items/resources/Coal.png"
+      "image": "/items/resources/coal.png"
     },
     {
       "id": "1554999804",
@@ -1666,7 +1666,7 @@
       "fullname": "Leather",
       "type": "resources",
       "shortname": "Leather",
-      "image": "/items/resources/Leather.png"
+      "image": "/items/resources/leather.png"
     },
     {
       "id": "1555003020",
