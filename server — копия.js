@@ -25,7 +25,7 @@ if (config.dev) {
 app.use(nuxt.render);
 app.use(bodyParser.json());
 // Listen the server
-// server.listen(port, '0.0.0.0');
+server.listen(port, '0.0.0.0');
 
 let users = {};
 
@@ -157,5 +157,4 @@ io.on('connection', socket => {
 
 module.exports = {
   io,
-  app,
 };
