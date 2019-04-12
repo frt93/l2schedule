@@ -139,7 +139,7 @@ export const actions = {
       this.$axios
         .post(`/group/create`, group)
         .then(res => {
-          commit('set_user', res.data.user);
+          commit('set_user', res.data.invitee);
           resolve(res);
         })
         .catch(e => {

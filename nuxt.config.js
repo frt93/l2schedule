@@ -32,7 +32,7 @@ module.exports = {
   ],
 
   env: {
-    sockets: process.env.WS_URL || 'http://l2schedule.fun/',
+    sockets: process.env.sockets || 'http://l2schedule.fun/',
   },
   /*
    **Axios module config

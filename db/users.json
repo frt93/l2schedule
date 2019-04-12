@@ -6,12 +6,7 @@
       "emailConfirmCode": "4545",
       "email": "razeb4enko@gmail.com",
       "password": "$2a$10$dUJeQBzWiULBt8dYIf7X7eKYHepmIexWdz6/jTs75uaLVH27whRW6",
-      "privileges": "master",
-      "group": {
-        "name": "wedabest",
-        "id": "1554631429"
-      },
-      "groupRole": "admin"
+      "privileges": "master"
     },
     {
       "id": "1554315259",
@@ -54,12 +49,7 @@
       "username": "gnida",
       "email": "petalex139@gmail.com",
       "password": "$2a$10$8EwAFbHP6.czP/kNzbIRa.mnd03CpMowZTFQ3Fg8ZyiAKPZlGL5qq",
-      "privileges": "common",
-      "group": {
-        "name": "wedabest",
-        "id": "1554631429"
-      },
-      "groupRole": "newbie"
+      "privileges": "common"
     }
   ],
   "privileges": [],

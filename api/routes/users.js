@@ -664,15 +664,14 @@ const signin = async (db, credentials, res) => {
  * @param res               Объект ответа сервера
  * @return Promise          Промис с созданным пользователем или ошибкой
  */
-const createGroup = async (db, group, res) => {
-  await db
-    .get('groups')
+const createGroup = (db, group, res) => {
+  db.get('groups')
     .isUniqueGroupID(group.id)
     .isUniqueGroupName(group.name)
     .push(group)
     .write()
-    .then(async groups => {
-      await joinGroup(db, group, { id: group.creatorID }, res);
+    .then(groups => {
+      joinGroup(db, group, { id: group.creatorID }, res);
     })
     .catch(e => {
       res.status(500).send({ message: e });
